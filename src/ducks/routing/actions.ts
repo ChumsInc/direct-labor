@@ -1,4 +1,5 @@
 import {
+    filterActiveChanged,
     filterChanged,
     loadingSelector,
     loadListFailed,
@@ -12,9 +13,10 @@ import {
 import {fetchJSON} from 'chums-ducks';
 import {RoutingHeader} from "./types";
 
-const routingListUrl = (routingNo?: string) => `/api/operations/production/direct-labor/routings/${encodeURIComponent(routingNo || '')}`;
+const routingListUrl = (routingNo?: string) => `/api/operations/production/wo/chums/routings/${encodeURIComponent(routingNo || '')}`;
 
 export const filterChangedAction = (filter:string):RoutingAction => ({type: filterChanged, payload: {filter}});
+export const toggleFilterActiveAction = () => ({type: filterActiveChanged});
 
 export const selectRoutingAction = (routingHeader: RoutingHeader): RoutingThunkAction =>
     async (dispatch, getState) => {
@@ -48,6 +50,7 @@ export const fetchRoutingAction = (header: RoutingHeader): RoutingThunkAction =>
                 header: routingHeader[0] || null,
                 detail: routingDetail || [],
                 whereUsed: whereUsed || [],
+                whereUsedInOptions: whereUsedOption || []
             };
             dispatch({type: loadRoutingSucceeded, payload: {routing}});
         } catch (err) {

@@ -20,6 +20,7 @@ import {
 import {RoutingHeader} from "./types";
 import numeral from "numeral";
 import {fetchRoutingsAction, selectRoutingAction} from "./actions";
+import classNames from "classnames";
 
 const tableId = 'routing-list'
 
@@ -31,8 +32,12 @@ const routingListFields: SortableTableField[] = [
         title: 'Std Rate',
         sortable: true,
         render: (row: RoutingHeader) => numeral(row.StandardRateTotal).format('0,0.0000')
-    }
+    },
+    {field: 'BillStatus', title: 'BOM Active', render: (row:RoutingHeader) => (row.BillStatus ? 'Y' : 'N')},
+    {field: 'ItemStatus', title: 'Item Active', render: (row:RoutingHeader) => (row.ItemStatus ? 'Y' : 'N')},
 ];
+
+const rowClassName = (row:RoutingHeader) => classNames({'text-danger': !(row.BillStatus && row.ItemStatus)});
 
 const RoutingList: React.FC = () => {
     const dispatch = useDispatch();
@@ -59,6 +64,7 @@ const RoutingList: React.FC = () => {
         <>
             <SortableTable tableKey={tableId} keyField={"RoutingNo"} size="xs" fields={routingListFields} data={pagedList}
                            selected={selectedHeader?.RoutingNo}
+                           rowClassName={rowClassName}
                            onSelectRow={onSelect}/>
             <PagerDuck pageKey={tableId} dataLength={filteredList.length}
                        filtered={list.length !== filteredList.length}/>

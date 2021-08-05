@@ -1,15 +1,19 @@
 import {ActionInterface, SortableTableField, SorterProps} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
+import {BillHeader, BillOptionHeader} from "../billMaterials/types";
+import {ReactElement} from "react";
 
 export interface RoutingHeader {
     RoutingNo: string,
     StepDescription: string,
     StandardRateTotal: number,
+    BillStatus: boolean,
+    ItemStatus: boolean,
 }
 
 export interface RoutingDetail {
-    RoutingNumber: string,
+    RoutingNo: string,
     StepNo: string,
     StepDescription: string,
     WorkCenter: string,
@@ -20,34 +24,6 @@ export interface RoutingDetail {
     PlannedPieceCostDivisor: number,
 }
 
-export type BillType = 'S'|'K'|'I'|'P'|'E'|'M';
-
-export type BillTypeDescriptions = {
-    [key in BillType]: string;
-};
-export const BillTypeDesc:BillTypeDescriptions = {
-    S: 'Standard',
-    K: 'Kit',
-    I: 'Inactive',
-    P: 'Phantom',
-    E: 'Engineering',
-    M: 'MRP',
-}
-
-export interface BillHeader {
-    BillNo: string,
-    Revision: string,
-    BillType: BillType,
-    BillDesc1: string,
-    BillDesc2: string,
-    DateLastUsed: string,
-    RoutingNo: string,
-    BillHasOptions: 'Y'|'N',
-    DateUpdated: string,
-    updatedByUser: string,
-}
-
-
 export interface RoutingAction extends ActionInterface {
     payload?: {
         list?: RoutingHeader[],
@@ -55,6 +31,7 @@ export interface RoutingAction extends ActionInterface {
             header: RoutingHeader,
             detail?: RoutingDetail[],
             whereUsed?: BillHeader[],
+            whereUsedInOptions?: BillOptionHeader[],
         },
         filter?: string,
         error?: Error,
@@ -68,16 +45,17 @@ export interface RoutingThunkAction extends ThunkAction<any, RootState, unknown,
 export interface SelectedRoutingState {
     header: RoutingHeader | null,
     detail: RoutingDetail[],
-    whereUsed: BillHeader[],
     loading: boolean,
 }
 
 export interface RoutingState {
     list: RoutingHeader[],
     selected: SelectedRoutingState,
+    detailList: RoutingDetail[],
     loading: boolean,
     loaded: boolean,
     filter: string,
+    filterActive: boolean,
 }
 
 export const defaultState: RoutingState = {
@@ -85,17 +63,17 @@ export const defaultState: RoutingState = {
     selected: {
         header: null,
         detail: [],
-        whereUsed: [],
         loading: false,
     },
+    detailList: [],
     loading: false,
     loaded: false,
     filter: '',
+    filterActive: true,
 }
 
 export type RoutingHeaderField = keyof RoutingHeader;
 export type RoutingDetailField = keyof RoutingDetail;
-export type BillHeaderField = keyof BillHeader;
 
 export interface RoutingHeaderSorterProps extends SorterProps {
     field: RoutingHeaderField
@@ -103,14 +81,14 @@ export interface RoutingHeaderSorterProps extends SorterProps {
 export interface RoutingDetailSorterProps extends SorterProps {
     field: RoutingDetailField
 }
-export interface BillHeaderSorterProps extends SorterProps {
-    field: BillHeaderField
-}
 
 export const defaultHeaderSort: RoutingHeaderSorterProps = {field: "RoutingNo", ascending: true};
 export const defaultDetailSort: RoutingDetailSorterProps = {field: "StepNo", ascending: true};
-export const defaultBillSort: BillHeaderSorterProps = {field: "BillNo", ascending: true};
 
+export interface RoutingHeaderTableField extends SortableTableField {
+    field: RoutingHeaderField,
+    render?: (row:RoutingHeader) => ReactElement|Element|string,
+}
 export interface RoutingDetailTableField extends SortableTableField {
     field: RoutingDetailField,
 }

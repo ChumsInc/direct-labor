@@ -1,36 +1,45 @@
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {
-    PillList,
-    tabListCreatedAction,
-    Tab
-} from 'chums-ducks/dist/ducks'
-import {MainTabType} from "../ducks/types";
-import {ErrorBoundary} from "chums-ducks";
+import {useDispatch} from "react-redux";
+import {PillList, tabListCreatedAction, ErrorBoundary} from "chums-ducks";
+import {MainNavProps, MainTab, MainTabMap, MainTabType} from "../types/MainNav";
+import {getPreference, setPreference} from "../utils/preferences";
+import {currentTabStorageKey} from "../utils/localStorageKeys";
 
-const tabSetID = 'dl-main';
-interface MainTab extends Tab {
-    id:MainTabType
+
+
+export const mainTabMap: MainTabMap = {
+    routing: 'Routing',
+    workCenters: 'Work Centers',
+    sageOperation: 'Sage Ops',
+    dlCodes: 'D/L Codes',
+    dlSteps: 'D/L Steps',
+}
+export const mainTabs: MainTab[] = Object.keys(mainTabMap)
+    .map((key: string) => ({id: key, title: mainTabMap[key as MainTabType]} as MainTab));
+
+export const getPreferredTab = (defaultValue: string) => {
+    const tab: MainTabType = getPreference(currentTabStorageKey, defaultValue);
+    if (mainTabMap[tab] === undefined) {
+        return defaultValue;
+    }
+    return tab;
 }
 
-const mainTabs:MainTab[] = [
-    {id: 'routing', title: 'Routing'},
-    {id: 'sage-operations', title: 'Sage Ops'},
-    {id: 'dl-codes', title: 'DL Code'},
-    {id: 'dl-steps', title: 'DL Steps'},
-]
+export const setPreferredTab = (tab: string) => setPreference(currentTabStorageKey, tab);
 
-const MainNav:React.FC = () => {
+const defaultTab = getPreferredTab('');
+
+const MainNav: React.FC<MainNavProps> = ({tabKey}) => {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(tabListCreatedAction(mainTabs, tabSetID));
+        dispatch(tabListCreatedAction(mainTabs, tabKey, defaultTab));
     }, []);
-    // const tabs = useSelector(tabListSelector(tabSetID));
-    // const onSelect = (id:MainTabType) => dispatch(tabSelectedAction(id));
+
+    const onSelectTab = (id?: string) => setPreferredTab(id || '');
 
     return (
         <ErrorBoundary>
-            <PillList tabKey={tabSetID} className="flex-column" />
+            <PillList tabKey={tabKey} className="flex-column" onSelectTab={onSelectTab}/>
         </ErrorBoundary>
     )
 }
