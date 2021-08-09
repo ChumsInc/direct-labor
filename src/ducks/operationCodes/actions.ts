@@ -18,10 +18,12 @@ export const operationCodesURL = (oc?:OperationCode) => `/api/operations/product
 export const filterChangedAction = (filter:string):OperationCodeAction => ({type: searchChanged, payload: {filter}});
 export const workCenterChangedAction = (filter:string):OperationCodeAction => ({type: workCenterChanged, payload: {filter}});
 
-export const selectOperationCodeAction = (oc:OperationCode):OperationCodeThunkAction =>
+export const selectOperationCodeAction = (oc:OperationCode|null):OperationCodeThunkAction =>
     (dispatch, getState) => {
         dispatch({type: operationCodeSelected, payload: {selected: oc}});
-        dispatch(loadOperationCodeAction(oc));
+        if (oc) {
+            dispatch(loadOperationCodeAction(oc));
+        }
     }
 
 export const loadOperationCodesAction = ():OperationCodeThunkAction =>

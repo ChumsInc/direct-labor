@@ -34,7 +34,7 @@ module.exports = merge(common, {
         },
         historyApiFallback: {
             rewrites: [
-                {from: /^apps\/website-buffers/, to: '/'}
+                {from: /^apps\/direct-labor/, to: '/'}
             ]
         }
     },

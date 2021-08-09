@@ -13,6 +13,8 @@ import {loadingSelector, listSelector, selectedWorkCenterSelector, loadedSelecto
 import {defaultWorkCenterSort, WorkCenter, workCenterKey, WorkCenterSorterProps, WorkCenterTableField} from "./types";
 import MultiLineField from "../../components/MultiLineField";
 import numeral from "numeral";
+import {useHistory} from "react-router-dom";
+import {selectedWorkCenterPath} from "../../routerPaths";
 
 const tableKey = 'work-centers-list';
 const fields: WorkCenterTableField[] = [
@@ -48,6 +50,7 @@ const fields: WorkCenterTableField[] = [
 
 const WorkCenterList: React.FC = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const loading = useSelector(loadingSelector);
     const loaded = useSelector(loadedSelector);
     useEffect(() => {
@@ -62,7 +65,7 @@ const WorkCenterList: React.FC = () => {
     const [showFilter, setShowFilter] = useState(true);
     const list = useSelector(listSelector(sort as WorkCenterSorterProps)).filter(wc => !showFilter || wc.isStandardWC);
     const pagedList = useSelector(pagedDataSelector(tableKey, list));
-    const onSelectWorkCenter = (row:WorkCenter) => dispatch(selectWorkCenterAction(row));
+    const onSelectWorkCenter = (row:WorkCenter) => history.push(selectedWorkCenterPath(row.WorkCenterCode));
     const selected = useSelector(selectedWorkCenterSelector);
 
     return (

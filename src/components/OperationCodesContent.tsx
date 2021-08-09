@@ -6,8 +6,15 @@ import OperationCodeFilter from "../ducks/operationCodes/OperationCodeFilter";
 import OperationCodeList from "../ducks/operationCodes/OperationCodeList";
 import {loadOperationCodesAction} from "../ducks/operationCodes/actions";
 import SelectedOperationCode from "../ducks/operationCodes/SelectedOperationCode";
+import {RouteComponentProps} from "react-router-dom";
+import {Helmet} from "react-helmet";
 
-const OperationCodesContent: React.FC = () => {
+interface OperationCodeMatchProps {
+    workCenter?: string,
+    operationCode?: string,
+}
+
+const OperationCodesContent: React.FC<RouteComponentProps> = ({match}) => {
     const dispatch = useDispatch();
     const loaded = useSelector(loadedSelector);
     const loading = useSelector(loadingSelector);
@@ -17,20 +24,26 @@ const OperationCodesContent: React.FC = () => {
         }
     }, [])
 
+    const {workCenter, operationCode} = match.params as OperationCodeMatchProps;
     return (
-        <div className="row g-3">
-            <div className="col-6">
-                <ErrorBoundary>
-                    <OperationCodeFilter/>
-                    <OperationCodeList tableKey={'operation-code-list'}/>
-                </ErrorBoundary>
+        <>
+            <Helmet>
+                <title>D/L OpCodes</title>
+            </Helmet>
+            <div className="row g-3">
+                <div className="col-6">
+                    <ErrorBoundary>
+                        <OperationCodeFilter/>
+                        <OperationCodeList tableKey={'operation-code-list'}/>
+                    </ErrorBoundary>
+                </div>
+                <div className="col-6">
+                    <ErrorBoundary>
+                        <SelectedOperationCode workCenter={workCenter} operationCode={operationCode}/>
+                    </ErrorBoundary>
+                </div>
             </div>
-            <div className="col-6">
-                <ErrorBoundary>
-                    <SelectedOperationCode />
-                </ErrorBoundary>
-            </div>
-        </div>
+        </>
     )
 }
 export default OperationCodesContent;

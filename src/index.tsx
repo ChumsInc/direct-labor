@@ -1,8 +1,8 @@
 import React from 'react';
-import { render } from 'react-dom';
+import {render} from 'react-dom';
 import {Provider} from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {applyMiddleware, compose, createStore} from 'redux';
+import {HashRouter} from 'react-router-dom';
 import thunk from 'redux-thunk';
 import reducer from './ducks';
 import App from './components/App';
@@ -17,10 +17,13 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
 
+// const baseName = '/apps/direct-labor';
+const baseName = '';
+
 render(
     <Provider store={store}>
-        <BrowserRouter basename="/apps/direct-labor/">
-            <Route component={App} />
-        </BrowserRouter>
+        <HashRouter>
+            <App/>
+        </HashRouter>
     </Provider>, document.getElementById('app')
 );

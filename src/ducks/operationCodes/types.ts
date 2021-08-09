@@ -4,6 +4,7 @@ import {RootState} from "../index";
 import {GLAccount} from "../glAccounts";
 import {WorkCenter, WorkCenterSorterProps} from "../workCenters/types";
 import {RoutingDetail} from "../routing";
+import {ActionInterfacePayload, defaultListState, ListState} from "../types";
 
 export interface OperationCode {
     WorkCenter: string,
@@ -21,16 +22,14 @@ export interface OperationCode {
 
 export type OperationCodeField = keyof OperationCode;
 
+export interface OperationCodeActionPayload extends ActionInterfacePayload {
+    list?: OperationCode[],
+    selected?: OperationCode|null,
+    accounts?: GLAccount[],
+    routings?: RoutingDetail[],
+}
 export interface OperationCodeAction extends ActionInterface {
-    payload?: {
-        list?: OperationCode[],
-        selected?: OperationCode|null,
-        accounts?: GLAccount[],
-        routings?: RoutingDetail[],
-        filter?: string,
-        error?: Error,
-        context?: string,
-    }
+    payload?: OperationCodeActionPayload,
 }
 export interface OperationCodeThunkAction extends ThunkAction<any, RootState, unknown, OperationCodeAction> {}
 
@@ -55,22 +54,17 @@ export const operationCodeSorter = ({field, ascending}: OperationCodeSorterProps
         ) * (ascending ? 1 : -1);
     };
 
-export interface OperationCodeState {
+export interface OperationCodeState extends ListState {
     list: OperationCode[],
     selected: OperationCode|null,
     whereUsed: string[],
     filterWC: string,
-    search: string,
-    loading: boolean,
-    loaded: boolean,
 }
 
 export const defaultState:OperationCodeState = {
+    ...defaultListState,
     list: [],
     selected: null,
     whereUsed: [],
     filterWC: '',
-    search: '',
-    loading: false,
-    loaded: false,
 }

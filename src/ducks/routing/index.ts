@@ -69,6 +69,10 @@ export const filteredlistSelector = (sort: RoutingHeaderSorterProps) => (state: 
 export const loadingSelector = (state: RootState): boolean => state.routing.loading;
 export const loadedSelector = (state: RootState): boolean => state.routing.loaded;
 export const selectedSelector = (state: RootState): SelectedRoutingState => state.routing.selected;
+export const routingHeaderSelector = (routingNo:string) => (state:RootState): RoutingHeader|null => {
+    const [header] = state.routing.list.filter(r => r.RoutingNo === routingNo);
+    return header || null;
+}
 export const selectedHeaderSelector = (state: RootState): RoutingHeader | null => state.routing.selected.header;
 
 export const detailListSelector = (state:RootState):RoutingDetail[] => state.routing.detailList;

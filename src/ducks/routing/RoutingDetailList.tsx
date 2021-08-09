@@ -1,8 +1,10 @@
 import React from "react";
 import {RoutingDetail, RoutingDetailTableField} from "./types";
+import {Link} from 'react-router-dom';
 import {SortableTable} from "chums-ducks";
 import {routingDetailKey} from "./index";
 import numeral from "numeral";
+import {selectedRoutingPath} from "../../routerPaths";
 
 export interface RoutingDetailListProps {
     list: RoutingDetail[],
@@ -11,7 +13,7 @@ export interface RoutingDetailListProps {
 }
 
 const detailTableFields:RoutingDetailTableField[] = [
-    {field: 'RoutingNo', title: 'Routing No', sortable: true},
+    {field: 'RoutingNo', title: 'Routing No', sortable: true, render: ({RoutingNo}:RoutingDetail) => (<Link to={selectedRoutingPath(RoutingNo)}>{RoutingNo}</Link>)},
     {field: 'StepNo', title: 'Step', sortable: true},
     {field: 'StepDescription', title: 'Description', sortable: true},
     {field: 'WorkCenter', title: 'Sage W/C', sortable: true},

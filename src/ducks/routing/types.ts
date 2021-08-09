@@ -3,6 +3,7 @@ import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
 import {BillHeader, BillOptionHeader} from "../billMaterials/types";
 import {ReactElement} from "react";
+import {ActionInterfacePayload, defaultListState, ListState} from "../types";
 
 export interface RoutingHeader {
     RoutingNo: string,
@@ -24,19 +25,17 @@ export interface RoutingDetail {
     PlannedPieceCostDivisor: number,
 }
 
+export interface RoutingPayload extends ActionInterfacePayload {
+    list?: RoutingHeader[],
+    routing?: {
+        header: RoutingHeader|null,
+        detail?: RoutingDetail[],
+        whereUsed?: BillHeader[],
+        whereUsedInOptions?: BillOptionHeader[],
+    },
+}
 export interface RoutingAction extends ActionInterface {
-    payload?: {
-        list?: RoutingHeader[],
-        routing?: {
-            header: RoutingHeader,
-            detail?: RoutingDetail[],
-            whereUsed?: BillHeader[],
-            whereUsedInOptions?: BillOptionHeader[],
-        },
-        filter?: string,
-        error?: Error,
-        context?: string,
-    }
+    payload?: RoutingPayload,
 }
 
 export interface RoutingThunkAction extends ThunkAction<any, RootState, unknown, RoutingAction> {
@@ -48,27 +47,21 @@ export interface SelectedRoutingState {
     loading: boolean,
 }
 
-export interface RoutingState {
+export interface RoutingState extends ListState {
     list: RoutingHeader[],
     selected: SelectedRoutingState,
     detailList: RoutingDetail[],
-    loading: boolean,
-    loaded: boolean,
-    filter: string,
     filterActive: boolean,
 }
 
 export const defaultState: RoutingState = {
-    list: [],
+    ...defaultListState,
     selected: {
         header: null,
         detail: [],
         loading: false,
     },
     detailList: [],
-    loading: false,
-    loaded: false,
-    filter: '',
     filterActive: true,
 }
 

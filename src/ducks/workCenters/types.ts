@@ -1,6 +1,7 @@
 import {ActionInterface, SortableTableField, SorterProps} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
+import {ActionInterfacePayload, defaultListState, ListState} from "../types";
 
 
 export interface WorkCenter {
@@ -18,33 +19,27 @@ export interface WorkCenter {
 
 export type WorkCenterField = keyof WorkCenter;
 
-export interface WorkCenterAction extends ActionInterface {
-    payload?: {
-        list?: WorkCenter[],
-        selected?: WorkCenter | null,
-        rate?: number,
-        error?: Error,
-        context?: string,
-    }
+export interface WorkCenterPayload extends ActionInterfacePayload {
+    list?: WorkCenter[],
+    selected?: WorkCenter | null,
+    rate?: number,
 }
-
+export interface WorkCenterAction extends ActionInterface {
+    payload?: WorkCenterPayload,
+}
 
 export interface WorkCenterThunkAction extends ThunkAction<any, RootState, unknown, WorkCenterAction> {}
 
-export interface WorkCenterState {
+export interface WorkCenterState extends ListState {
     list: WorkCenter[],
     selected: WorkCenter|null,
-    loading: boolean,
-    loaded: boolean,
     saving: boolean,
 }
 
 export const defaultState:WorkCenterState = {
-    list: [],
-    selected: null,
-    loading: false,
-    loaded: false,
-    saving: false
+    ...defaultListState,
+    saving: false,
+    filter: '',
 }
 
 export interface WorkCenterSorterProps extends SorterProps {

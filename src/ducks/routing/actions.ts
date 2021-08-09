@@ -18,12 +18,13 @@ const routingListUrl = (routingNo?: string) => `/api/operations/production/wo/ch
 export const filterChangedAction = (filter:string):RoutingAction => ({type: filterChanged, payload: {filter}});
 export const toggleFilterActiveAction = () => ({type: filterActiveChanged});
 
-export const selectRoutingAction = (routingHeader: RoutingHeader): RoutingThunkAction =>
+export const selectRoutingAction = (routingHeader: RoutingHeader|null): RoutingThunkAction =>
     async (dispatch, getState) => {
         try {
             dispatch({type: routingSelected, payload: {routing: {header: routingHeader}}});
-            dispatch(fetchRoutingAction(routingHeader));
-
+            if (routingHeader) {
+                dispatch(fetchRoutingAction(routingHeader));
+            }
         } catch (err) {
             console.log("selectRoutingAction()", err.message);
             return Promise.reject(err);

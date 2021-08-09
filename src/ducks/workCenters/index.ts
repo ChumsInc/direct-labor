@@ -33,6 +33,13 @@ export const loadingSelector = (state:RootState):boolean => state.workCenters.lo
 export const loadedSelector = (state:RootState):boolean => state.workCenters.loaded;
 export const savingSelector = (state:RootState):boolean => state.workCenters.saving;
 export const selectedWorkCenterSelector = (state:RootState):WorkCenter|null => state.workCenters.selected;
+export const workCenterSelector = (workCenter?:string) => (state:RootState) => {
+    if (!workCenter) {
+        return null;
+    }
+    const [wc] = state.workCenters.list.filter(wc => wc.WorkCenterCode === workCenter);
+    return wc || null;
+}
 
 
 

@@ -1,25 +1,32 @@
 import React, {useEffect} from "react";
 import {useDispatch} from "react-redux";
-import {PillList, tabListCreatedAction, ErrorBoundary} from "chums-ducks";
-import {MainNavProps, MainTab, MainTabMap, MainTabType} from "../types/MainNav";
+import {ErrorBoundary, PillRouterList, Tab, tabListCreatedAction} from "chums-ducks";
 import {getPreference, setPreference} from "../utils/preferences";
 import {currentTabStorageKey} from "../utils/localStorageKeys";
+import {
+    operationCodesPath,
+    operationCodesNavId,
+    routingPath,
+    routingNavId,
+    workCentersPath,
+    workCentersNavId, dlCodesNavId, dlCodesPath
+} from "../routerPaths";
 
-
-
-export const mainTabMap: MainTabMap = {
-    routing: 'Routing',
-    workCenters: 'Work Centers',
-    sageOperation: 'Sage Ops',
-    dlCodes: 'D/L Codes',
-    dlSteps: 'D/L Steps',
+export interface MainNavProps {
+    tabKey: string,
 }
-export const mainTabs: MainTab[] = Object.keys(mainTabMap)
-    .map((key: string) => ({id: key, title: mainTabMap[key as MainTabType]} as MainTab));
+
+export const mainTabs: Tab[] = [
+    {id: routingNavId, title: 'Routing', to: routingPath},
+    {id: workCentersNavId, title: 'Work Centers', to: workCentersPath},
+    {id: operationCodesNavId, title: 'Sage Ops', to: operationCodesPath},
+    {id: dlCodesNavId, title: 'D/L Codes', to: dlCodesPath},
+    {id: 'dlSteps', title: 'D/L Steps', to: '/dlSteps'},
+]
 
 export const getPreferredTab = (defaultValue: string) => {
-    const tab: MainTabType = getPreference(currentTabStorageKey, defaultValue);
-    if (mainTabMap[tab] === undefined) {
+    const tab: string = getPreference(currentTabStorageKey, defaultValue);
+    if (!mainTabs.filter(t => t.id === tab).length) {
         return defaultValue;
     }
     return tab;
@@ -39,7 +46,7 @@ const MainNav: React.FC<MainNavProps> = ({tabKey}) => {
 
     return (
         <ErrorBoundary>
-            <PillList tabKey={tabKey} className="flex-column" onSelectTab={onSelectTab}/>
+            <PillRouterList tabKey={tabKey} className="flex-column" onSelectTab={onSelectTab}/>
         </ErrorBoundary>
     )
 }

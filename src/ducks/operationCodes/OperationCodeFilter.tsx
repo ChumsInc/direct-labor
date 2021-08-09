@@ -1,13 +1,12 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {filterWorkCenterSelector, loadingSelector, searchSelector} from "./index";
+import {filterWorkCenterSelector, loadingSelector, filterSelector} from "./index";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {WorkCenter} from "../workCenters/types";
 import {filterChangedAction, loadOperationCodesAction, workCenterChangedAction} from "./actions";
 import {Input, SpinnerButton} from "chums-ducks";
 import {getPreference, setPreference} from "../../utils/preferences";
 import {currentOCWorkCenterKey} from "../../utils/localStorageKeys";
-
 
 
 const OperationCodeFilter: React.FC = () => {
@@ -17,7 +16,8 @@ const OperationCodeFilter: React.FC = () => {
         dispatch(workCenterChangedAction(defaultWorkCenter));
     }, [])
 
-    const search = useSelector(searchSelector);
+
+    const search = useSelector(filterSelector);
     const workCenterFilter = useSelector(filterWorkCenterSelector);
     const loading = useSelector(loadingSelector);
 
@@ -25,6 +25,7 @@ const OperationCodeFilter: React.FC = () => {
         dispatch(workCenterChangedAction(wc?.WorkCenterCode || ''));
         setPreference(currentOCWorkCenterKey, wc?.WorkCenterCode || '');
     }
+
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(filterChangedAction(ev.target.value || ''));
     const onReload = () => dispatch(loadOperationCodesAction());
 

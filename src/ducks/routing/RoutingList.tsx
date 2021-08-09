@@ -21,6 +21,8 @@ import {RoutingHeader} from "./types";
 import numeral from "numeral";
 import {fetchRoutingsAction, selectRoutingAction} from "./actions";
 import classNames from "classnames";
+import {useHistory} from "react-router-dom";
+import {selectedRoutingPath} from "../../routerPaths";
 
 const tableId = 'routing-list'
 
@@ -41,6 +43,7 @@ const rowClassName = (row:RoutingHeader) => classNames({'text-danger': !(row.Bil
 
 const RoutingList: React.FC = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     useEffect(() => {
         dispatch(tableAddedAction({key: tableId, field: 'RoutingNo', ascending: true}));
         dispatch(addPageSetAction({key: tableId, rowsPerPage: 25, current: 1}))
@@ -55,7 +58,11 @@ const RoutingList: React.FC = () => {
             dispatch(fetchRoutingsAction());
         }
     }, []);
-    const onSelect = (header: RoutingHeader) => dispatch(selectRoutingAction(header));
+
+    const onSelect = (header: RoutingHeader) => {
+        dispatch(selectRoutingAction(header));
+        history.push(selectedRoutingPath(header.RoutingNo));
+    }
 
     const list = useSelector(listSelector(sort as RoutingHeaderSorterProps));
     const filteredList = useSelector(filteredlistSelector(sort as RoutingHeaderSorterProps));

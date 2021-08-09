@@ -9,8 +9,7 @@ import {
     OperationCodeSorterProps
 } from "./types";
 import {RootState} from "../index";
-import {defaultDetailSort, detailListSelector, routingDetailKey, routingDetailSorter} from "../routing";
-import {createSelector} from "reselect";
+import {routingDetailKey} from "../routing";
 
 
 export const loadOCListRequested = 'operationCodes/loadListRequested';
@@ -26,10 +25,10 @@ export const searchChanged = 'operationCodes/searchChanged';
 export const countRecordsSelector = (state: RootState) => state.operationCodes.list.length;
 
 export const listSelector = (sort: OperationCodeSorterProps) => (state: RootState) => {
-    const {filterWC, search, list} = state.operationCodes;
+    const {filterWC, filter, list} = state.operationCodes;
     let searchRegex = /^/;
     try {
-        searchRegex = new RegExp(search, 'i');
+        searchRegex = new RegExp(filter, 'i');
     } catch (err) {
     }
     return list
@@ -39,10 +38,10 @@ export const listSelector = (sort: OperationCodeSorterProps) => (state: RootStat
 }
 
 export const filterWorkCenterSelector = (state: RootState): string => state.operationCodes.filterWC;
-export const searchSelector = (state: RootState): string => state.operationCodes.search;
+export const filterSelector = (state: RootState): string => state.operationCodes.filter;
 export const searchRegexSelector = (state: RootState): RegExp => {
     try {
-        return new RegExp(state.operationCodes.search, 'i');
+        return new RegExp(state.operationCodes.filter, 'i');
     } catch (err) {
         return /^/;
     }
@@ -51,7 +50,15 @@ export const searchRegexSelector = (state: RootState): RegExp => {
 export const selectedOCSelector = (state: RootState): OperationCode | null => state.operationCodes.selected;
 export const loadingSelector = (state: RootState): boolean => state.operationCodes.loading;
 export const loadedSelector = (state: RootState): boolean => state.operationCodes.loaded;
-export const whereUsedSelector = (state:RootState):string[] => state.operationCodes.whereUsed;
+export const whereUsedSelector = (state: RootState): string[] => state.operationCodes.whereUsed;
+export const operationCodeSelector = (workCenter?: string, operationCode?: string) =>
+    (state: RootState): OperationCode | null => {
+        if (!workCenter || !operationCode) {
+            return null;
+        }
+        const [oc] = state.operationCodes.list.filter(oc => oc.WorkCenter === workCenter && oc.OperationCode === operationCode);
+        return oc || null;
+    }
 
 const listReducer = (state: OperationCode[] = defaultState.list, action: OperationCodeAction): OperationCode[] => {
     const {type, payload} = action;
@@ -110,7 +117,7 @@ const filterWCReducer = (state: string = defaultState.filterWC, action: Operatio
     }
 }
 
-const searchReducer = (state: string = defaultState.search, action: OperationCodeAction): string => {
+const filterReducer = (state: string = defaultState.filter, action: OperationCodeAction): string => {
     const {type, payload} = action;
     switch (type) {
     case searchChanged:
@@ -151,7 +158,7 @@ export default combineReducers({
     selected: selectedReducer,
     whereUsed: whereUsedReducer,
     filterWC: filterWCReducer,
-    search: searchReducer,
+    filter: filterReducer,
     loading: loadingReducer,
     loaded: loadedReducer,
 })

@@ -1,16 +1,37 @@
-import React from 'react';
-import {useSelector} from "react-redux";
-import {selectedOCSelector, whereUsedSelector} from "./index";
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {loadedSelector, operationCodeSelector, selectedOCSelector, whereUsedSelector} from "./index";
 import {Alert, FormColumn} from "chums-ducks";
 import GLAccountElement from "../glAccounts/GLAccountElement";
 import RoutingDetailList from "../routing/RoutingDetailList";
 import {whereUsedDetailSelector} from "../routing";
 import numeral from "numeral";
+import {useHistory} from "react-router-dom";
+import {operationCodeKey} from "./types";
+import {selectOperationCodeAction} from "./actions";
+import {Helmet} from "react-helmet";
 
-const SelectedOperationCode: React.FC = () => {
+export interface SelectedOperationCodeProps {
+    workCenter?: string,
+    operationCode?: string
+}
+const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter, operationCode}) => {
+    const dispatch = useDispatch();
+    const history = useHistory();
     const selected = useSelector(selectedOCSelector);
     const whereUsedKeys = useSelector(whereUsedSelector);
     const whereUsed = useSelector(whereUsedDetailSelector(whereUsedKeys));
+    const navOperationCode = useSelector(operationCodeSelector(workCenter, operationCode));
+    const loaded = useSelector(loadedSelector);
+
+    useEffect(() => {
+        if (navOperationCode && (!selected || operationCodeKey(selected) !== operationCodeKey(navOperationCode))) {
+            dispatch(selectOperationCodeAction(navOperationCode));
+        } else if (!operationCode) {
+            dispatch(selectOperationCodeAction(null));
+        }
+    }, [loaded, workCenter, operationCode])
+
     if (!selected) {
         return (<Alert color="info">Select an Operation Code</Alert>)
     }
@@ -29,6 +50,9 @@ const SelectedOperationCode: React.FC = () => {
     } = selected;
     return (
         <div>
+            <Helmet>
+                <title>D/L OpCode: {WorkCenter}/{OperationCode}</title>
+            </Helmet>
             <FormColumn label={"Work Center"}>
                 <h3>{WorkCenter}</h3>
             </FormColumn>
