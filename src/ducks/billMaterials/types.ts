@@ -27,6 +27,10 @@ export interface BillHeader {
     updatedByUser: string,
 }
 
+export interface BillHeaderList {
+    [key:string]: BillHeader
+}
+
 export interface BillOptionHeader {
     BillNo: string,
     Revision: string,
@@ -40,6 +44,10 @@ export interface BillOptionHeader {
     OptionPrice: number,
     DateUpdated: string,
     updatedByUser: string,
+}
+
+export interface BillOptionHeaderList {
+    [key:string]: BillOptionHeader
 }
 
 export type BillHeaderField = keyof BillHeader;
@@ -68,13 +76,13 @@ export interface BillOptionHeaderTableField extends SortableTableField {
 }
 
 export interface BillMaterialsState {
-    headerList: BillHeader[],
-    optionHeaderList: BillOptionHeader[],
+    headerList: BillHeaderList,
+    optionHeaderList: BillOptionHeaderList,
 }
 
 export const defaultState:BillMaterialsState = {
-    headerList: [],
-    optionHeaderList: [],
+    headerList: {},
+    optionHeaderList: {},
 }
 
 export const billHeaderSorter = ({field, ascending}: BillHeaderSorterProps) =>

@@ -5,13 +5,20 @@ import {
     loadListFailed,
     loadListRequested,
     loadListSucceeded, loadRoutingFailed, loadRoutingRequested,
-    loadRoutingSucceeded, RoutingAction,
+    loadRoutingSucceeded, RoutingAction, routingHeaderKey, RoutingHeaderList,
     routingSelected,
     RoutingThunkAction,
     selectedLoadingSelector
 } from "./index";
 import {fetchJSON} from 'chums-ducks';
 import {RoutingHeader} from "./types";
+import {
+    BillHeader,
+    billHeaderKey,
+    BillHeaderList, BillOptionHeader,
+    billOptionHeaderKey,
+    BillOptionHeaderList
+} from "../billMaterials/types";
 
 const routingListUrl = (routingNo?: string) => `/api/operations/production/wo/chums/routings/${encodeURIComponent(routingNo || '')}`;
 
@@ -47,11 +54,19 @@ export const fetchRoutingAction = (header: RoutingHeader): RoutingThunkAction =>
                 whereUsed,
                 whereUsedOption
             } = await fetchJSON(url, {cache: 'no-cache'});
+            const whereUsedList:BillHeaderList = {};
+            whereUsed.forEach((row:BillHeader) => {
+                whereUsedList[billHeaderKey(row)] = row;
+            });
+            const whereUsedOptionList:BillOptionHeaderList = {};
+            whereUsedOption.forEach((row:BillOptionHeader) => {
+                whereUsedOption[billOptionHeaderKey(row)] = row;
+            });
             const routing = {
                 header: routingHeader[0] || null,
                 detail: routingDetail || [],
-                whereUsed: whereUsed || [],
-                whereUsedInOptions: whereUsedOption || []
+                whereUsed: whereUsedList,
+                whereUsedInOptions: whereUsedOptionList,
             };
             dispatch({type: loadRoutingSucceeded, payload: {routing}});
         } catch (err) {
@@ -71,7 +86,11 @@ export const fetchRoutingsAction = (): RoutingThunkAction =>
             dispatch({type: loadListRequested});
             const url = routingListUrl();
             const {routingHeader} = await fetchJSON(url, {cache: 'no-cache'});
-            dispatch({type: loadListSucceeded, payload: {list: routingHeader}});
+            const list:RoutingHeaderList = {};
+            routingHeader.forEach((routing:RoutingHeader) => {
+                list[routing.RoutingNo] = routing;
+            })
+            dispatch({type: loadListSucceeded, payload: {list}});
         } catch (err) {
             console.log("fetchRoutingsAction()", err.message);
             dispatch({type: loadListFailed, payload: {error: err, context: loadListRequested}})

@@ -1,7 +1,7 @@
 import {ActionInterface, SortableTableField, SorterProps} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
-import {BillHeader, BillOptionHeader} from "../billMaterials/types";
+import {BillHeader, BillHeaderList, BillOptionHeader, BillOptionHeaderList} from "../billMaterials/types";
 import {ReactElement} from "react";
 import {ActionInterfacePayload, defaultListState, ListState} from "../types";
 
@@ -11,6 +11,10 @@ export interface RoutingHeader {
     StandardRateTotal: number,
     BillStatus: boolean,
     ItemStatus: boolean,
+}
+
+export interface RoutingHeaderList {
+    [key:string]: RoutingHeader,
 }
 
 export interface RoutingDetail {
@@ -26,12 +30,12 @@ export interface RoutingDetail {
 }
 
 export interface RoutingPayload extends ActionInterfacePayload {
-    list?: RoutingHeader[],
+    list?: RoutingHeaderList,
     routing?: {
         header: RoutingHeader|null,
         detail?: RoutingDetail[],
-        whereUsed?: BillHeader[],
-        whereUsedInOptions?: BillOptionHeader[],
+        whereUsed?: BillHeaderList,
+        whereUsedInOptions?: BillOptionHeaderList,
     },
 }
 export interface RoutingAction extends ActionInterface {
@@ -48,7 +52,7 @@ export interface SelectedRoutingState {
 }
 
 export interface RoutingState extends ListState {
-    list: RoutingHeader[],
+    list: RoutingHeaderList,
     selected: SelectedRoutingState,
     detailList: RoutingDetail[],
     filterActive: boolean,
@@ -56,6 +60,7 @@ export interface RoutingState extends ListState {
 
 export const defaultState: RoutingState = {
     ...defaultListState,
+    list: {},
     selected: {
         header: null,
         detail: [],

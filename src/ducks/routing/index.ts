@@ -5,7 +5,7 @@ import {
     RoutingAction,
     RoutingDetail,
     RoutingDetailSorterProps,
-    RoutingHeader,
+    RoutingHeader, RoutingHeaderList,
     RoutingHeaderSorterProps,
     SelectedRoutingState
 } from "./types";
@@ -49,7 +49,7 @@ export const routingDetailSorter = ({field, ascending}: RoutingDetailSorterProps
 
 
 export const listSelector = (sort: RoutingHeaderSorterProps) => (state: RootState): RoutingHeader[] => {
-    return state.routing.list.sort(routingHeaderSorter(sort));
+    return Object.values(state.routing.list).sort(routingHeaderSorter(sort));
 }
 
 export const filteredlistSelector = (sort: RoutingHeaderSorterProps) => (state: RootState): RoutingHeader[] => {
@@ -60,7 +60,7 @@ export const filteredlistSelector = (sort: RoutingHeaderSorterProps) => (state: 
     }
     const filterActive = state.routing.filterActive;
 
-    return state.routing.list
+    return Object.values(state.routing.list)
         .filter(row => !filterActive || (row.BillStatus && row.ItemStatus))
         .filter(row => filter.test(row.RoutingNo) || filter.test(row.StepDescription))
         .sort(routingHeaderSorter(sort));
@@ -70,8 +70,7 @@ export const loadingSelector = (state: RootState): boolean => state.routing.load
 export const loadedSelector = (state: RootState): boolean => state.routing.loaded;
 export const selectedSelector = (state: RootState): SelectedRoutingState => state.routing.selected;
 export const routingHeaderSelector = (routingNo:string) => (state:RootState): RoutingHeader|null => {
-    const [header] = state.routing.list.filter(r => r.RoutingNo === routingNo);
-    return header || null;
+    return state.routing.list[routingNo] || null;
 }
 export const selectedHeaderSelector = (state: RootState): RoutingHeader | null => state.routing.selected.header;
 
@@ -87,11 +86,11 @@ export const selectedLoadingSelector = (state: RootState): boolean => state.rout
 export const filterSelector = (state: RootState): string => state.routing.filter;
 export const filterActiveSelector = (state: RootState): boolean => state.routing.filterActive;
 
-const listReducer = (state: RoutingHeader[] = defaultState.list, action: RoutingAction): RoutingHeader[] => {
+const listReducer = (state: RoutingHeaderList = defaultState.list, action: RoutingAction): RoutingHeaderList => {
     const {type, payload} = action;
     switch (type) {
     case loadListSucceeded:
-        return (payload?.list || []).sort(routingHeaderSorter(defaultHeaderSort));
+        return payload?.list || {};
     default:
         return state;
     }

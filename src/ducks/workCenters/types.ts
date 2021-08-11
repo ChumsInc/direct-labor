@@ -17,10 +17,13 @@ export interface WorkCenter {
     changed?: boolean,
 }
 
+export interface WorkCenterList {
+    [key:string]: WorkCenter
+}
 export type WorkCenterField = keyof WorkCenter;
 
 export interface WorkCenterPayload extends ActionInterfacePayload {
-    list?: WorkCenter[],
+    list?: WorkCenterList,
     selected?: WorkCenter | null,
     rate?: number,
 }
@@ -31,13 +34,14 @@ export interface WorkCenterAction extends ActionInterface {
 export interface WorkCenterThunkAction extends ThunkAction<any, RootState, unknown, WorkCenterAction> {}
 
 export interface WorkCenterState extends ListState {
-    list: WorkCenter[],
+    list: WorkCenterList,
     selected: WorkCenter|null,
     saving: boolean,
 }
 
 export const defaultState:WorkCenterState = {
     ...defaultListState,
+    list: {},
     saving: false,
     filter: '',
 }

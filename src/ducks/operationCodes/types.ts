@@ -20,10 +20,14 @@ export interface OperationCode {
     FixedOvhdPercentOfCost: number,
 }
 
+export interface OperationCodeList {
+    [key:string]: OperationCode,
+}
+
 export type OperationCodeField = keyof OperationCode;
 
 export interface OperationCodeActionPayload extends ActionInterfacePayload {
-    list?: OperationCode[],
+    list?: OperationCodeList,
     selected?: OperationCode|null,
     accounts?: GLAccount[],
     routings?: RoutingDetail[],
@@ -42,6 +46,7 @@ export interface OperationCodeTableField extends SortableTableField {
 }
 
 export const operationCodeKey = (oc?:OperationCode|null) => !!oc ? [oc.WorkCenter, oc.OperationCode].join(':') : '';
+export const operationCodeSearchKey = ({workCenter, operationCode}:{workCenter:string, operationCode:string}) => [workCenter, operationCode].join(':');
 
 export const operationCodeDefaultSort:OperationCodeSorterProps = {field: 'WorkCenter', ascending:true};
 
@@ -55,7 +60,7 @@ export const operationCodeSorter = ({field, ascending}: OperationCodeSorterProps
     };
 
 export interface OperationCodeState extends ListState {
-    list: OperationCode[],
+    list: OperationCodeList,
     selected: OperationCode|null,
     whereUsed: string[],
     filterWC: string,
@@ -63,7 +68,7 @@ export interface OperationCodeState extends ListState {
 
 export const defaultState:OperationCodeState = {
     ...defaultListState,
-    list: [],
+    list: {},
     selected: null,
     whereUsed: [],
     filterWC: '',

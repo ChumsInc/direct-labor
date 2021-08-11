@@ -4,12 +4,13 @@ import {
     OperationCode,
     OperationCodeAction,
     operationCodeDefaultSort,
-    operationCodeKey,
+    operationCodeKey, OperationCodeList, operationCodeSearchKey,
     operationCodeSorter,
     OperationCodeSorterProps
 } from "./types";
 import {RootState} from "../index";
 import {routingDetailKey} from "../routing";
+import {workCenterKey} from "../workCenters/types";
 
 
 export const loadOCListRequested = 'operationCodes/loadListRequested';
@@ -22,16 +23,16 @@ export const operationCodeSelected = 'operationCodes/codeSelected';
 export const workCenterChanged = 'operationCodes/workCenterChanged';
 export const searchChanged = 'operationCodes/searchChanged';
 
-export const countRecordsSelector = (state: RootState) => state.operationCodes.list.length;
+export const countRecordsSelector = (state: RootState) => Object.keys(state.operationCodes.list).length;
 
-export const listSelector = (sort: OperationCodeSorterProps) => (state: RootState) => {
+export const listSelector = (sort: OperationCodeSorterProps) => (state: RootState):OperationCode[] => {
     const {filterWC, filter, list} = state.operationCodes;
     let searchRegex = /^/;
     try {
         searchRegex = new RegExp(filter, 'i');
     } catch (err) {
     }
-    return list
+    return Object.values(list)
         .filter(oc => !filterWC || oc.WorkCenter === filterWC)
         .filter(oc => searchRegex.test(oc.OperationCode) || searchRegex.test(oc.OperationDescription))
         .sort(operationCodeSorter(sort));
@@ -56,22 +57,21 @@ export const operationCodeSelector = (workCenter?: string, operationCode?: strin
         if (!workCenter || !operationCode) {
             return null;
         }
-        const [oc] = state.operationCodes.list.filter(oc => oc.WorkCenter === workCenter && oc.OperationCode === operationCode);
-        return oc || null;
+        return state.operationCodes.list[operationCodeSearchKey({workCenter, operationCode})] || null;
     }
 
-const listReducer = (state: OperationCode[] = defaultState.list, action: OperationCodeAction): OperationCode[] => {
+const listReducer = (state: OperationCodeList = defaultState.list, action: OperationCodeAction): OperationCodeList => {
     const {type, payload} = action;
     switch (type) {
     case loadOCListSucceeded:
-        return (payload?.list || []).sort(operationCodeSorter(operationCodeDefaultSort));
+        return payload?.list || {};
     case loadOCSucceeded:
         if (payload?.selected) {
             const key = operationCodeKey(payload.selected)
-            return [
-                ...state.filter(oc => operationCodeKey(oc) !== key),
-                {...payload.selected},
-            ].sort(operationCodeSorter(operationCodeDefaultSort));
+            return {
+                ...state,
+                [key]: payload.selected,
+            }
         }
         return state;
     default:

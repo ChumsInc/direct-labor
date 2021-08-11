@@ -1,9 +1,9 @@
 import {combineReducers} from "redux";
 import {
-    BillHeader,
+    BillHeader, BillHeaderList,
     billHeaderSorter,
     BillHeaderSorterProps,
-    BillOptionHeader, billOptionHeaderSorter,
+    BillOptionHeader, BillOptionHeaderList, billOptionHeaderSorter,
     BillOptionHeaderSorterProps,
     defaultState
 } from "./types";
@@ -12,32 +12,32 @@ import {loadRoutingSucceeded, RoutingAction, routingSelected} from "../routing";
 
 
 export const billHeaderSelector = (sort: BillHeaderSorterProps) =>
-    (state: RootState): BillHeader[] => state.billMaterials.headerList.sort(billHeaderSorter(sort));
+    (state: RootState): BillHeader[] => Object.values(state.billMaterials.headerList).sort(billHeaderSorter(sort));
 
 export const billOptionHeaderSelector = (sort: BillOptionHeaderSorterProps) =>
-    (state: RootState): BillOptionHeader[] => state.billMaterials.headerOptionList.sort(billOptionHeaderSorter(sort));
+    (state: RootState): BillOptionHeader[] => Object.values(state.billMaterials.headerOptionList).sort(billOptionHeaderSorter(sort));
 
 
-const headerListReducer = (state: BillHeader[] = defaultState.headerList, action: RoutingAction): BillHeader[] => {
+const headerListReducer = (state: BillHeaderList = defaultState.headerList, action: RoutingAction): BillHeaderList => {
     const {type, payload} = action;
     switch (type) {
     case routingSelected:
-        return [];
+        return {};
     case loadRoutingSucceeded:
-        return payload?.routing?.whereUsed || [];
+        return payload?.routing?.whereUsed || {};
     default:
         return state;
     }
 }
 
-const headerOptionListReducer = (state: BillOptionHeader[] = defaultState.optionHeaderList,
-                                           action: RoutingAction): BillOptionHeader[] => {
+const headerOptionListReducer = (state: BillOptionHeaderList = defaultState.optionHeaderList,
+                                           action: RoutingAction): BillOptionHeaderList => {
     const {type, payload} = action;
     switch (type) {
     case routingSelected:
-        return [];
+        return {};
     case loadRoutingSucceeded:
-        return payload?.routing?.whereUsedInOptions || [];
+        return payload?.routing?.whereUsedInOptions || {};
     default:
         return state;
     }

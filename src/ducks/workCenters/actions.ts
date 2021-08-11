@@ -1,4 +1,4 @@
-import {WorkCenter, WorkCenterThunkAction,} from "./types";
+import {WorkCenter, WorkCenterList, WorkCenterThunkAction,} from "./types";
 import {
     changeWorkCenter,
     loadingSelector,
@@ -25,7 +25,11 @@ export const loadWorkCentersAction = ():WorkCenterThunkAction =>
             }
             dispatch({type: loadWorkCentersRequested});
             const {workCenters} = await fetchJSON(workCenterURL(), {cache: 'no-cache'});
-            dispatch({type: loadWorkCentersSucceeded, payload: {list: workCenters}})
+            const list:WorkCenterList = {};
+            workCenters.forEach((wc:WorkCenter) => {
+                list[wc.WorkCenterCode] = wc;
+            })
+            dispatch({type: loadWorkCentersSucceeded, payload: {list}})
         } catch(err) {
             console.log("loadWorkCentersAction()", err.message);
             dispatch({type: loadWorkCentersFailed, payload: {error: err, context: loadWorkCentersRequested}})

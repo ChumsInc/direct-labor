@@ -1,4 +1,10 @@
-import {OperationCode, OperationCodeAction, OperationCodeThunkAction} from "./types";
+import {
+    OperationCode,
+    OperationCodeAction,
+    operationCodeKey,
+    OperationCodeList,
+    OperationCodeThunkAction
+} from "./types";
 import {
     loadingSelector,
     loadOCFailed,
@@ -8,6 +14,7 @@ import {
     loadOCRequested, loadOCSucceeded, operationCodeSelected, searchChanged, workCenterChanged,
 } from "./index";
 import {fetchJSON} from "chums-ducks";
+import {GLAccountList} from "../glAccounts";
 
 
 export const operationCodesURL = (oc?:OperationCode) => `/api/operations/production/wo/chums/operation-codes/:workCenter/:operationCode`
@@ -35,7 +42,9 @@ export const loadOperationCodesAction = ():OperationCodeThunkAction =>
             }
             dispatch({type: loadOCListRequested});
             const {operationCodes = []} = await fetchJSON(operationCodesURL(), {cache: 'no-cache'});
-            dispatch({type: loadOCListSucceeded, payload: {list: operationCodes}});
+            const list:OperationCodeList = {};
+            operationCodes.forEach((row:OperationCode) => list[operationCodeKey(row)] = row);
+            dispatch({type: loadOCListSucceeded, payload: {list}});
         } catch(err) {
             console.log("loadOperationCodesAction()", err.message);
             dispatch({type: loadOCListFailed, payload: {error: err, context: loadOCListRequested}});

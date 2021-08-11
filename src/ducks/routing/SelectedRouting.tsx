@@ -16,6 +16,7 @@ import {selectRoutingAction} from "./actions";
 import {useHistory} from "react-router-dom";
 import {routingPath} from "../../routerPaths";
 import {Helmet} from "react-helmet";
+import {Alert} from "chums-ducks";
 
 export interface SelectedRoutingProps {
     routingNo?:string,
@@ -34,6 +35,10 @@ const SelectedRouting: React.FC<SelectedRoutingProps> = ({routingNo}) => {
             return history.replace(routingPath);
         }
     }, [routingNo, loaded])
+
+    if (!selected) {
+        return (<Alert color="info">Select a routing</Alert>);
+    }
 
     return (
         <div>

@@ -7,11 +7,13 @@ export interface DLCode {
     id: number,
     dlCode: string,
     workCenter: string,
+    operationCode: string,
     description: string,
     standardAllowedMinutes: number,
     laborBudget: number,
     fixedCosts: number,
     directLaborCost: number,
+    StdRatePiece: number,
     timestamp: string,
 }
 
