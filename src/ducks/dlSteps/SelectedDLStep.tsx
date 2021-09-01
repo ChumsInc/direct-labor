@@ -4,7 +4,6 @@ import {loadedSelector, loadingSelector, selectedStepSelector, selectStepSelecto
 import {loadDLStepAction} from "./actions";
 import {Helmet} from "react-helmet";
 import {selectedTabSelector, Tab, TabList, tabListCreatedAction} from "chums-ducks";
-import SelectedStepsList from "../dlCodes/SelectedStepsList";
 import SelectedStepTimings from "../timings/SelectedStepTimings";
 import {dlCodeIcon, dlTextIcon, dlTimingIcon} from "../../icons";
 import DLStepForm from "./DLStepForm";
@@ -32,15 +31,11 @@ const SelectedDLStep: React.FC<SelectedDLStepProps> = ({id}) => {
     const dispatch = useDispatch();
     const step = useSelector(selectedStepSelector);
     const loaded = useSelector(loadedSelector);
-    const loading = useSelector(loadingSelector);
     const navStep = useSelector(selectStepSelector(id || 0));
     const tab = useSelector(selectedTabSelector(tabsKey));
 
     useEffect(() => {
         dispatch(tabListCreatedAction(tabs, tabsKey, tabID.settings));
-        // if (!loaded && !loading) {
-        //     dispatch()
-        // }
     }, []);
     useEffect(() => {
         if (id !== step.id) {
@@ -57,7 +52,7 @@ const SelectedDLStep: React.FC<SelectedDLStepProps> = ({id}) => {
             <Helmet>
                 <title>D/L Step: {stepCode}</title>
             </Helmet>
-            <h2>Step Editor: {stepCode}</h2>
+            <h2>Step Editor: <strong>{stepCode}</strong></h2>
             <h3>{description}</h3>
 
             <TabList tabKey={tabsKey} className="mt-3 mb-1"/>
@@ -70,13 +65,6 @@ const SelectedDLStep: React.FC<SelectedDLStepProps> = ({id}) => {
             {tab === tabID.whereUsed && (
                 <SelectedWhereUsedList/>
             )}
-            <hr/>
-            <code>
-                <pre style={{whiteSpace: 'pre-wrap'}}>{JSON.stringify(step, undefined, 2)}</pre>
-            </code>
-            <pre style={{whiteSpace: 'pre-wrap'}}>
-                <code className="code"></code>
-            </pre>
         </div>
     )
 }

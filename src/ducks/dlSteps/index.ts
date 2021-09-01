@@ -4,6 +4,7 @@ import {defaultState, DLStepsAction} from "./types";
 import {saveTimingEntriesSucceeded} from "../timings/actionTypes";
 import {
     filterChanged,
+    filterInactiveChanged,
     stepChanged,
     stepSelected,
     stepsLoadListFailed,
@@ -15,7 +16,8 @@ import {
     stepsSaveFailed,
     stepsSaveRequested,
     stepsSaveSucceeded,
-    stepTimingChanged, wcFilterChanged
+    stepTimingChanged,
+    wcFilterChanged
 } from "./actionTypes";
 import {defaultDLCodeSort, DLCodesAction, dlCodeSorter} from "../dlCodes/types";
 
@@ -41,7 +43,7 @@ const listReducer = (state: DLSteps = defaultState.list, action: DLStepsAction):
     }
 }
 
-const whereUsedReducer = (state:DLCode[] = defaultState.whereUsed, action:DLStepsAction):DLCode[] => {
+const whereUsedReducer = (state: DLCode[] = defaultState.whereUsed, action: DLStepsAction): DLCode[] => {
     const {type, payload} = action;
     switch (type) {
     case stepSelected:
@@ -51,7 +53,8 @@ const whereUsedReducer = (state:DLCode[] = defaultState.whereUsed, action:DLStep
             return payload.codes.sort(dlCodeSorter(defaultDLCodeSort));
         }
         return state;
-    default: return state;
+    default:
+        return state;
     }
 }
 
@@ -210,6 +213,15 @@ const workCenterFilterReducer = (state: string = defaultState.filter, action: DL
     }
 }
 
+const filterInactiveReducer = (state: boolean = defaultState.filterInactive, action: DLStepsAction): boolean => {
+    switch (action.type) {
+    case filterInactiveChanged:
+        return !state;
+    default:
+        return state;
+    }
+}
+
 
 export default combineReducers({
     list: listReducer,
@@ -219,5 +231,6 @@ export default combineReducers({
     loading: loadingReducer,
     loaded: loadedReducer,
     filter: filterReducer,
-    wcFilter:workCenterFilterReducer,
+    wcFilter: workCenterFilterReducer,
+    filterInactive: filterInactiveReducer,
 })

@@ -18,14 +18,14 @@ export const stepsListFields: DLStepTableField[] = [
     {
         field: 'standardAllowedMinutes',
         title: 'SAM',
-        className: 'text-end',
+        className: (row:DLCodeStep) => ({'text-end': true, 'text-muted': row.standardAllowedMinutes === 0}),
         sortable: true,
         render: ({standardAllowedMinutes}: DLCodeStep) => numeral(standardAllowedMinutes).format('0,0.0000')
     },
     {
         field: 'fixedCosts',
         title: 'Fixed Costs',
-        className: 'text-end',
+        className: (row:DLCodeStep) => ({'text-end': true, 'text-muted': row.fixedCosts === 0}),
         sortable: true,
         render: ({fixedCosts}: DLCodeStep) => numeral(fixedCosts).format('0,0.0000')
     },

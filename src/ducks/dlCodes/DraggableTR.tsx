@@ -19,7 +19,7 @@ interface DragItem {
     type: string,
 }
 
-const DraggableTR: React.FC<DraggableTRProps> = ({fields, row, index, moveItem, onDrop}) => {
+const DraggableTR: React.FC<DraggableTRProps> = ({fields, row, className, index, moveItem, onDrop}) => {
     const ref = useRef<HTMLTableRowElement>(null);
 
     const [{handlerId}, drop] = useDrop({
@@ -72,11 +72,10 @@ const DraggableTR: React.FC<DraggableTRProps> = ({fields, row, index, moveItem, 
         })
     });
 
-    const opacity = isDragging ? 0 : 1;
     drag(drop(ref));
     return (
         <SortableTR fields={fields} row={row} trRef={ref}
-                    className={classNames('draggable-tr', {'is-dragging': isDragging})}/>
+                    className={classNames(className, 'draggable-tr', {'is-dragging': isDragging})}/>
     )
 }
 

@@ -1,20 +1,21 @@
 import React, {ChangeEvent} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {filterSelector, loadingSelector, wcFilterSelector} from "./selectors";
+import {filterInactiveSelector, filterSelector, loadingSelector, wcFilterSelector} from "./selectors";
 import {WorkCenter} from "../types";
-import {loadDLCodesAction, setDLCodeFilterAction, setWCFilterAction} from "./actions";
+import {filterInactiveAction, loadDLCodesAction, setDLCodeFilterAction, setWCFilterAction} from "./actions";
 import SearchInput from "../../components/SearchInput";
-import {SpinnerButton} from "chums-ducks";
+import {FormCheck, SpinnerButton} from "chums-ducks";
 
-const DLCodeFilter:React.FC = () => {
+const DLCodeFilter: React.FC = () => {
     const dispatch = useDispatch();
     const filter = useSelector(filterSelector);
     const wcFilter = useSelector(wcFilterSelector);
     const loading = useSelector(loadingSelector);
+    const filterInactive = useSelector(filterInactiveSelector);
 
-    const onSelectWC = (wc:WorkCenter|null) => dispatch(setWCFilterAction(wc?.WorkCenterCode || ''));
-    const onChangeSearch = (ev:ChangeEvent<HTMLInputElement>) => dispatch(setDLCodeFilterAction(ev.target.value || ''));
+    const onSelectWC = (wc: WorkCenter | null) => dispatch(setWCFilterAction(wc?.WorkCenterCode || ''));
+    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setDLCodeFilterAction(ev.target.value || ''));
     const onReloadList = () => dispatch(loadDLCodesAction());
 
     return (
@@ -23,7 +24,11 @@ const DLCodeFilter:React.FC = () => {
                 <WorkCenterSelect value={wcFilter} onSelectWorkCenter={onSelectWC}/>
             </div>
             <div className="col-auto">
-                <SearchInput onChange={onChangeSearch} value={filter} bsSize="sm" />
+                <FormCheck label="Hide Inactive" checked={filterInactive}
+                           onClick={() => dispatch(filterInactiveAction(!filterInactive))} type="checkbox"/>
+            </div>
+            <div className="col-auto">
+                <SearchInput onChange={onChangeSearch} value={filter} bsSize="sm"/>
             </div>
             <div className="col-auto">
                 <SpinnerButton type="button" spinning={loading} onClick={onReloadList} size="sm">Reload</SpinnerButton>

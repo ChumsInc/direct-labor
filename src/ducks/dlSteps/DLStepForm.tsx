@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent} from 'react';
-import {Alert, FormColumn, Input, SpinnerButton} from "chums-ducks";
+import {Alert, FormCheck, FormColumn, Input, SpinnerButton} from "chums-ducks";
 import numeral from "numeral";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import TextAreaAutosize from "react-textarea-autosize";
@@ -12,9 +12,8 @@ import {
     selectedSavingSelector,
     selectedStepSelector
 } from "./selectors";
-import {dlStepChangedAction, loadDLStepAction} from "./actions";
+import {dlStepChangedAction, loadDLStepAction, saveDLStepAction} from "./actions";
 import {DLStep, WorkCenter} from "../types";
-import {dlCodeChangedAction} from "../dlCodes/actions";
 
 const DLStepForm: React.FC = () => {
     const dispatch = useDispatch();
@@ -30,12 +29,19 @@ const DLStepForm: React.FC = () => {
     const onChangeInstructions = (ev: ChangeEvent<HTMLTextAreaElement>) => {
         dispatch(dlStepChangedAction({instructions: ev.target.value}));
     }
+    const onChangeNotes = (ev: ChangeEvent<HTMLTextAreaElement>) => {
+        dispatch(dlStepChangedAction({notes: ev.target.value}));
+    }
     const onChangeFixedCost = (ev: ChangeEvent<HTMLInputElement>) => {
         dispatch(dlStepChangedAction({fixedCosts: Number(ev.target.value || 0)}));
     }
 
     const onChangeWorkCenter = (wc: WorkCenter | null) => {
-        dispatch(dlCodeChangedAction({workCenter: wc?.WorkCenterCode || ''}));
+        dispatch(dlStepChangedAction({workCenter: wc?.WorkCenterCode || ''}));
+    }
+
+    const onChangeActive = () => {
+        dispatch(dlStepChangedAction({active: !step.active}));
     }
 
     const onReload = () => {
@@ -44,6 +50,7 @@ const DLStepForm: React.FC = () => {
 
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
+        dispatch(saveDLStepAction(step));
     }
     const {
         stepCode,
@@ -54,13 +61,21 @@ const DLStepForm: React.FC = () => {
         notes,
         description,
         machine,
-        standardAllowedMinutes
+        standardAllowedMinutes,
+        active,
     } = step;
 
     return (
         <form onSubmit={onSubmit}>
             <FormColumn label="Step Code">
-                <Input type="text" value={stepCode} onChange={changeHandler('stepCode')}/>
+                <div className="row g-3">
+                    <div className="col-sm-6">
+                        <Input type="text" value={stepCode} onChange={changeHandler('stepCode')}/>
+                    </div>
+                    <div className="col-sm-6">
+                        <FormCheck label="Active" checked={active} onClick={onChangeActive} type="checkbox"/>
+                    </div>
+                </div>
             </FormColumn>
             <FormColumn label="Description">
                 <Input type="text" value={description} onChange={changeHandler('description')}/>
@@ -107,6 +122,11 @@ const DLStepForm: React.FC = () => {
                                   className="form-control form-control-sm mb-1"
                                   onChange={onChangeInstructions} minRows={2}/>
             </FormColumn>
+            <FormColumn label="Notes">
+                <TextAreaAutosize value={notes || ''} placeholder="Notes"
+                                  className="form-control form-control-sm mb-1"
+                                  onChange={onChangeNotes} minRows={2}/>
+            </FormColumn>
 
             <div className="row g-3 mt-1">
                 <div className="col-auto">
@@ -116,7 +136,7 @@ const DLStepForm: React.FC = () => {
                     </SpinnerButton>
                 </div>
                 <div className="col-auto">
-                    <SpinnerButton type="button" spinning={saving} color="danger"
+                    <SpinnerButton type="button" color="danger"
                                    disabled={loading || saving || !step.id} size="sm"
                                    spinnerAfter>
                         Delete DL Code

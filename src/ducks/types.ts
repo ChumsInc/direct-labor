@@ -7,6 +7,8 @@ export interface ListState {
     loading: boolean,
     loaded: boolean,
     filter: string,
+    wcFilter: string,
+    filterInactive: boolean,
 }
 
 export const defaultListState:ListState = {
@@ -15,6 +17,8 @@ export const defaultListState:ListState = {
     loading: false,
     loaded: false,
     filter: '',
+    wcFilter: '',
+    filterInactive: true,
 }
 
 export interface ActionInterfacePayload {
@@ -111,6 +115,7 @@ export interface DLBasicStep {
     standardAllowedMinutes: number,
     fixedCosts: number,
     stepCost: number,
+    active: boolean,
 }
 
 export interface DLStep extends DLBasicStep {
@@ -144,6 +149,7 @@ export interface DLCode {
     dlCode: string,
     workCenter: string,
     operationCode: string,
+    active: boolean,
     description: string,
     standardAllowedMinutes: number,
     laborBudget: number,
@@ -159,6 +165,7 @@ export interface DLCodeList {
 }
 
 export interface DLCodeStep extends DLBasicStep {
+    dlCodeId: number,
     dlCode: string,
     stepOrder: number,
     stepId: number,

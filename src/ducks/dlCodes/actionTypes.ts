@@ -4,8 +4,11 @@ export const loadDLCodesFailed = 'dlCodes/loadListFailed';
 
 export const dlCodeSelected = 'dlCodes/codeSelected';
 export const dlCodeChanged = 'dlCodes/codeChanged';
-export const dlCodeStepDeleted = 'dlCodes/stepDeleted';
 export const dlCodeStepOrderChanged = 'dlCodes/stepOrderChanged';
+
+export const deleteStepRequested = 'dlCodes/deleteStepRequested';
+export const deleteStepSucceeded = 'dlCodes/deleteStepSucceeded';
+export const deleteStepFailed = 'dlCodes/deleteStepFailed';
 
 export const loadDLCodeRequested = 'dlCodes/loadRequested';
 export const loadDLCodeSucceeded = 'dlCodes/loadSucceeded';
@@ -25,3 +28,4 @@ export const sortDLStepFailed = 'dlCodes/sortFailed';
 
 export const filterChanged = 'dlCodes/filterChanged';
 export const wcFilterChanged = 'dlCodes/wcFilterChanged';
+export const filterInactiveChanged = 'dlCodes/filterInactiveChanged';

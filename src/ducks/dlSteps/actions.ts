@@ -1,8 +1,9 @@
 import {DLStepsAction, DLStepsThunkAction, newDLStep} from "./types";
-import {fetchJSON} from "chums-ducks";
+import {fetchJSON, fetchPOST} from "chums-ducks";
 import {DLBasicStep, DLStep, DLSteps, DLTiming} from "../types";
 import {
     filterChanged,
+    filterInactiveChanged,
     stepChanged,
     stepSelected,
     stepsLoadListFailed,
@@ -11,16 +12,25 @@ import {
     stepsLoadStepFailed,
     stepsLoadStepRequested,
     stepsLoadStepSucceeded,
+    stepsSaveFailed,
+    stepsSaveRequested,
+    stepsSaveSucceeded,
     stepTimingChanged,
     wcFilterChanged
 } from "./actionTypes";
-import {loadingSelector, selectedLoadingSelector} from "./selectors";
+import {loadingSelector, selectedLoadingSelector, selectedSavingSelector} from "./selectors";
+import {filterInactiveStepsKey, setPreference} from "../../utils/preferences";
 
 const listURL = `/api/operations/production/dl/steps`;
 const stepURL = (step: DLBasicStep) => `/api/operations/production/dl/steps/${encodeURIComponent(step.id)}`;
 
 export const dlStepChangedAction = (change: Object) => ({type: stepChanged, payload: {change}});
 export const dlStepChangeTimingAction = (timing: DLTiming) => ({type: stepTimingChanged, payload: {timing}});
+
+export const filterInactiveAction = (filterInactive: boolean): DLStepsAction => {
+    setPreference(filterInactiveStepsKey, filterInactive);
+    return {type: filterInactiveChanged}
+}
 
 export const setWCFilterAction = (workCenter: string): DLStepsAction => ({
     type: wcFilterChanged,
@@ -77,5 +87,25 @@ export const loadDLStepAction = (step: DLBasicStep = newDLStep): DLStepsThunkAct
                 return dispatch({type: stepsLoadStepFailed, payload: {error: err, context: stepsLoadStepRequested}});
             }
             console.error(err);
+        }
+    }
+
+export const saveDLStepAction = (step: DLStep): DLStepsThunkAction =>
+    async (dispatch, getState) => {
+        try {
+            const state = getState();
+            if (selectedLoadingSelector(state) || selectedSavingSelector(state)) {
+                return;
+            }
+            dispatch({type: stepsSaveRequested});
+            const url = stepURL(step);
+            const {step: _step, whereUsed} = await fetchPOST(url, step);
+            dispatch({type: stepsSaveSucceeded, payload: {step: _step, codes: whereUsed}});
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.log("saveDLStepAction()", error.message);
+                return dispatch({type: stepsSaveFailed, payload: {error, context: stepsSaveRequested}})
+            }
+            console.error("saveDLStepAction()", error);
         }
     }

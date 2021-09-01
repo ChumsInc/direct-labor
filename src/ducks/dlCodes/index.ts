@@ -4,8 +4,8 @@ import {DLCode, DLCodeList, DLCodeSteps} from "../types";
 import {
     dlCodeChanged,
     dlCodeSelected,
-    dlCodeStepDeleted,
-    filterChanged,
+    deleteStepRequested,
+    filterChanged, filterInactiveChanged,
     loadDLCodeFailed,
     loadDLCodeRequested,
     loadDLCodesFailed,
@@ -17,7 +17,7 @@ import {
     saveDLCodeSucceeded,
     sortDLStepSucceeded,
     stepAddSucceeded,
-    wcFilterChanged
+    wcFilterChanged, deleteStepSucceeded, deleteStepFailed
 } from "./actionTypes";
 
 
@@ -73,15 +73,9 @@ const selectedStepsReducer = (state: DLCodeSteps = defaultState.selected.steps, 
     case stepAddSucceeded:
     case sortDLStepSucceeded:
     case dlCodeSelected:
+    case deleteStepSucceeded:
         if (payload?.steps) {
             return {...payload.steps};
-        }
-        return state;
-    case dlCodeStepDeleted:
-        if (payload?.id) {
-            const newState = {...state};
-            delete newState[payload.id];
-            return {...newState};
         }
         return state;
     default:
@@ -92,9 +86,12 @@ const selectedStepsReducer = (state: DLCodeSteps = defaultState.selected.steps, 
 const selectedSavingReducer = (state: boolean = false, action: DLCodesAction): boolean => {
     switch (action.type) {
     case saveDLCodeRequested:
+    case deleteStepRequested:
         return true;
     case saveDLCodeSucceeded:
     case saveDLCodeFailed:
+    case deleteStepSucceeded:
+    case deleteStepFailed:
         return false;
     default:
         return state;
@@ -116,11 +113,11 @@ const selectedLoadingReducer = (state: boolean = false, action: DLCodesAction): 
 const selectedChangedReducer = (state: boolean = false, action: DLCodesAction): boolean => {
     switch (action.type) {
     case dlCodeChanged:
-    case dlCodeStepDeleted:
         return true;
     case loadDLCodeSucceeded:
     case loadDLCodesSucceeded:
     case saveDLCodeSucceeded:
+    case deleteStepSucceeded:
         return false;
     default:
         return state;
@@ -176,6 +173,14 @@ const workCenterFilterReducer = (state: string = defaultState.filter, action: DL
     }
 }
 
+const filterInactiveReducer = (state:boolean = defaultState.filterInactive, action:DLCodesAction):boolean => {
+    switch (action.type) {
+    case filterInactiveChanged:
+        return !state;
+    default: return state;
+    }
+}
+
 export default combineReducers({
     list: listReducer,
     selected: selectedReducer,
@@ -183,4 +188,5 @@ export default combineReducers({
     loaded: loadedReducer,
     filter: filterReducer,
     wcFilter: workCenterFilterReducer,
+    filterInactive: filterInactiveReducer,
 })

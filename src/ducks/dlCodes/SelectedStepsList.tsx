@@ -1,23 +1,30 @@
 import React, {useEffect, useState} from "react";
-import {DLCodeStep, DLStepCodeTableField, DLStepTotal} from "../types";
+import {DLCodeStep, DLStep, DLStepCodeTableField, DLStepTotal} from "../types";
 import {SortableTable} from "chums-ducks";
 import numeral from "numeral";
-import {selectedStepsSelector} from "./selectors";
+import {selectedHeaderSelector, selectedStepsSelector} from "./selectors";
 import {useDispatch, useSelector} from "react-redux";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import DraggableTR from "./DraggableTR";
 import DeleteStepButton from "./DeleteStepButton";
-import {saveDLCodeStepOrder} from "./actions";
+import {addDLCodeStepAction, saveDLCodeStepOrder} from "./actions";
 import {dlCodeStepSorter, stepTotalReducer} from "./utils";
 import {Link} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
+import classNames from "classnames";
+import StepSelect from "../dlSteps/StepSelect";
+import {newDLStep} from "../dlSteps/types";
 
 const tableKey = 'dl-steps-detail';
 
 export const stepsListFields: DLStepCodeTableField[] = [
     {field: 'stepOrder', title: 'Step', render: ({stepOrder}: DLCodeStep) => String(stepOrder + 1)},
-    {field: 'stepCode', title: 'Step Code', render: (row:DLCodeStep) => (<Link to={dlStepPath(row.stepId)}>{row.stepCode}</Link>)},
+    {
+        field: 'stepCode',
+        title: 'Step Code',
+        render: (row: DLCodeStep) => (<Link to={dlStepPath(row.stepId)}>{row.stepCode}</Link>)
+    },
     {field: 'description', title: 'Description'},
     {field: 'workCenter', title: 'Work Center'},
     {field: 'machine', title: 'Machine'},
@@ -44,10 +51,13 @@ export const stepsListFields: DLStepCodeTableField[] = [
 
 const SelectedStepsList: React.FC = () => {
     const dispatch = useDispatch();
+    const selected = useSelector(selectedHeaderSelector);
     const steps = useSelector(selectedStepsSelector);
     const stepKeys = steps.map(step => step.id).join(':');
     const total: DLStepTotal = stepTotalReducer(steps);
     const [list, setList] = useState(steps);
+    const [newStep, setNewStep] = useState(newDLStep);
+
     useEffect(() => {
         setList(steps);
     }, [stepKeys])
@@ -69,29 +79,54 @@ const SelectedStepsList: React.FC = () => {
         dispatch(saveDLCodeStepOrder(list));
     }
 
+    const onAddStep = () => {
+        if (newStep.id === 0) {
+            return;
+        }
+        dispatch(addDLCodeStepAction(selected.id, newStep.id));
+        setNewStep(newDLStep);
+    }
+
+    const onChangeNewStep = (step?: DLStep) => {
+        setNewStep(step || newStep);
+    }
+
     return (
-        <SortableTable tableKey={tableKey} keyField={"id"} fields={stepsListFields} data={[]} size="xs">
-            <tbody>
-            <DndProvider backend={HTML5Backend}>
-                {list.sort(dlCodeStepSorter)
-                    .map((step, index) => (
-                        <DraggableTR key={step.id} index={index} fields={stepsListFields} row={step}
-                                     moveItem={onMoveStep} onDrop={dropHandler}/>
-                    ))}
-            </DndProvider>
-            </tbody>
-            <tfoot>
-            <tr>
-                <th colSpan={3}>Total</th>
-                <th className="text-end">UPH:</th>
-                <th>{numeral(!total.standardAllowedMinutes ? 0 : 60 / total.standardAllowedMinutes).format('0,0.0')}</th>
-                <th className="text-end">{numeral(total.standardAllowedMinutes).format('0,0.0000')}</th>
-                <th className="text-end">{numeral(total.fixedCosts).format('0,0.0000')}</th>
-                <th className="text-end">{numeral(total.stepCost).format('0,0.0000')}</th>
-                <th/>
-            </tr>
-            </tfoot>
-        </SortableTable>
+        <div>
+            <SortableTable tableKey={tableKey} keyField={"id"} fields={stepsListFields} data={[]} size="xs">
+                <tbody>
+                <DndProvider backend={HTML5Backend}>
+                    {list.sort(dlCodeStepSorter)
+                        .map((step, index) => (
+                            <DraggableTR key={step.id} index={index} fields={stepsListFields} row={step}
+                                         className={classNames({'table-danger': !step.active})}
+                                         moveItem={onMoveStep} onDrop={dropHandler}/>
+                        ))}
+                </DndProvider>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th colSpan={3}>Total</th>
+                    <th className="text-end">UPH:</th>
+                    <th>{numeral(!total.standardAllowedMinutes ? 0 : 60 / total.standardAllowedMinutes).format('0,0.0')}</th>
+                    <th className="text-end">{numeral(total.standardAllowedMinutes).format('0,0.0000')}</th>
+                    <th className="text-end">{numeral(total.fixedCosts).format('0,0.0000')}</th>
+                    <th className="text-end">{numeral(total.stepCost).format('0,0.0000')}</th>
+                    <th/>
+                </tr>
+                </tfoot>
+            </SortableTable>
+            <div className="row g-3">
+                <div className="col-auto">
+                    <StepSelect id={newStep.id} onChange={onChangeNewStep} filterInactive/>
+                </div>
+                <div className="col-auto">
+                    <button type="button" className="btn btn-sm btn-outline-secondary" disabled={!newStep.id}
+                            onClick={onAddStep}>Add Step
+                    </button>
+                </div>
+            </div>
+        </div>
     )
 
 }

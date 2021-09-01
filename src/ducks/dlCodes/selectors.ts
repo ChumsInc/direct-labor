@@ -4,7 +4,7 @@ import {DLCode, DLCodeStep} from "../types";
 import {dlCodeStepSorter} from "./utils";
 
 export const listSelector = (sort: DLCodeSorterProps) => (state: RootState): DLCode[] => {
-    const {list, filter, wcFilter} = state.dlCodes;
+    const {list, filter, wcFilter, filterInactive} = state.dlCodes;
     let re = /^/;
     try {
 
@@ -13,6 +13,7 @@ export const listSelector = (sort: DLCodeSorterProps) => (state: RootState): DLC
     }
 
     return Object.values(list)
+        .filter(dl => !filterInactive || dl.active)
         .filter(dl => !wcFilter || dl.workCenter === wcFilter)
         .filter(dl => re.test(dl.dlCode) || re.test(dl.description) || re.test(dl.operationCode))
         .sort(dlCodeSorter(sort));
@@ -32,3 +33,4 @@ export const selectedSavingSelector = (state: RootState): boolean => state.dlCod
 export const selectedChangedSelector = (state: RootState): boolean => state.dlCodes.selected.changed;
 export const filterSelector = (state: RootState): string => state.dlCodes.filter;
 export const wcFilterSelector = (state: RootState): string => state.dlCodes.wcFilter;
+export const filterInactiveSelector = (state:RootState): boolean => state.dlCodes.filterInactive;

@@ -12,13 +12,13 @@ import {
 } from "./selectors";
 import {dlCodeChangedAction, loadDLCodeAction, saveDLCodeAction} from "./actions";
 import {Helmet} from "react-helmet";
-import {Alert, FormColumn, Input, SpinnerButton} from "chums-ducks";
+import {Alert, FormCheck, FormColumn, Input, InputGroup, SpinnerButton} from "chums-ducks";
 import {DLCodeField, OperationCode, WorkCenter} from "../types";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import OperationCodeSelect from "../operationCodes/OperationCodeSelect";
 import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./types";
-import {saveDLCodeRequested} from "./actionTypes";
+import numeral from "numeral";
 
 export interface SelectedDLCodeProps {
     id?: number,
@@ -26,7 +26,6 @@ export interface SelectedDLCodeProps {
 
 const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
     const dispatch = useDispatch();
-    const selectedLoading = useSelector(selectedLoadingSelector);
     const loading = useSelector(selectedLoadingSelector);
     const saving = useSelector(selectedSavingSelector);
     const loaded = useSelector(loadedSelector);
@@ -64,6 +63,10 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
         }));
     }
 
+    const onToggleActive = () => {
+        dispatch(dlCodeChangedAction({active: !selected.active}));
+    }
+
     const onReload = () => {
         dispatch(loadDLCodeAction(selected));
     }
@@ -77,6 +80,7 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
         dlCode,
         operationCode,
         description,
+        active,
         directLaborCost,
         laborBudget,
         fixedCosts,
@@ -91,9 +95,18 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
             <Helmet>
                 <title>D/L Code: {dlCode}</title>
             </Helmet>
+            <h2>D/L Code Editor: <strong>{dlCode}</strong></h2>
+
             <form onSubmit={onSubmit}>
                 <FormColumn label={"Direct Labor Code"}>
-                    <Input type="text" value={dlCode} onChange={changeHandler('dlCode')}/>
+                    <div className="row g-3 align-items-baseline">
+                        <div className="col-md-9">
+                            <Input type="text" value={dlCode} onChange={changeHandler('dlCode')}/>
+                        </div>
+                        <div className="col-md-3">
+                            <FormCheck label="Active" checked={active} onClick={onToggleActive} type="checkbox"/>
+                        </div>
+                    </div>
                 </FormColumn>
                 <FormColumn label={"Description"}>
                     <Input type="text" value={description} onChange={changeHandler('description')}/>
@@ -109,6 +122,35 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                         </div>
                     </div>
                 </FormColumn>
+                <FormColumn label="Costs">
+                    <div className="row g-3">
+                        <div className="col-4">
+                            <InputGroup>
+                                <span className="input-group-text">Labor</span>
+                                <Input type="text" value={numeral(laborBudget).format('$0,0.0000')} readOnly
+                                       className="text-end"/>
+                            </InputGroup>
+                        </div>
+                        <div className="col-4">
+                            <InputGroup>
+                                <span className="input-group-text">Fixed</span>
+                                <Input type="text" value={numeral(fixedCosts).format('$0,0.0000')} readOnly
+                                       className="text-end"/>
+                            </InputGroup>
+                        </div>
+                        <div className="col-4">
+                            <InputGroup>
+                                <span className="input-group-text">Total</span>
+                                <Input type="text" value={numeral(directLaborCost).format('$0,0.0000')} readOnly
+                                       className="text-end"/>
+                            </InputGroup>
+                        </div>
+                    </div>
+                </FormColumn>
+                <FormColumn label="Last Updated">
+                    {!!timestamp ? new Date(timestamp).toLocaleString() : ''}
+                </FormColumn>
+
 
                 <div className="row g-3 mt-3">
                     <div className="col-auto">
@@ -118,7 +160,7 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                         </SpinnerButton>
                     </div>
                     <div className="col-auto">
-                        <SpinnerButton type="button" spinning={saving} color="danger"
+                        <SpinnerButton type="button" color="danger"
                                        disabled={loading || saving || !!steps.length || !selected.id} size="sm"
                                        spinnerAfter>
                             Delete DL Code
@@ -138,12 +180,8 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                 </div>
             </form>
             {changed && <Alert color="warning">Don't forget to save your changes.</Alert>}
-            <SelectedStepsList/>
-
             <hr/>
-            <pre>
-                <code>{JSON.stringify(selected, undefined, 2)}</code>
-            </pre>
+            <SelectedStepsList/>
         </div>
     )
 }

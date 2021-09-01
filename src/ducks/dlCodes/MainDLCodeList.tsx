@@ -6,12 +6,15 @@ import {addPageSetAction, sortableTableSelector, tableAddedAction} from "chums-d
 import {defaultDLCodeSort, DLCodeSorterProps} from "./types";
 import {DLCode} from "../types";
 import DLCodeList from "./DLCodeList";
+import {useHistory} from "react-router-dom";
+import {dlCodePath} from "../../routerPaths";
 
 export interface MainDLCodeListProps {
     tableKey: string,
 }
 
 const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
+    const history = useHistory();
     const dispatch = useDispatch();
     const loading = useSelector(loadingSelector);
     const loaded = useSelector(loadedSelector);
@@ -29,6 +32,7 @@ const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
     }, [])
 
     const onSelectDLCode = (code: DLCode) => {
+        history.push(dlCodePath(code.id));
         dispatch(loadDLCodeAction(code));
     }
 

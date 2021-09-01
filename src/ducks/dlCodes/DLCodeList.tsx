@@ -81,6 +81,7 @@ const DLCodeList: React.FC<DLCodeListProps> = ({tableKey, list, selected, onSele
     return (
         <>
             <SortableTable tableKey={tableKey} keyField="id" fields={fields} data={pagedList} size="xs"
+                           rowClassName={(row:DLCode) => ({'table-warning': !row.active})}
                            selected={selected?.id}
                            onSelectRow={onSelectDLCode}/>
             <PagerDuck dataLength={list.length} pageKey={tableKey}/>

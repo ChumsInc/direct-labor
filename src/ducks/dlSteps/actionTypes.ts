@@ -16,3 +16,4 @@ export const stepsSaveFailed = 'steps/saveFailed';
 
 export const filterChanged = 'steps/filterChanged';
 export const wcFilterChanged = 'steps/wcFilterChanged';
+export const filterInactiveChanged = 'steps/filterInactiveChanged';

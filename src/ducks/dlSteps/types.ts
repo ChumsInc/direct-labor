@@ -11,6 +11,7 @@ import {
 import {ActionInterface} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
+import {filterInactiveStepsKey, getPreference} from "../../utils/preferences";
 
 export const newDLStep: DLStep = {
     id: 0,
@@ -18,6 +19,7 @@ export const newDLStep: DLStep = {
     description: '',
     workCenter: '',
     machine: '',
+    active: true,
     standardAllowedMinutes: 0,
     fixedCosts: 0,
     stepCost: 0,
@@ -55,6 +57,8 @@ export const defaultState: DLStepsState = {
     loading: false,
     loaded: false,
     filter: '',
+    wcFilter: '',
+    filterInactive: getPreference(filterInactiveStepsKey, true),
 }
 
 export interface DLStepsActionPayload extends ActionInterfacePayload {

@@ -4,7 +4,7 @@ import {dlStepSorter, dlStepTimingSorter, newDLStep} from "./types";
 import {dlCodeSorter, DLCodeSorterProps} from "../dlCodes/types";
 
 export const filteredListSelector = (sort: DLStepSorterProps) => (state: RootState): DLStep[] => {
-    const {list, filter, wcFilter} = state.dlSteps;
+    const {list, filter, wcFilter, filterInactive} = state.dlSteps;
     let re = /^/;
     try {
         re = new RegExp(filter, 'i');
@@ -12,6 +12,7 @@ export const filteredListSelector = (sort: DLStepSorterProps) => (state: RootSta
     }
 
     return Object.values(list)
+        .filter(dl => !filterInactive || dl.active)
         .filter(dl => !wcFilter || dl.workCenter === wcFilter)
         .filter(dl => re.test(dl.stepCode) || re.test(dl.description) || re.test(dl.machine))
         .sort(dlStepSorter(sort));
@@ -30,4 +31,5 @@ export const loadingSelector = (state: RootState) => state.dlSteps.loading;
 export const loadedSelector = (state: RootState) => state.dlSteps.loaded;
 export const filterSelector = (state: RootState): string => state.dlSteps.filter;
 export const wcFilterSelector = (state: RootState): string => state.dlSteps.wcFilter;
+export const filterInactiveSelector = (state:RootState):boolean => state.dlSteps.filterInactive;
 export const whereUsedSelector = (sort:DLCodeSorterProps) => (state:RootState) => state.dlSteps.whereUsed.sort(dlCodeSorter(sort));

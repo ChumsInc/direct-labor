@@ -10,12 +10,14 @@ import {
 } from "../types";
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../index";
+import {filterInactiveCodesKey, getPreference} from "../../utils/preferences";
 
 export const newDLCode:DLCode = {
     id: 0,
     dlCode: '',
     workCenter: '',
     operationCode: '',
+    active: true,
     description: '',
     standardAllowedMinutes: 0,
     laborBudget: 0,
@@ -37,7 +39,6 @@ export interface SelectedDLCodeState {
 export interface DLCodesState extends ListState {
     list: DLCodeList,
     selected: SelectedDLCodeState,
-    wcFilter: string,
 }
 
 export const defaultState: DLCodesState = {
@@ -49,7 +50,9 @@ export const defaultState: DLCodesState = {
         saving: false,
         loading: false,
     },
+    filter: '',
     wcFilter: '',
+    filterInactive: getPreference(filterInactiveCodesKey, true),
 }
 
 export interface DLCodesActionPayload extends ActionInterfacePayload {

@@ -1,2 +1,2 @@
 <?php
-$allowedGroups = array('imprint');
+$allowedGroups = array('directlabor');

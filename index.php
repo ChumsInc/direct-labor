@@ -11,11 +11,11 @@
 require_once 'autoload.inc.php';
 require_once 'access.inc.php';
 
-$bodyPath = "apps/imprint-screen-list";
-$title = "Imprint Screen List";
+$bodyPath = "apps/direct-labor-admin";
+$title = "Direct Labor Admin";
 $description = "";
 
-$ui = new WebUI($bodyPath, $title, $description, true, true);
+$ui = new WebUI($bodyPath, $title, $description, true, 5);
 $ui->bodyClassName = 'container-fluid';
 $ui->addManifest('public/js/manifest.json');
 $ui->Send();
