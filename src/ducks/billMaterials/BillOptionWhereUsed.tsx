@@ -12,14 +12,9 @@ import {useDispatch, useSelector} from "react-redux";
 import classNames from "classnames";
 import numeral from "numeral";
 import MultiLineField from "../../components/MultiLineField";
-import {
-    BillHeader,
-    BillOptionHeader,
-    billOptionHeaderKey,
-    BillOptionHeaderSorterProps,
-    BillOptionHeaderTableField
-} from "./types";
+import {billOptionHeaderKey, BillOptionHeaderSorterProps} from "./types";
 import {billOptionHeaderSelector} from "./index";
+import {BillOptionHeaderTableField} from "../types";
 
 export interface BillWhereUsedInOptionProps {
     tableKey: string,

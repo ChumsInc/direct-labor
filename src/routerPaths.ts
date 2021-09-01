@@ -16,5 +16,10 @@ export const operationCodesRouterPath = '/operation-codes/:workCenter?/:operatio
 
 export const dlCodesNavId = 'dl-codes';
 export const dlCodesPath = '/dl-codes';
-export const dlCodePath = (dlCode: string) => `/dl-codes/${encodeURIComponent(dlCode)}`;
-export const dlCodesRouterPath = '/dl-codes/:dlCode?';
+export const dlCodePath = (id: number) => `/dl-codes/${encodeURIComponent(id)}`;
+export const dlCodesRouterPath = '/dl-codes/:id?';
+
+export const dlStepsNavId = 'dl-steps';
+export const dlStepsPath = '/dl-steps';
+export const dlStepPath = (id: number) => `/dl-steps/${encodeURIComponent(id)}`;
+export const dlStepsRouterPath = '/dl-steps/:id?';

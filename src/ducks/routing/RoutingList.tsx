@@ -10,19 +10,20 @@ import {
 } from "chums-ducks";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    filteredlistSelector,
+    filteredListSelector,
     listSelector,
     loadedSelector,
     loadingSelector,
     RoutingHeaderSorterProps,
     selectedHeaderSelector
 } from "./index";
-import {RoutingHeader} from "./types";
+import {RoutingHeader} from "../types";
 import numeral from "numeral";
 import {fetchRoutingsAction, selectRoutingAction} from "./actions";
 import classNames from "classnames";
 import {useHistory} from "react-router-dom";
 import {selectedRoutingPath} from "../../routerPaths";
+import StatusBadge from "../../components/StatusBadge";
 
 const tableId = 'routing-list'
 
@@ -35,8 +36,8 @@ const routingListFields: SortableTableField[] = [
         sortable: true,
         render: (row: RoutingHeader) => numeral(row.StandardRateTotal).format('0,0.0000')
     },
-    {field: 'BillStatus', title: 'BOM Active', render: (row:RoutingHeader) => (row.BillStatus ? 'Y' : 'N')},
-    {field: 'ItemStatus', title: 'Item Active', render: (row:RoutingHeader) => (row.ItemStatus ? 'Y' : 'N')},
+    {field: 'BillStatus', title: 'BOM Active', sortable: true, render: (row:RoutingHeader) => (<StatusBadge status={row.BillStatus} falseColor="danger" />)},
+    {field: 'ItemStatus', title: 'Item Active', sortable: true, render: (row:RoutingHeader) => (<StatusBadge status={row.ItemStatus} falseColor="danger"/>)},
 ];
 
 const rowClassName = (row:RoutingHeader) => classNames({'text-danger': !(row.BillStatus && row.ItemStatus)});
@@ -65,7 +66,7 @@ const RoutingList: React.FC = () => {
     }
 
     const list = useSelector(listSelector(sort as RoutingHeaderSorterProps));
-    const filteredList = useSelector(filteredlistSelector(sort as RoutingHeaderSorterProps));
+    const filteredList = useSelector(filteredListSelector(sort as RoutingHeaderSorterProps));
     const pagedList = useSelector(pagedDataSelector(tableId, filteredList));
     return (
         <>

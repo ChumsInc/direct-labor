@@ -1,57 +1,13 @@
-import {SortableTableField, SorterProps} from "chums-ducks";
+import {SorterProps} from "chums-ducks";
+import {
+    BillHeader,
+    BillHeaderField,
+    BillHeaderList,
+    BillOptionHeader,
+    BillOptionHeaderField,
+    BillOptionHeaderList
+} from "../types";
 
-export type BillType = 'S'|'K'|'I'|'P'|'E'|'M';
-
-export type BillTypeDescriptions = {
-    [key in BillType]: string;
-};
-export const BillTypeDesc:BillTypeDescriptions = {
-    S: 'Standard',
-    K: 'Kit',
-    I: 'Inactive',
-    P: 'Phantom',
-    E: 'Engineering',
-    M: 'MRP',
-}
-
-export interface BillHeader {
-    BillNo: string,
-    Revision: string,
-    BillType: BillType,
-    BillDesc1: string,
-    BillDesc2: string,
-    DateLastUsed: string,
-    RoutingNo: string,
-    BillHasOptions: 'Y'|'N',
-    DateUpdated: string,
-    updatedByUser: string,
-}
-
-export interface BillHeaderList {
-    [key:string]: BillHeader
-}
-
-export interface BillOptionHeader {
-    BillNo: string,
-    Revision: string,
-    BillOptionCategory: string,
-    BillOption: string,
-    OptionDesc1: string,
-    OptionDesc2: string|null,
-    DateLastUsed: string,
-    RoutingNo: string,
-    WorkOrderStepNo: string,
-    OptionPrice: number,
-    DateUpdated: string,
-    updatedByUser: string,
-}
-
-export interface BillOptionHeaderList {
-    [key:string]: BillOptionHeader
-}
-
-export type BillHeaderField = keyof BillHeader;
-export type BillOptionHeaderField = keyof BillOptionHeader;
 
 export const billHeaderKey = (header: BillHeader) => [header.BillNo, header.Revision].join(':');
 export const billOptionHeaderKey = (header: BillOptionHeader) => [header.BillNo, header.Revision, header.BillOptionCategory, header.BillOption].join(':');
@@ -68,12 +24,6 @@ export interface BillOptionHeaderSorterProps extends SorterProps {
 export const defaultBillSort: BillHeaderSorterProps = {field: "BillNo", ascending: true};
 export const defaultBillOptionSort: BillHeaderSorterProps = {field: "BillNo", ascending: true};
 
-export interface BillHeaderTableField extends SortableTableField {
-    field: BillHeaderField,
-}
-export interface BillOptionHeaderTableField extends SortableTableField {
-    field: BillOptionHeaderField,
-}
 
 export interface BillMaterialsState {
     headerList: BillHeaderList,

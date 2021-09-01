@@ -1,31 +1,32 @@
-import {
-    OperationCode,
-    OperationCodeAction,
-    operationCodeKey,
-    OperationCodeList,
-    OperationCodeThunkAction
-} from "./types";
+import {OperationCodeAction, operationCodeKey, OperationCodeThunkAction} from "./types";
 import {
     loadingSelector,
     loadOCFailed,
     loadOCListFailed,
     loadOCListRequested,
     loadOCListSucceeded,
-    loadOCRequested, loadOCSucceeded, operationCodeSelected, searchChanged, workCenterChanged,
+    loadOCRequested,
+    loadOCSucceeded,
+    operationCodeSelected,
+    searchChanged,
+    workCenterChanged,
 } from "./index";
 import {fetchJSON} from "chums-ducks";
-import {GLAccountList} from "../glAccounts";
+import {OperationCode, OperationCodeList} from "../types";
 
 
-export const operationCodesURL = (oc?:OperationCode) => `/api/operations/production/wo/chums/operation-codes/:workCenter/:operationCode`
+export const operationCodesURL = (oc?: OperationCode) => `/api/operations/production/wo/chums/operation-codes/:workCenter/:operationCode`
     .replace(':workCenter', encodeURIComponent(oc?.WorkCenter || ''))
     .replace(':operationCode', encodeURIComponent(oc?.OperationCode || ''))
     .replace('//', '/');
 
-export const filterChangedAction = (filter:string):OperationCodeAction => ({type: searchChanged, payload: {filter}});
-export const workCenterChangedAction = (filter:string):OperationCodeAction => ({type: workCenterChanged, payload: {filter}});
+export const filterChangedAction = (filter: string): OperationCodeAction => ({type: searchChanged, payload: {filter}});
+export const workCenterChangedAction = (filter: string): OperationCodeAction => ({
+    type: workCenterChanged,
+    payload: {filter}
+});
 
-export const selectOperationCodeAction = (oc:OperationCode|null):OperationCodeThunkAction =>
+export const selectOperationCodeAction = (oc: OperationCode | null): OperationCodeThunkAction =>
     (dispatch, getState) => {
         dispatch({type: operationCodeSelected, payload: {selected: oc}});
         if (oc) {
@@ -33,7 +34,7 @@ export const selectOperationCodeAction = (oc:OperationCode|null):OperationCodeTh
         }
     }
 
-export const loadOperationCodesAction = ():OperationCodeThunkAction =>
+export const loadOperationCodesAction = (): OperationCodeThunkAction =>
     async (dispatch, getState) => {
         try {
             const state = getState();
@@ -42,16 +43,19 @@ export const loadOperationCodesAction = ():OperationCodeThunkAction =>
             }
             dispatch({type: loadOCListRequested});
             const {operationCodes = []} = await fetchJSON(operationCodesURL(), {cache: 'no-cache'});
-            const list:OperationCodeList = {};
-            operationCodes.forEach((row:OperationCode) => list[operationCodeKey(row)] = row);
+            const list: OperationCodeList = {};
+            operationCodes.forEach((row: OperationCode) => list[operationCodeKey(row)] = row);
             dispatch({type: loadOCListSucceeded, payload: {list}});
-        } catch(err) {
-            console.log("loadOperationCodesAction()", err.message);
-            dispatch({type: loadOCListFailed, payload: {error: err, context: loadOCListRequested}});
+        } catch (err) {
+            if (err instanceof Error) {
+                console.log("loadOperationCodesAction()", err.message);
+                return dispatch({type: loadOCListFailed, payload: {error: err, context: loadOCListRequested}});
+            }
+            console.error(err);
         }
     }
 
-export const loadOperationCodeAction = (oc:OperationCode):OperationCodeThunkAction =>
+export const loadOperationCodeAction = (oc: OperationCode): OperationCodeThunkAction =>
     async (dispatch, getState) => {
         try {
             const state = getState();
@@ -66,9 +70,12 @@ export const loadOperationCodeAction = (oc:OperationCode):OperationCodeThunkActi
             const [selected] = operationCodes;
             dispatch({type: loadOCSucceeded, payload: {selected, accounts, routings: whereUsed}});
 
-        } catch(err) {
-            console.log("loadOperationCodesAction()", err.message);
-            dispatch({type: loadOCFailed, payload: {error: err, context: loadOCRequested}});
+        } catch (err) {
+            if (err instanceof Error) {
+                console.log("loadOperationCodesAction()", err.message);
+                return dispatch({type: loadOCFailed, payload: {error: err, context: loadOCRequested}});
+            }
+            console.error(err);
         }
     }
 

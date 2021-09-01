@@ -1,14 +1,14 @@
 import {combineReducers} from "redux";
 import {
-    BillHeader, BillHeaderList,
     billHeaderSorter,
     BillHeaderSorterProps,
-    BillOptionHeader, BillOptionHeaderList, billOptionHeaderSorter,
+    billOptionHeaderSorter,
     BillOptionHeaderSorterProps,
     defaultState
 } from "./types";
 import {RootState} from "../index";
 import {loadRoutingSucceeded, RoutingAction, routingSelected} from "../routing";
+import {BillHeader, BillHeaderList, BillOptionHeader, BillOptionHeaderList} from "../types";
 
 
 export const billHeaderSelector = (sort: BillHeaderSorterProps) =>

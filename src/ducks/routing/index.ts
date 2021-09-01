@@ -1,17 +1,16 @@
 import {combineReducers} from "redux";
 import {
-    defaultDetailSort, defaultHeaderSort,
+    defaultDetailSort,
     defaultState,
     RoutingAction,
-    RoutingDetail,
     RoutingDetailSorterProps,
-    RoutingHeader, RoutingHeaderList,
     RoutingHeaderSorterProps,
     SelectedRoutingState
 } from "./types";
 import {RootState} from "../index";
 import {OperationCodeAction} from "../operationCodes/types";
 import {loadOCSucceeded} from "../operationCodes";
+import {RoutingDetail, RoutingHeader, RoutingHeaderList} from "../types";
 
 export * from './types';
 
@@ -52,7 +51,7 @@ export const listSelector = (sort: RoutingHeaderSorterProps) => (state: RootStat
     return Object.values(state.routing.list).sort(routingHeaderSorter(sort));
 }
 
-export const filteredlistSelector = (sort: RoutingHeaderSorterProps) => (state: RootState): RoutingHeader[] => {
+export const filteredListSelector = (sort: RoutingHeaderSorterProps) => (state: RootState): RoutingHeader[] => {
     let filter: RegExp = /^/;
     try {
         filter = new RegExp(state.routing.filter, 'i');

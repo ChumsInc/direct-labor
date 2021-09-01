@@ -1,16 +1,15 @@
 import {combineReducers} from "redux";
 import {
     defaultState,
-    OperationCode,
     OperationCodeAction,
     operationCodeDefaultSort,
-    operationCodeKey, OperationCodeList, operationCodeSearchKey,
+    operationCodeKey,
     operationCodeSorter,
     OperationCodeSorterProps
 } from "./types";
 import {RootState} from "../index";
 import {routingDetailKey} from "../routing";
-import {workCenterKey} from "../workCenters/types";
+import {OperationCode, OperationCodeList} from "../types";
 
 
 export const loadOCListRequested = 'operationCodes/loadListRequested';
@@ -25,7 +24,10 @@ export const searchChanged = 'operationCodes/searchChanged';
 
 export const countRecordsSelector = (state: RootState) => Object.keys(state.operationCodes.list).length;
 
-export const listSelector = (sort: OperationCodeSorterProps) => (state: RootState):OperationCode[] => {
+export const listSelector = (state:RootState):OperationCode[] => Object.values(state.operationCodes.list)
+    .sort(operationCodeSorter(operationCodeDefaultSort));
+
+export const filteredListSelector = (sort: OperationCodeSorterProps) => (state: RootState): OperationCode[] => {
     const {filterWC, filter, list} = state.operationCodes;
     let searchRegex = /^/;
     try {
@@ -37,6 +39,7 @@ export const listSelector = (sort: OperationCodeSorterProps) => (state: RootStat
         .filter(oc => searchRegex.test(oc.OperationCode) || searchRegex.test(oc.OperationDescription))
         .sort(operationCodeSorter(sort));
 }
+
 
 export const filterWorkCenterSelector = (state: RootState): string => state.operationCodes.filterWC;
 export const filterSelector = (state: RootState): string => state.operationCodes.filter;
@@ -52,12 +55,14 @@ export const selectedOCSelector = (state: RootState): OperationCode | null => st
 export const loadingSelector = (state: RootState): boolean => state.operationCodes.loading;
 export const loadedSelector = (state: RootState): boolean => state.operationCodes.loaded;
 export const whereUsedSelector = (state: RootState): string[] => state.operationCodes.whereUsed;
+
 export const operationCodeSelector = (workCenter?: string, operationCode?: string) =>
     (state: RootState): OperationCode | null => {
         if (!workCenter || !operationCode) {
             return null;
         }
-        return state.operationCodes.list[operationCodeSearchKey({workCenter, operationCode})] || null;
+        const key = operationCodeKey({WorkCenter: workCenter, OperationCode: operationCode});
+        return state.operationCodes.list[key] || null;
     }
 
 const listReducer = (state: OperationCodeList = defaultState.list, action: OperationCodeAction): OperationCodeList => {

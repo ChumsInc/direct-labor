@@ -1,15 +1,10 @@
 import React from "react";
-import {RoutingDetail, RoutingDetailTableField} from "./types";
+import {RoutingDetail, RoutingDetailTableField} from "../types";
 import {Link} from 'react-router-dom';
 import {SortableTable} from "chums-ducks";
 import {routingDetailKey} from "./index";
 import numeral from "numeral";
-import {
-    operationCodesOperationPath,
-    operationCodesRouterPath,
-    selectedRoutingPath,
-    selectedWorkCenterPath
-} from "../../routerPaths";
+import {operationCodesOperationPath, selectedRoutingPath, selectedWorkCenterPath} from "../../routerPaths";
 
 export interface RoutingDetailListProps {
     list: RoutingDetail[],

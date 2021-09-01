@@ -1,58 +1,27 @@
 import {combineReducers} from "redux";
+import {defaultState, DLCodesAction} from "./types";
+import {DLCode, DLCodeList, DLCodeSteps} from "../types";
 import {
-    defaultDLCodeSort,
-    defaultState,
-    DLCode, DLCodeList,
-    DLCodesAction,
-    dlCodeSorter, DLCodeSorterProps, DLCodeStep, DLCodeSteps,
-    dlCodeStepSorter,
-    SelectedDLCodeState
-} from "./types";
-import {RootState} from "../index";
-
-export const loadDLCodesRequested = 'dlCodes/loadListRequested';
-export const loadDLCodesSucceeded = 'dlCodes/loadListSucceeded';
-export const loadDLCodesFailed = 'dlCodes/loadListFailed';
-export const dlCodeSelected = 'dlCodes/codeSelected';
-export const loadDLCodeRequested = 'dlCodes/loadRequested';
-export const loadDLCodeSucceeded = 'dlCodes/loadSucceeded';
-export const loadDLCodeFailed = 'dlCodes/loadFailed';
-export const stepAddRequested = 'dlCodes/stepAddRequested';
-export const stepAddSucceeded = 'dlCodes/stepAddSucceeded';
-export const stepAddFailed = 'dlCodes/stepAddFailed';
-export const saveDLCodeRequested = 'dlCodes/saveRequested';
-export const saveDLCodeSucceeded = 'dlCodes/saveSucceeded';
-export const saveDLCodeFailed = 'dlCodes/saveFailed';
-export const sortDLStepRequested = 'dlCodes/sortRequested';
-export const sortDLStepSucceeded = 'dlCodes/sortSucceeded';
-export const sortDLStepFailed = 'dlCodes/sortFailed';
-export const dlCodesFilterChanged = 'dlCodes/filterChanged';
+    dlCodeChanged,
+    dlCodeSelected,
+    dlCodeStepDeleted,
+    filterChanged,
+    loadDLCodeFailed,
+    loadDLCodeRequested,
+    loadDLCodesFailed,
+    loadDLCodesRequested,
+    loadDLCodesSucceeded,
+    loadDLCodeSucceeded,
+    saveDLCodeFailed,
+    saveDLCodeRequested,
+    saveDLCodeSucceeded,
+    sortDLStepSucceeded,
+    stepAddSucceeded,
+    wcFilterChanged
+} from "./actionTypes";
 
 
-export const listSelector = (sort:DLCodeSorterProps) => (state:RootState):DLCode[] => {
-    let re = /^/;
-    try {
-        re = new RegExp(state.dlCodes.filter, 'i');
-    } catch(err) {}
-
-    return Object.values(state.dlCodes.list)
-        .filter(dl => re.test(dl.dlCode) || re.test(dl.description))
-        .sort(dlCodeSorter(sort));
-}
-
-export const listLengthSelector = (state:RootState):number => Object.keys(state.dlCodes.list).length;
-export const dlCodeSelector = (id:number) => (state:RootState):DLCode|null => state.dlCodes.list[id] || null;
-export const loadingSelector = (state:RootState):boolean => state.dlCodes.loading;
-export const loadedSelector = (state:RootState):boolean => state.dlCodes.loaded;
-export const selectedHeaderSelector = (state:RootState):DLCode|null => state.dlCodes.selected.header;
-export const selectedStepsSelector = (state:RootState):DLCodeStep[] => {
-    const {steps} = state.dlCodes.selected;
-    return Object.keys(steps).sort().map(key => steps[Number(key)]);
-}
-export const selectedLoadingSelector = (state:RootState):boolean => state.dlCodes.selected.loading;
-export const selectedSavingSelector = (state:RootState):boolean => state.dlCodes.selected.saving;
-
-const listReducer = (state:DLCodeList = defaultState.list, action:DLCodesAction):DLCodeList => {
+const listReducer = (state: DLCodeList = defaultState.list, action: DLCodesAction): DLCodeList => {
     const {type, payload} = action;
     switch (type) {
     case loadDLCodesSucceeded:
@@ -69,62 +38,141 @@ const listReducer = (state:DLCodeList = defaultState.list, action:DLCodesAction)
             }
         }
         return state;
-    default: return state;
+    default:
+        return state;
     }
 }
 
-const selectedReducer = (state:SelectedDLCodeState = defaultState.selected, action:DLCodesAction):SelectedDLCodeState => {
-    const {type} = action;
-    const {header = null, steps = {}} = action?.payload || {};
+const selectedHeaderReducer = (state: DLCode = defaultState.selected.header, action: DLCodesAction): DLCode => {
+    const {type, payload} = action;
     switch (type) {
-    case dlCodeSelected:
-        return {header: header, steps: {}, loading: false, saving: false};
-    case loadDLCodeRequested:
-        return {...state, steps: {}, loading: true};
-    case loadDLCodeFailed:
-        return {...state, loading: false};
     case loadDLCodeSucceeded:
     case saveDLCodeSucceeded:
     case stepAddSucceeded:
     case sortDLStepSucceeded:
-        return {header, steps, loading: false, saving: false};
-    case saveDLCodeRequested:
-    case sortDLStepRequested:
-    case stepAddRequested:
-        return {...state, saving: true};
-    case saveDLCodeFailed:
-    case sortDLStepFailed:
-    case stepAddFailed:
-        return {...state, saving: false};
-    default: return state;
+    case dlCodeSelected:
+        if (payload?.header) {
+            return {...payload.header};
+        }
+        return state;
+    case dlCodeChanged:
+        if (payload?.change) {
+            return {...state, ...payload.change, changed: true};
+        }
+        return state;
+    default:
+        return state;
     }
 }
 
-const loadingReducer = (state:boolean = defaultState.loading, action:DLCodesAction):boolean => {
+const selectedStepsReducer = (state: DLCodeSteps = defaultState.selected.steps, action: DLCodesAction): DLCodeSteps => {
+    const {type, payload} = action;
+    switch (type) {
+    case loadDLCodeSucceeded:
+    case saveDLCodeSucceeded:
+    case stepAddSucceeded:
+    case sortDLStepSucceeded:
+    case dlCodeSelected:
+        if (payload?.steps) {
+            return {...payload.steps};
+        }
+        return state;
+    case dlCodeStepDeleted:
+        if (payload?.id) {
+            const newState = {...state};
+            delete newState[payload.id];
+            return {...newState};
+        }
+        return state;
+    default:
+        return state;
+    }
+}
+
+const selectedSavingReducer = (state: boolean = false, action: DLCodesAction): boolean => {
+    switch (action.type) {
+    case saveDLCodeRequested:
+        return true;
+    case saveDLCodeSucceeded:
+    case saveDLCodeFailed:
+        return false;
+    default:
+        return state;
+    }
+}
+
+const selectedLoadingReducer = (state: boolean = false, action: DLCodesAction): boolean => {
+    switch (action.type) {
+    case loadDLCodeRequested:
+        return true;
+    case loadDLCodeFailed:
+    case loadDLCodeSucceeded:
+        return false;
+    default:
+        return state;
+    }
+}
+
+const selectedChangedReducer = (state: boolean = false, action: DLCodesAction): boolean => {
+    switch (action.type) {
+    case dlCodeChanged:
+    case dlCodeStepDeleted:
+        return true;
+    case loadDLCodeSucceeded:
+    case loadDLCodesSucceeded:
+    case saveDLCodeSucceeded:
+        return false;
+    default:
+        return state;
+    }
+}
+
+const selectedReducer = combineReducers({
+    header: selectedHeaderReducer,
+    steps: selectedStepsReducer,
+    loading: selectedLoadingReducer,
+    saving: selectedSavingReducer,
+    changed: selectedChangedReducer,
+})
+
+const loadingReducer = (state: boolean = defaultState.loading, action: DLCodesAction): boolean => {
     switch (action.type) {
     case loadDLCodesRequested:
         return true;
     case loadDLCodesSucceeded:
     case loadDLCodesFailed:
         return false;
-    default: return state;
+    default:
+        return state;
     }
 }
 
-const loadedReducer = (state:boolean = defaultState.loaded, action:DLCodesAction):boolean => {
+const loadedReducer = (state: boolean = defaultState.loaded, action: DLCodesAction): boolean => {
     switch (action.type) {
     case loadDLCodesSucceeded:
         return true;
-    default: return state;
+    default:
+        return state;
     }
 }
 
-const filterReducer = (state:string = defaultState.filter, action: DLCodesAction):string => {
+const filterReducer = (state: string = defaultState.filter, action: DLCodesAction): string => {
     const {type, payload} = action;
     switch (type) {
-    case dlCodesFilterChanged:
+    case filterChanged:
         return payload?.filter || '';
-    default: return state;
+    default:
+        return state;
+    }
+}
+
+const workCenterFilterReducer = (state: string = defaultState.filter, action: DLCodesAction): string => {
+    const {type, payload} = action;
+    switch (type) {
+    case wcFilterChanged:
+        return payload?.filter || '';
+    default:
+        return state;
     }
 }
 
@@ -134,4 +182,5 @@ export default combineReducers({
     loading: loadingReducer,
     loaded: loadedReducer,
     filter: filterReducer,
+    wcFilter: workCenterFilterReducer,
 })

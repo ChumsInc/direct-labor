@@ -11,8 +11,10 @@ import {useDispatch, useSelector} from "react-redux";
 
 import classNames from "classnames";
 import MultiLineField from "../../components/MultiLineField";
-import {BillHeader, billHeaderKey, BillHeaderSorterProps, BillHeaderTableField, BillType, BillTypeDesc} from "./types";
+import {billHeaderKey, BillHeaderSorterProps} from "./types";
 import {billHeaderSelector} from "./index";
+import StatusBadge from "../../components/StatusBadge";
+import {BillHeader, BillHeaderTableField, BillType, BillTypeDesc} from "../types";
 
 export interface BillWhereUsedProps {
     tableKey: string,
@@ -35,7 +37,11 @@ const detailTableFields: BillHeaderTableField[] = [
         sortable: true,
         render: (row) => !!row.DateLastUsed ? new Date(row.DateLastUsed).toLocaleDateString() : 'N/A'
     },
-    {field: 'BillHasOptions', title: 'Has Options'},
+    {
+        field: 'BillHasOptions',
+        title: 'Has Options',
+        render: (row) => <StatusBadge status={row.BillHasOptions === 'Y'} falseColor="secondary"/>
+    },
     {
         field: 'DateUpdated',
         title: 'Date Updated',
@@ -45,9 +51,8 @@ const detailTableFields: BillHeaderTableField[] = [
     {field: 'updatedByUser', title: 'Updated By'},
 ];
 
-const rowClassName = (row:BillHeader) => classNames({
+const rowClassName = (row: BillHeader) => classNames({
     'text-danger': row.BillType === 'I',
-    'text-info': row.BillType !== 'I' && row.BillHasOptions === 'Y'
 })
 
 const BillWhereUsed: React.FC<BillWhereUsedProps> = ({tableKey, className}) => {

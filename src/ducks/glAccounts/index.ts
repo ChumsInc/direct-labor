@@ -1,16 +1,8 @@
 import {OperationCodeAction} from "../operationCodes/types";
 import {loadOCSucceeded} from "../operationCodes";
 import {RootState} from "../index";
+import {GLAccount, GLAccountList} from "../types";
 
-export interface GLAccount {
-    AccountKey: string,
-    Account: string,
-    AccountDesc: string,
-}
-
-export interface GLAccountList {
-    [key: string]: GLAccount,
-}
 
 export interface GlAccountsState {
     accounts: GLAccountList

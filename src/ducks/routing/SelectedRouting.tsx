@@ -4,14 +4,7 @@ import SelectedRoutingDetail from "./SelectedRoutingDetail";
 import BillWhereUsed from "../billMaterials/BillWhereUsed";
 import BillOptionWhereUsed from "../billMaterials/BillOptionWhereUsed";
 import {useDispatch, useSelector} from "react-redux";
-import {
-    loadedSelector,
-    loadingSelector,
-    routingHeaderKey,
-    routingHeaderSelector,
-    selectedHeaderSelector,
-    selectedSelector
-} from "./index";
+import {loadedSelector, routingHeaderKey, routingHeaderSelector, selectedHeaderSelector} from "./index";
 import {selectRoutingAction} from "./actions";
 import {useHistory} from "react-router-dom";
 import {routingPath} from "../../routerPaths";
@@ -19,8 +12,9 @@ import {Helmet} from "react-helmet";
 import {Alert} from "chums-ducks";
 
 export interface SelectedRoutingProps {
-    routingNo?:string,
+    routingNo?: string,
 }
+
 const SelectedRouting: React.FC<SelectedRoutingProps> = ({routingNo}) => {
     const dispatch = useDispatch();
     const history = useHistory();

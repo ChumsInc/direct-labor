@@ -1,13 +1,20 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import React from 'react';
+import {useSelector} from "react-redux";
 import MainNav from "./MainNav";
 import RoutingContent from "./RoutingContent";
 import {AlertList, selectedTabSelector} from "chums-ducks";
 import WorkCenterContent from "./WorkCenterContent";
 import OperationCodesContent from "./OperationCodesContent";
 import {Route} from 'react-router-dom';
-import {dlCodesRouterPath, operationCodesRouterPath, routingRouterPath, workCenterRouterPath} from "../routerPaths";
+import {
+    dlCodesRouterPath,
+    dlStepsRouterPath,
+    operationCodesRouterPath,
+    routingRouterPath,
+    workCenterRouterPath
+} from "../routerPaths";
 import DirectLaborCodesContent from "./DirectLaborCodesContent";
+import DirectLaborStepsContent from "./DirectLaborStepsContent";
 
 const mainTabKey = 'dl-main';
 
@@ -26,6 +33,7 @@ const App: React.FC = () => {
                     <Route path={workCenterRouterPath}  component={WorkCenterContent} />
                     <Route path={operationCodesRouterPath}  component={OperationCodesContent} />
                     <Route path={dlCodesRouterPath} component={DirectLaborCodesContent} />
+                    <Route path={dlStepsRouterPath} component={DirectLaborStepsContent} />
                 </div>
             </div>
         </>

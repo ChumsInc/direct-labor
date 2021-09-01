@@ -1,12 +1,12 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {filterWorkCenterSelector, loadingSelector, filterSelector} from "./index";
+import {filterSelector, filterWorkCenterSelector, loadingSelector} from "./index";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {WorkCenter} from "../workCenters/types";
+import {WorkCenter} from "../types";
 import {filterChangedAction, loadOperationCodesAction, workCenterChangedAction} from "./actions";
-import {Input, SpinnerButton} from "chums-ducks";
-import {getPreference, setPreference} from "../../utils/preferences";
-import {currentOCWorkCenterKey} from "../../utils/localStorageKeys";
+import {SpinnerButton} from "chums-ducks";
+import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
+import SearchInput from "../../components/SearchInput";
 
 
 const OperationCodeFilter: React.FC = () => {
@@ -36,8 +36,7 @@ const OperationCodeFilter: React.FC = () => {
                 <WorkCenterSelect value={workCenterFilter} onSelectWorkCenter={onSelectWorkCenter} bsSize="sm"/>
             </div>
             <div className="col-auto">
-                <Input type="search" className="form-control form-control-sm" placeholder="Search"
-                       value={search} onChange={onChangeSearch}/>
+                <SearchInput value={search} onChange={onChangeSearch} bsSize="sm"/>
             </div>
             <div className="col-auto">
                 <SpinnerButton size="sm" spinning={loading} onClick={onReload}>Reload</SpinnerButton>

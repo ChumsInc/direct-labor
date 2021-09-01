@@ -1,10 +1,15 @@
+const localStoragePrefix:string = 'com.chums.intranet.direct-labor';
+export const currentTabStorageKey: string = `${localStoragePrefix}.current-tab`;
+export const currentOCWorkCenterKey: string = `${localStoragePrefix}.current-operation-work-center`;
+export const currentMenuCollapseKey: string = `${localStoragePrefix}.current-menu-collapse`;
+
 export const setPreference = (key:string, value:any) => {
     try {
         if (!global.window) {
             return;
         }
         window.localStorage.setItem(key, JSON.stringify(value));
-    } catch(err) {
+    } catch(err:any) {
         console.log("setPreference()", err.message);
     }
 };
@@ -26,7 +31,7 @@ export const getPreference = (key:string, defaultValue: any) => {
             return defaultValue;
         }
         return JSON.parse(value);
-    } catch(err) {
+    } catch(err:any) {
         console.log("getPreference()", err.message);
         return defaultValue;
     }

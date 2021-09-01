@@ -15,6 +15,7 @@ export interface SelectedOperationCodeProps {
     workCenter?: string,
     operationCode?: string
 }
+
 const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter, operationCode}) => {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -54,12 +55,12 @@ const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter
                 <title>D/L OpCode: {WorkCenter}/{OperationCode}</title>
             </Helmet>
             <FormColumn label={"Work Center"}>
-                <h3>{WorkCenter}</h3>
-            </FormColumn>
+            <h3>{WorkCenter}</h3>
+        </FormColumn>
             <FormColumn label={"Operation Code"}>
                 <h3>{OperationCode}</h3>
             </FormColumn>
-            <hr />
+            <hr/>
             <FormColumn label="Description">
                 {OperationDescription}
             </FormColumn>
@@ -70,7 +71,7 @@ const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter
                 {numeral(FixedOvhdPercentOfCost / 100).format('0,0.0%')}
             </FormColumn>
 
-            <hr />
+            <hr/>
             <h4>GL Codes</h4>
             <FormColumn label="WIP Direct Account">
                 <GLAccountElement accountKey={WipDirectAcct} showDescription/>

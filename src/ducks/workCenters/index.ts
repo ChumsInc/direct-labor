@@ -1,23 +1,17 @@
 import {combineReducers} from "redux";
 import {RootState} from "../index";
+import {defaultState, WorkCenterAction, workCenterSorter, WorkCenterSorterProps} from "./types";
+import {WorkCenter, WorkCenterList} from "../types";
 import {
-    WorkCenter,
-    defaultState,
-    WorkCenterAction,
-    workCenterSorter,
-    defaultWorkCenterSort,
-    WorkCenterSorterProps, WorkCenterList
-} from "./types";
-
-export const loadWorkCentersRequested = 'workCenters/loadRequested';
-export const loadWorkCentersSucceeded = 'workCenters/loadSucceeded';
-export const loadWorkCentersFailed = 'workCenters/loadFailed';
-export const saveWorkCenterRateRequested = 'workCenters/saveRateRequested';
-export const saveWorkCenterRateSucceeded = 'workCenters/saveRateSucceeded';
-export const saveWorkCenterRateFailed = 'workCenters/saveRateFailed';
-export const workCenterSelected = 'workCenters/selected';
-export const changeWorkCenter = 'workCenters/selectedChanged';
-
+    changeWorkCenter,
+    loadWorkCentersFailed,
+    loadWorkCentersRequested,
+    loadWorkCentersSucceeded,
+    saveWorkCenterRateFailed,
+    saveWorkCenterRateRequested,
+    saveWorkCenterRateSucceeded,
+    workCenterSelected
+} from "./actionTypes";
 
 export const listSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] =>
     Object.values(state.workCenters.list).sort(workCenterSorter(sort));

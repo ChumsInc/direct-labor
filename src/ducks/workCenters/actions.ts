@@ -1,14 +1,17 @@
-import {WorkCenter, WorkCenterList, WorkCenterThunkAction,} from "./types";
-import {
-    changeWorkCenter,
-    loadingSelector,
-    loadWorkCentersFailed,
-    loadWorkCentersRequested,
-    loadWorkCentersSucceeded, saveWorkCenterRateRequested, saveWorkCenterRateSucceeded, selectedWorkCenterSelector,
-    workCenterSelected,
-} from "./index";
+import {WorkCenterThunkAction,} from "./types";
+import {loadingSelector, selectedWorkCenterSelector,} from "./index";
 import {fetchJSON} from "chums-ducks";
 import {useSelector} from "react-redux";
+import {WorkCenter, WorkCenterList} from "../types";
+import {
+    changeWorkCenter,
+    loadWorkCentersFailed,
+    loadWorkCentersRequested,
+    loadWorkCentersSucceeded,
+    saveWorkCenterRateRequested,
+    saveWorkCenterRateSucceeded,
+    workCenterSelected
+} from "./actionTypes";
 
 const workCenterURL = (workCenter:string = '') => '/api/operations/production/wo/chums/work-centers/:workCenter'
     .replace(':workCenter', encodeURIComponent(workCenter));
@@ -30,7 +33,7 @@ export const loadWorkCentersAction = ():WorkCenterThunkAction =>
                 list[wc.WorkCenterCode] = wc;
             })
             dispatch({type: loadWorkCentersSucceeded, payload: {list}})
-        } catch(err) {
+        } catch(err:any) {
             console.log("loadWorkCentersAction()", err.message);
             dispatch({type: loadWorkCentersFailed, payload: {error: err, context: loadWorkCentersRequested}})
         }
@@ -51,7 +54,7 @@ export const saveWorkCenterRate = ():WorkCenterThunkAction =>
             const body = JSON.stringify(selected);
             const {workCenter} = await fetchJSON(workCenterURL(selected.WorkCenterCode), {method: 'POST', body});
             dispatch({type: saveWorkCenterRateSucceeded, payload: {selected: workCenter}});
-        } catch(err) {
+        } catch(err:any) {
             console.log("saveWorkCenterRate()", err.message);
             return Promise.reject(err);
         }

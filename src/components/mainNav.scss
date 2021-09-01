@@ -1,0 +1,21 @@
+.dl-nav {
+  .nav-link {
+    display: flex;
+    flex-direction: row;
+  }
+  .nav-item-icon {
+    display: inline-block;
+  }
+  .nav-item-text {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    display: inline-block;
+    transition: width 0.1s ease-in-out;
+  }
+  &.collapsed {
+    .nav-item-text {
+      width: 0;
+    }
+  }
+}

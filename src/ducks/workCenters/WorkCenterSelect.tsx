@@ -1,9 +1,11 @@
 import React, {ChangeEvent, SelectHTMLAttributes, useEffect} from "react";
-import {defaultWorkCenterSort, WorkCenter} from "./types";
+import {defaultWorkCenterSort} from "./types";
 import {useDispatch, useSelector} from "react-redux";
 import {listSelector, loadedSelector} from './index'
 import {BootstrapSize, Select} from "chums-ducks";
 import {loadWorkCentersAction} from "./actions";
+import {workCenterIcon} from "../../icons";
+import {WorkCenter} from "../types";
 
 export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     value: string,
@@ -40,45 +42,48 @@ const WorkCenterSelect: React.FC<WorkCenterSelectProps> = ({
     }
 
     return (
-        <Select value={value} onChange={changeHandler} bsSize={bsSize} {...rest}>
-            <option value="">Select Work Center</option>
-            <optgroup label="Std Work Centers">
+        <div className="input-group input-group-sm">
+            <div className="input-group-text"><span className={workCenterIcon} /></div>
+            <Select value={value} onChange={changeHandler} bsSize={bsSize} {...rest}>
+                <option value="">Select Work Center</option>
+                <optgroup label="Std Work Centers">
 
-                {list
-                    .filter(wc => wc.isStandardWC)
-                    .map(wc => (
+                    {list
+                        .filter(wc => wc.isStandardWC)
+                        .map(wc => (
                             <option key={wc.WorkCenterCode}
                                     value={wc.WorkCenterCode}>
                                 {wc.WorkCenterCode} / {wc.Description}
                             </option>
                         ))
-                }
-            </optgroup>
-            <optgroup label="In House Work Centers">
-                {list
-                    .filter(wc => !wc.isStandardWC)
-                    .filter(wc => !wc.OutsideProcessing)
-                    .map(wc => (
-                        <option key={wc.WorkCenterCode}
-                                value={wc.WorkCenterCode}>
-                            {wc.WorkCenterCode} / {wc.Description}
-                        </option>
-                    ))
-                }
-            </optgroup>
-            <optgroup label="Other Work Centers">
-                {list
-                    .filter(wc => !wc.isStandardWC)
-                    .filter(wc => wc.OutsideProcessing)
-                    .map(wc => (
-                        <option key={wc.WorkCenterCode}
-                                value={wc.WorkCenterCode}>
-                            {wc.WorkCenterCode} / {wc.Description}
-                        </option>
-                    ))
-                }
-            </optgroup>
-        </Select>
+                    }
+                </optgroup>
+                <optgroup label="In House Work Centers">
+                    {list
+                        .filter(wc => !wc.isStandardWC)
+                        .filter(wc => !wc.OutsideProcessing)
+                        .map(wc => (
+                            <option key={wc.WorkCenterCode}
+                                    value={wc.WorkCenterCode}>
+                                {wc.WorkCenterCode} / {wc.Description}
+                            </option>
+                        ))
+                    }
+                </optgroup>
+                <optgroup label="Other Work Centers">
+                    {list
+                        .filter(wc => !wc.isStandardWC)
+                        .filter(wc => wc.OutsideProcessing)
+                        .map(wc => (
+                            <option key={wc.WorkCenterCode}
+                                    value={wc.WorkCenterCode}>
+                                {wc.WorkCenterCode} / {wc.Description}
+                            </option>
+                        ))
+                    }
+                </optgroup>
+            </Select>
+        </div>
     )
 }
 

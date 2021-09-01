@@ -1,6 +1,6 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {selectedHeaderSelector, selectedLoadingSelector} from "./index";
+import {useSelector} from "react-redux";
+import {selectedHeaderSelector} from "./index";
 import {Alert, FormColumn} from "chums-ducks";
 import numeral from "numeral";
 

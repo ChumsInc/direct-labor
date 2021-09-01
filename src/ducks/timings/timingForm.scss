@@ -1,0 +1,11 @@
+
+input.dl-timing--timing-entry {
+  min-width: 3rem; max-width: 5rem;
+  text-align: end;
+  margin-bottom: 0.25rem;
+}
+.input-group {
+  input.dl-timing--timing-entry {
+    margin-bottom: 0;
+  }
+}

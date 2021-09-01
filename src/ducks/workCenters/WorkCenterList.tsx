@@ -1,20 +1,23 @@
 import React, {useEffect, useState} from "react";
 import {
-    addPageSetAction, FormCheck,
-    pagedDataSelector, PagerDuck,
+    addPageSetAction,
+    FormCheck,
+    pagedDataSelector,
+    PagerDuck,
     SortableTable,
     sortableTableSelector,
     SpinnerButton,
     tableAddedAction
 } from "chums-ducks";
 import {useDispatch, useSelector} from "react-redux";
-import {loadWorkCentersAction, selectWorkCenterAction} from "./actions";
-import {loadingSelector, listSelector, selectedWorkCenterSelector, loadedSelector} from "./index";
-import {defaultWorkCenterSort, WorkCenter, workCenterKey, WorkCenterSorterProps, WorkCenterTableField} from "./types";
+import {loadWorkCentersAction} from "./actions";
+import {listSelector, loadedSelector, loadingSelector, selectedWorkCenterSelector} from "./index";
+import {defaultWorkCenterSort, workCenterKey, WorkCenterSorterProps, WorkCenterTableField} from "./types";
 import MultiLineField from "../../components/MultiLineField";
 import numeral from "numeral";
 import {useHistory} from "react-router-dom";
 import {selectedWorkCenterPath} from "../../routerPaths";
+import {WorkCenter} from "../types";
 
 const tableKey = 'work-centers-list';
 const fields: WorkCenterTableField[] = [
