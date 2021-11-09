@@ -56,7 +56,9 @@ const fields: DLCodeTableField[] = [
         title: 'Op Code',
         sortable: true,
         render: (row: DLCode) => (
-            <Link to={operationCodesOperationPath(row.workCenter, row.operationCode)}>{row.operationCode}</Link>)
+            <Link to={operationCodesOperationPath(row.workCenter, row.operationCode)}
+                  onClick={(ev) => ev.stopPropagation()}>{row.operationCode}</Link>
+        )
     },
     {
         field: 'StdRatePiece',

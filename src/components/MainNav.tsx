@@ -49,8 +49,6 @@ const MainNav: React.FC<MainNavProps> = ({tabKey}) => {
         dispatch(tabListCreatedAction(mainTabs, tabKey, defaultTab));
     }, []);
 
-    const onSelectTab = (id?: string) => setPreferredTab(id || '');
-
     const onCollapse = () => {
         setPreference(currentMenuCollapseKey, !collapsed);
         setCollapsed(!collapsed);
@@ -63,7 +61,7 @@ const MainNav: React.FC<MainNavProps> = ({tabKey}) => {
                 <ul className="nav">
                     <NavItem onSelect={onCollapse} id="toggle-nav" title="Collapse" icon={collapseIcon}/>
                 </ul>
-                <PillRouterList tabKey={tabKey} className="flex-column" onSelectTab={onSelectTab}/>
+                <PillRouterList tabKey={tabKey} className="flex-column" />
             </div>
         </ErrorBoundary>
     )
