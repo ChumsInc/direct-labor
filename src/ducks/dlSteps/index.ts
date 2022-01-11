@@ -1,7 +1,7 @@
 import {combineReducers} from "redux";
 import {DLCode, DLStep, DLSteps} from "../types";
 import {defaultState, DLStepsAction} from "./types";
-import {saveTimingEntriesSucceeded} from "../timings/actionTypes";
+import {applyTimingSucceeded, saveTimingEntriesSucceeded} from "../timings/actionTypes";
 import {
     filterChanged,
     filterInactiveChanged,
@@ -31,6 +31,7 @@ const listReducer = (state: DLSteps = defaultState.list, action: DLStepsAction):
         }
         return state;
     case saveTimingEntriesSucceeded:
+    case applyTimingSucceeded:
         if (payload?.step) {
             return {
                 ...state,
@@ -89,6 +90,7 @@ const selectedStepReducer = (state: DLStep = defaultState.selected.step, action:
         }
         return state;
     case stepsLoadStepSucceeded:
+    case applyTimingSucceeded:
         if (payload?.step) {
             return {
                 ...payload.step

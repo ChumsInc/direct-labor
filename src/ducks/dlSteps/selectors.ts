@@ -23,6 +23,7 @@ export const listLengthSelector = (state: RootState) => Object.values(state.dlSt
 export const machinesSelector = (state: RootState) => state.dlSteps.machines;
 export const selectStepSelector = (key: number) => (state: RootState) => state.dlSteps.list[key] || newDLStep;
 export const selectedStepSelector = (state: RootState) => state.dlSteps.selected.step;
+export const selectCurrentStep = (state: RootState) => state.dlSteps.selected.step;
 export const selectedStepTimingsSelector = (state: RootState) => (state.dlSteps.selected.step.timings || []).sort(dlStepTimingSorter);
 export const selectedLoadingSelector = (state: RootState) => state.dlSteps.selected.loading;
 export const selectedSavingSelector = (state: RootState) => state.dlSteps.selected.saving;

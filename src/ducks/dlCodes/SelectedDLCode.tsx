@@ -162,6 +162,7 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                     <div className="col-auto">
                         <SpinnerButton type="button" color="danger"
                                        disabled={loading || saving || !!steps.length || !selected.id} size="sm"
+                                       onClick={() => window.alert('Not implemented yet.')}
                                        spinnerAfter>
                             Delete DL Code
                         </SpinnerButton>

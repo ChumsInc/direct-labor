@@ -87,7 +87,7 @@ export const loadDLCodesAction = (): DLCodesThunkAction =>
 export const loadDLCodeAction = (dlCode: DLCode): DLCodesThunkAction =>
     async (dispatch, getState) => {
         try {
-            dispatch({type: dlCodeSelected, payload: {header: dlCode}});
+            dispatch({type: dlCodeSelected, payload: {header: dlCode, steps: []}});
             if (!dlCode.id) {
                 return;
             }

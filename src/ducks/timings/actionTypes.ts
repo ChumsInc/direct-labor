@@ -12,6 +12,10 @@ export const saveTimingEntriesRequested = 'timings/saveTimingEntriesRequested';
 export const saveTimingEntriesSucceeded = 'timings/saveTimingEntriesSucceeded';
 export const saveTimingEntriesFailed = 'timings/saveTimingEntriesFailed';
 
+export const applyTimingRequested = 'timings/applyTimingRequested';
+export const applyTimingSucceeded = 'timings/applyTimingSucceeded';
+export const applyTimingFailed = 'timings/applyTimingFailed';
+
 export const editTiming = 'timings/editTiming';
 export const changeTiming = 'timings/changeSelectedTiming';
 

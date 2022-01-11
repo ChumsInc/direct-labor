@@ -1,6 +1,6 @@
 import {combineReducers} from "redux";
 import {DLTiming} from "../types";
-import {stepSelected, stepsLoadStepSucceeded} from "../dlSteps/actionTypes";
+import {stepSelected, stepsLoadStepSucceeded, stepTimingChanged} from "../dlSteps/actionTypes";
 import {newTiming, TimingsAction} from "./types";
 import {
     changeTiming,
@@ -64,6 +64,11 @@ const selectedTimingReducer = (state: DLTiming = newTiming, action: TimingsActio
                 ...state,
                 ...payload.change,
             };
+        }
+        return state;
+    case stepTimingChanged:
+        if (payload?.timing) {
+            return payload.timing;
         }
         return state;
     case stepSelected:

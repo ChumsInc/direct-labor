@@ -138,13 +138,14 @@ const DLStepForm: React.FC = () => {
                 <div className="col-auto">
                     <SpinnerButton type="button" color="danger"
                                    disabled={loading || saving || !step.id} size="sm"
+                                   onClick={() => window.alert('Not implemented. Call Steve if you really need this.')}
                                    spinnerAfter>
-                        Delete DL Code
+                        Delete DL Step
                     </SpinnerButton>
 
                 </div>
                 <div className="col-auto">
-                    <Link to="/dl-codes/0" className="btn btn-sm btn-outline-secondary">New DL Code</Link>
+                    <Link to="/dl-steps/0" className="btn btn-sm btn-outline-secondary">New DL Step</Link>
                 </div>
                 <div className="col-auto">
                     <SpinnerButton type="button" spinning={loading} disabled={loading || saving} size="sm"

@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {editTimingSelector, selectedLoadingSelector, selectedSavingSelector, selectedTimingSelector} from "./selectors";
+import {selectTimingsIsEditing, selectCurrentLoading, selectCurrentSaving, selectCurrentTiming} from "./selectors";
 import {DateInput, FormColumn, Input, InputGroup, SpinnerButton} from "chums-ducks";
 import {changeTimingAction, editTimingAction, saveTimingAction} from "./actions";
 import {DLTiming} from "../types";
@@ -12,10 +12,10 @@ const formId = 'selected-timing-edit';
 
 const SelectedTimingForm: React.FC = () => {
     const dispatch = useDispatch();
-    const timing = useSelector(selectedTimingSelector);
-    const saving = useSelector(selectedSavingSelector);
-    const loading = useSelector(selectedLoadingSelector);
-    const edit = useSelector(editTimingSelector);
+    const timing = useSelector(selectCurrentTiming);
+    const saving = useSelector(selectCurrentSaving);
+    const loading = useSelector(selectCurrentLoading);
+    const edit = useSelector(selectTimingsIsEditing);
     const [newEntry, setNewEntry] = useState(0);
 
     const newTimingRef = React.useRef<HTMLInputElement>(null);

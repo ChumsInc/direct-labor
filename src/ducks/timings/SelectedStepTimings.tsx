@@ -3,10 +3,10 @@ import {DLTiming, DLTimingTableField} from "../types";
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
 import {FormCheck, SortableTable} from "chums-ducks";
-import {selectedStepSelector} from "../dlSteps/selectors";
+import {selectCurrentStep, selectedStepSelector} from "../dlSteps/selectors";
 import {dlStepChangeTimingAction} from "../dlSteps/actions";
-import {editTimingSelector, listSelector, selectedLoadingSelector, selectedSavingSelector} from "./selectors";
-import {editTimingAction} from "./actions";
+import {selectTimingsIsEditing, selectTimingList, selectCurrentLoading, selectCurrentSaving} from "./selectors";
+import {applyTimingAction, editTimingAction} from "./actions";
 import SelectedTimingForm from "./SelectedTimingForm";
 import {newTiming} from "./types";
 
@@ -46,12 +46,24 @@ const fields: DLTimingTableField[] = [
 
 const SelectedStepTimings: React.FC = () => {
     const dispatch = useDispatch();
-    const loading = useSelector(selectedLoadingSelector);
-    const saving = useSelector(selectedSavingSelector);
-    const timings = useSelector(listSelector);
-    const edit = useSelector(editTimingSelector);
+    const loading = useSelector(selectCurrentLoading);
+    const saving = useSelector(selectCurrentSaving);
+    const timings = useSelector(selectTimingList);
+    const edit = useSelector(selectTimingsIsEditing);
+    const step = useSelector(selectCurrentStep);
+
     const onClickNewTiming = () => {
-        dispatch(editTimingAction(newTiming));
+        if (!step.id) {
+            return;
+        }
+        dispatch(editTimingAction({...newTiming, timingDate: new Date().toISOString(), idSteps: step.id}));
+    }
+
+    const onApplyTiming = () => {
+        if (!step.id) {
+            return;
+        }
+        dispatch(applyTimingAction());
     }
 
     return (
@@ -61,10 +73,21 @@ const SelectedStepTimings: React.FC = () => {
                 <>
                     <SortableTable tableKey="selected-step-timings" keyField="id" fields={fields} data={timings || []}
                                    size="xs"/>
-                    <button type="button" className="btn btn-sm btn-outline-secondary" disabled={loading || saving}
-                            onClick={onClickNewTiming}>
-                        New Timing
-                    </button>
+                    <div className="row g-3">
+                        <div className="col-auto">
+                            <button type="button" className="btn btn-sm btn-outline-primary"
+                                    disabled={loading || saving || step.id === 0} onClick={onApplyTiming}>
+                                Set Current Timing
+                            </button>
+                        </div>
+                        <div className="col-auto">
+                            <button type="button" className="btn btn-sm btn-outline-secondary"
+                                    disabled={loading || saving || step.id === 0}
+                                    onClick={onClickNewTiming}>
+                                New Timing
+                            </button>
+                        </div>
+                    </div>
                 </>
             )}
         </div>
