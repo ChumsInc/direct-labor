@@ -117,6 +117,7 @@ const selectedStepReducer = (state: DLStep = defaultState.selected.step, action:
             }
         }
         return state;
+    case stepsSaveSucceeded:
     case saveTimingEntriesSucceeded:
         if (payload?.step) {
             return {

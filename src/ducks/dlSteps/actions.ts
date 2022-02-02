@@ -97,6 +97,7 @@ export const saveDLStepAction = (step: DLStep): DLStepsThunkAction =>
             if (selectedLoadingSelector(state) || selectedSavingSelector(state)) {
                 return;
             }
+            const replaceStep = step.id === 0;
             dispatch({type: stepsSaveRequested});
             const url = stepURL(step);
             const {step: _step, whereUsed} = await fetchPOST(url, step);
