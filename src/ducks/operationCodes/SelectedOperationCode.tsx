@@ -1,15 +1,15 @@
 import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {loadedSelector, operationCodeSelector, selectedOCSelector, whereUsedSelector} from "./index";
 import {Alert, FormColumn} from "chums-ducks";
 import GLAccountElement from "../glAccounts/GLAccountElement";
 import RoutingDetailList from "../routing/RoutingDetailList";
 import {whereUsedDetailSelector} from "../routing";
 import numeral from "numeral";
-import {useHistory} from "react-router-dom";
 import {operationCodeKey} from "./types";
 import {selectOperationCodeAction} from "./actions";
 import {Helmet} from "react-helmet";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface SelectedOperationCodeProps {
     workCenter?: string,
@@ -17,8 +17,7 @@ export interface SelectedOperationCodeProps {
 }
 
 const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter, operationCode}) => {
-    const dispatch = useDispatch();
-    const history = useHistory();
+    const dispatch = useAppDispatch();
     const selected = useSelector(selectedOCSelector);
     const whereUsedKeys = useSelector(whereUsedSelector);
     const whereUsed = useSelector(whereUsedDetailSelector(whereUsedKeys));
@@ -55,8 +54,8 @@ const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter
                 <title>D/L OpCode: {WorkCenter}/{OperationCode}</title>
             </Helmet>
             <FormColumn label={"Work Center"}>
-            <h3>{WorkCenter}</h3>
-        </FormColumn>
+                <h3>{WorkCenter}</h3>
+            </FormColumn>
             <FormColumn label={"Operation Code"}>
                 <h3>{OperationCode}</h3>
             </FormColumn>

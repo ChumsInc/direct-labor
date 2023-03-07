@@ -1,17 +1,18 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {selectTimingsIsEditing, selectCurrentLoading, selectCurrentSaving, selectCurrentTiming} from "./selectors";
+import {useSelector} from "react-redux";
+import {selectCurrentLoading, selectCurrentSaving, selectCurrentTiming, selectTimingsIsEditing} from "./selectors";
 import {DateInput, FormColumn, Input, InputGroup, SpinnerButton} from "chums-ducks";
 import {changeTimingAction, editTimingAction, saveTimingAction} from "./actions";
 import {DLTiming} from "../types";
 import numeral from "numeral";
 import {average, calcStandardAllowedMinutes} from "../../utils/math";
 import "./timingForm.scss";
+import {useAppDispatch} from "../../app/configureStore";
 
 const formId = 'selected-timing-edit';
 
 const SelectedTimingForm: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const timing = useSelector(selectCurrentTiming);
     const saving = useSelector(selectCurrentSaving);
     const loading = useSelector(selectCurrentLoading);
@@ -140,7 +141,8 @@ const SelectedTimingForm: React.FC = () => {
                                spinning={saving} disabled={loading || saving}>
                     Save
                 </SpinnerButton>
-                <button type="button" onClick={onCancel} className="btn btn-outline-secondary btn-sm me-1" form={formId}>
+                <button type="button" onClick={onCancel} className="btn btn-outline-secondary btn-sm me-1"
+                        form={formId}>
                     Cancel
                 </button>
             </div>

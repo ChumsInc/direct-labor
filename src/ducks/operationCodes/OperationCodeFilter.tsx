@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {filterSelector, filterWorkCenterSelector, loadingSelector} from "./index";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {WorkCenter} from "../types";
@@ -7,10 +7,11 @@ import {filterChangedAction, loadOperationCodesAction, workCenterChangedAction} 
 import {SpinnerButton} from "chums-ducks";
 import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
 import SearchInput from "../../components/SearchInput";
+import {useAppDispatch} from "../../app/configureStore";
 
 
 const OperationCodeFilter: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     useEffect(() => {
         const defaultWorkCenter = getPreference(currentOCWorkCenterKey, '');
         dispatch(workCenterChangedAction(defaultWorkCenter));

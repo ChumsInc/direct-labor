@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {listSelector, loadedSelector, loadingSelector, selectedHeaderSelector} from "./selectors";
 import {loadDLCodeAction, loadDLCodesAction} from "./actions";
 import {addPageSetAction, sortableTableSelector, tableAddedAction} from "chums-ducks";
@@ -8,6 +8,7 @@ import {DLCode} from "../types";
 import DLCodeList from "./DLCodeList";
 import {useHistory} from "react-router-dom";
 import {dlCodePath} from "../../routerPaths";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface MainDLCodeListProps {
     tableKey: string,
@@ -15,7 +16,7 @@ export interface MainDLCodeListProps {
 
 const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
     const history = useHistory();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loading = useSelector(loadingSelector);
     const loaded = useSelector(loadedSelector);
     const selected = useSelector(selectedHeaderSelector)

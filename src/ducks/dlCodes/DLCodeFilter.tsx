@@ -1,14 +1,15 @@
 import React, {ChangeEvent} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {filterInactiveSelector, filterSelector, loadingSelector, wcFilterSelector} from "./selectors";
 import {WorkCenter} from "../types";
 import {filterInactiveAction, loadDLCodesAction, setDLCodeFilterAction, setWCFilterAction} from "./actions";
 import SearchInput from "../../components/SearchInput";
 import {FormCheck, SpinnerButton} from "chums-ducks";
+import {useAppDispatch} from "../../app/configureStore";
 
 const DLCodeFilter: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const filter = useSelector(filterSelector);
     const wcFilter = useSelector(wcFilterSelector);
     const loading = useSelector(loadingSelector);

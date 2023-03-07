@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {loadedSelector, loadingSelector} from "../ducks/operationCodes";
 import {ErrorBoundary} from "chums-ducks";
 import OperationCodeFilter from "../ducks/operationCodes/OperationCodeFilter";
@@ -8,6 +8,7 @@ import {loadOperationCodesAction} from "../ducks/operationCodes/actions";
 import SelectedOperationCode from "../ducks/operationCodes/SelectedOperationCode";
 import {RouteComponentProps} from "react-router-dom";
 import {Helmet} from "react-helmet";
+import {useAppDispatch} from "../app/configureStore";
 
 interface OperationCodeMatchProps {
     workCenter?: string,
@@ -15,7 +16,7 @@ interface OperationCodeMatchProps {
 }
 
 const OperationCodesContent: React.FC<RouteComponentProps> = ({match}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loaded = useSelector(loadedSelector);
     const loading = useSelector(loadingSelector);
     useEffect(() => {

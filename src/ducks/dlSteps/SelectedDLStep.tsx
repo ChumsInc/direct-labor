@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {loadedSelector, loadingSelector, selectedStepSelector, selectStepSelector} from "./selectors";
+import {useSelector} from "react-redux";
+import {loadedSelector, selectedStepSelector, selectStepSelector} from "./selectors";
 import {loadDLStepAction} from "./actions";
 import {Helmet} from "react-helmet";
 import {selectedTabSelector, Tab, TabList, tabListCreatedAction} from "chums-ducks";
@@ -8,6 +8,7 @@ import SelectedStepTimings from "../timings/SelectedStepTimings";
 import {dlCodeIcon, dlTextIcon, dlTimingIcon} from "../../icons";
 import DLStepForm from "./DLStepForm";
 import SelectedWhereUsedList from "./SelectedWhereUsedList";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface SelectedDLStepProps {
     id?: number,
@@ -28,7 +29,7 @@ const tabs: Tab[] = [
 ]
 
 const SelectedDLStep: React.FC<SelectedDLStepProps> = ({id}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const step = useSelector(selectedStepSelector);
     const loaded = useSelector(loadedSelector);
     const navStep = useSelector(selectStepSelector(id || 0));

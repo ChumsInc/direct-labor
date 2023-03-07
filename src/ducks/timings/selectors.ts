@@ -1,6 +1,6 @@
-import {RootState} from "../index";
 import {dlStepTimingSorter} from "./types";
 import {DLTiming} from "../types";
+import {RootState} from "../../app/configureStore";
 
 export const selectTimingList = (state: RootState) => state.timings.list.sort(dlStepTimingSorter);
 export const selectCurrentTiming = (state: RootState):DLTiming => state.timings.selected.timing;

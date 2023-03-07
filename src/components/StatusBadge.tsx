@@ -1,11 +1,11 @@
 import React from "react";
-import {Badge} from "chums-ducks";
+import {Badge, BootstrapBGColor} from "chums-ducks";
 
 interface StatusBadgeProps {
     status: boolean,
     className?: string,
-    trueColor?: string,
-    falseColor?: string,
+    trueColor?: BootstrapBGColor,
+    falseColor?: BootstrapBGColor,
     trueValue?: string,
     falseValue?: string,
 }

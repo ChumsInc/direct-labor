@@ -1,6 +1,5 @@
 import {ActionInterface, SortableTableField, SorterProps} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
 import {
     ActionInterfacePayload,
     defaultListState,
@@ -9,6 +8,7 @@ import {
     WorkCenterField,
     WorkCenterList
 } from "../types";
+import {RootState} from "../../app/configureStore";
 
 
 export interface WorkCenterPayload extends ActionInterfacePayload {

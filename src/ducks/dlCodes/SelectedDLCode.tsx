@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FormEvent, useEffect} from "react";
 import {Link} from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {
     dlCodeSelector,
     loadedSelector,
@@ -19,13 +19,14 @@ import OperationCodeSelect from "../operationCodes/OperationCodeSelect";
 import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./types";
 import numeral from "numeral";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface SelectedDLCodeProps {
     id?: number,
 }
 
 const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loading = useSelector(selectedLoadingSelector);
     const saving = useSelector(selectedSavingSelector);
     const loaded = useSelector(loadedSelector);
@@ -84,8 +85,6 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
         directLaborCost,
         laborBudget,
         fixedCosts,
-        StdRatePiece,
-        standardAllowedMinutes,
         workCenter,
         timestamp
     } = selected;

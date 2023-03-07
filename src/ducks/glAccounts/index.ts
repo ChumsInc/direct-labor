@@ -1,7 +1,7 @@
 import {OperationCodeAction} from "../operationCodes/types";
 import {loadOCSucceeded} from "../operationCodes";
-import {RootState} from "../index";
 import {GLAccount, GLAccountList} from "../types";
+import {RootState} from "../../app/configureStore";
 
 
 export interface GlAccountsState {

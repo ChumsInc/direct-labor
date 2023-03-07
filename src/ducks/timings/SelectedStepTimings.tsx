@@ -5,17 +5,18 @@ import {useDispatch, useSelector} from "react-redux";
 import {FormCheck, SortableTable} from "chums-ducks";
 import {selectCurrentStep, selectedStepSelector} from "../dlSteps/selectors";
 import {dlStepChangeTimingAction} from "../dlSteps/actions";
-import {selectTimingsIsEditing, selectTimingList, selectCurrentLoading, selectCurrentSaving} from "./selectors";
+import {selectCurrentLoading, selectCurrentSaving, selectTimingList, selectTimingsIsEditing} from "./selectors";
 import {applyTimingAction, editTimingAction} from "./actions";
 import SelectedTimingForm from "./SelectedTimingForm";
 import {newTiming} from "./types";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface TimingRadioProps {
     timing: DLTiming,
 }
 
 const TimingRadio: React.FC<TimingRadioProps> = ({timing}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const selected = useSelector(selectedStepSelector);
     const clickHandler = () => dispatch(dlStepChangeTimingAction(timing));
     return (
@@ -45,7 +46,7 @@ const fields: DLTimingTableField[] = [
 
 
 const SelectedStepTimings: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loading = useSelector(selectCurrentLoading);
     const saving = useSelector(selectCurrentSaving);
     const timings = useSelector(selectTimingList);

@@ -1,12 +1,13 @@
 import React, {ChangeEvent} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {filterActiveSelector, filterSelector, loadingSelector} from "./index";
 import {fetchRoutingsAction, filterChangedAction, toggleFilterActiveAction} from "./actions";
 import {FormCheck, SpinnerButton} from "chums-ducks";
 import SearchInput from "../../components/SearchInput";
+import {useAppDispatch} from "../../app/configureStore";
 
 const RoutingFilter: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const filter = useSelector(filterSelector);
     const filterActive = useSelector(filterActiveSelector);
     const loading = useSelector(loadingSelector);

@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {
     filteredListSelector,
     listLengthSelector,
@@ -22,6 +22,7 @@ import {stepsListFields} from "./StepsListFields";
 import {useHistory} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
 import DLStepsFilter from "./DLStepsFilter";
+import {useAppDispatch} from "../../app/configureStore";
 
 const tableKey = 'steps-list';
 const defaultSort: DLStepSorterProps = {
@@ -31,7 +32,7 @@ const defaultSort: DLStepSorterProps = {
 
 const StepsList: React.FC = () => {
     const history = useHistory();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const sort = useSelector(sortableTableSelector(tableKey))
     const loading = useSelector(loadingSelector);
     const loaded = useSelector(loadedSelector);

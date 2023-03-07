@@ -7,9 +7,9 @@ import {
     operationCodeSorter,
     OperationCodeSorterProps
 } from "./types";
-import {RootState} from "../index";
 import {routingDetailKey} from "../routing";
 import {OperationCode, OperationCodeList} from "../types";
+import {RootState} from "../../app/configureStore";
 
 
 export const loadOCListRequested = 'operationCodes/loadListRequested';

@@ -1,7 +1,7 @@
 import {DLStep, DLStepSorterProps} from "../types";
-import {RootState} from "../index";
 import {dlStepSorter, dlStepTimingSorter, newDLStep} from "./types";
 import {dlCodeSorter, DLCodeSorterProps} from "../dlCodes/types";
+import {RootState} from "../../app/configureStore";
 
 export const filteredListSelector = (sort: DLStepSorterProps) => (state: RootState): DLStep[] => {
     const {list, filter, wcFilter, filterInactive} = state.dlSteps;

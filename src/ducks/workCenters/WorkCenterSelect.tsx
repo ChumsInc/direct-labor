@@ -1,11 +1,12 @@
 import React, {ChangeEvent, SelectHTMLAttributes, useEffect} from "react";
 import {defaultWorkCenterSort} from "./types";
-import {useDispatch, useSelector} from "react-redux";
-import {listSelector, loadedSelector} from './index'
+import {useSelector} from "react-redux";
+import {listSelector, selectLoaded} from './index'
 import {BootstrapSize, Select} from "chums-ducks";
-import {loadWorkCentersAction} from "./actions";
+import {loadWorkCenters} from "./actions";
 import {workCenterIcon} from "../../icons";
 import {WorkCenter} from "../types";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     value: string,
@@ -22,15 +23,14 @@ const WorkCenterSelect: React.FC<WorkCenterSelectProps> = ({
                                                                onChange,
                                                                ...rest
                                                            }) => {
-    const dispatch = useDispatch();
-    const loaded = useSelector(loadedSelector);
+    const dispatch = useAppDispatch();
+    const loaded = useSelector(selectLoaded);
     useEffect(() => {
         if (!loaded) {
-            dispatch(loadWorkCentersAction());
+            dispatch(loadWorkCenters());
         }
     }, [])
     const list: WorkCenter[] = useSelector(listSelector(defaultWorkCenterSort));
-    const filteredList = list.filter(wc => !filterRated || wc.isStandardWC);
 
     const changeHandler = (ev: ChangeEvent<HTMLSelectElement>) => {
         const [wc] = list.filter(wc => wc.WorkCenterCode === ev.target.value);
@@ -43,7 +43,7 @@ const WorkCenterSelect: React.FC<WorkCenterSelectProps> = ({
 
     return (
         <div className="input-group input-group-sm">
-            <div className="input-group-text"><span className={workCenterIcon} /></div>
+            <div className="input-group-text"><span className={workCenterIcon}/></div>
             <Select value={value} onChange={changeHandler} bsSize={bsSize} {...rest}>
                 <option value="">Select Work Center</option>
                 <optgroup label="Std Work Centers">

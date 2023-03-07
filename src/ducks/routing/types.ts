@@ -1,6 +1,5 @@
 import {ActionInterface, SorterProps} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
 import {
     ActionInterfacePayload,
     BillHeaderList,
@@ -13,6 +12,7 @@ import {
     RoutingHeaderField,
     RoutingHeaderList
 } from "../types";
+import {RootState} from "../../app/configureStore";
 
 
 export interface RoutingPayload extends ActionInterfacePayload {

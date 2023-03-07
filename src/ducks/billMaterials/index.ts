@@ -6,7 +6,7 @@ import {
     BillOptionHeaderSorterProps,
     defaultState
 } from "./types";
-import {RootState} from "../index";
+import {RootState} from "../../app/configureStore";
 import {loadRoutingSucceeded, RoutingAction, routingSelected} from "../routing";
 import {BillHeader, BillHeaderList, BillOptionHeader, BillOptionHeaderList} from "../types";
 

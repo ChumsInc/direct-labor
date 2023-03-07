@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect} from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {OperationCode} from "../types";
 import {InputGroup, Select} from "chums-ducks";
 import {listSelector, loadedSelector} from "./index";
@@ -7,6 +7,7 @@ import {operationCodeKey} from "./types";
 import {sageOperationCodeIcon} from "../../icons";
 import classNames from "classnames";
 import {loadOperationCodesAction} from "./actions";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface OperationCodeSelectProps {
     operationCode: string,
@@ -15,7 +16,7 @@ export interface OperationCodeSelectProps {
 }
 
 const OperationCodeSelect: React.FC<OperationCodeSelectProps> = ({operationCode, workCenter, onChange}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loaded = useSelector(loadedSelector)
     const operationCodes = useSelector(listSelector);
     const options = Object.values(operationCodes).filter(oc => !workCenter || oc.WorkCenter === workCenter);

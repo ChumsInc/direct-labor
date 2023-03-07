@@ -1,10 +1,11 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {DLStep} from "../types";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {listSelector, loadedSelector, loadingSelector} from "./selectors";
 import {newDLStep} from "./types";
 import {Select} from "chums-ducks";
 import {loadDLStepsAction} from "./actions";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface StepSelectProps {
     id: number,
@@ -13,7 +14,7 @@ export interface StepSelectProps {
 }
 
 const StepSelect: React.FC<StepSelectProps> = ({id, onChange}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const loaded = useSelector(loadedSelector);
     const loading = useSelector(loadingSelector);
     const steps = useSelector(listSelector({field: 'stepCode', ascending: true}));

@@ -1,6 +1,5 @@
 import {ActionInterface, SorterProps} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
 import {
     ActionInterfacePayload,
     defaultListState,
@@ -12,6 +11,7 @@ import {
     OperationCodeList,
     RoutingDetail
 } from "../types";
+import {RootState} from "../../app/configureStore";
 
 
 export interface OperationCodeActionPayload extends ActionInterfacePayload {

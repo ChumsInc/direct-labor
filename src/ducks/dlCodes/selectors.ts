@@ -1,7 +1,7 @@
 import {dlCodeSorter, DLCodeSorterProps} from "./types";
-import {RootState} from "../index";
 import {DLCode, DLCodeStep} from "../types";
 import {dlCodeStepSorter} from "./utils";
+import {RootState} from "../../app/configureStore";
 
 export const listSelector = (sort: DLCodeSorterProps) => (state: RootState): DLCode[] => {
     const {list, filter, wcFilter, filterInactive} = state.dlCodes;

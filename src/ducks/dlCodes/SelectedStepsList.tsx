@@ -3,7 +3,7 @@ import {DLCodeStep, DLStep, DLStepCodeTableField, DLStepTotal} from "../types";
 import {SortableTable} from "chums-ducks";
 import numeral from "numeral";
 import {selectedHeaderSelector, selectedStepsSelector} from "./selectors";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import DraggableTR from "./DraggableTR";
@@ -15,6 +15,7 @@ import {dlStepPath} from "../../routerPaths";
 import classNames from "classnames";
 import StepSelect from "../dlSteps/StepSelect";
 import {newDLStep} from "../dlSteps/types";
+import {useAppDispatch} from "../../app/configureStore";
 
 const tableKey = 'dl-steps-detail';
 
@@ -50,7 +51,7 @@ export const stepsListFields: DLStepCodeTableField[] = [
 ]
 
 const SelectedStepsList: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const selected = useSelector(selectedHeaderSelector);
     const steps = useSelector(selectedStepsSelector);
     const stepKeys = steps.map(step => step.id).join(':');

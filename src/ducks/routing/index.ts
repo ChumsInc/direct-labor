@@ -7,10 +7,10 @@ import {
     RoutingHeaderSorterProps,
     SelectedRoutingState
 } from "./types";
-import {RootState} from "../index";
 import {OperationCodeAction} from "../operationCodes/types";
 import {loadOCSucceeded} from "../operationCodes";
 import {RoutingDetail, RoutingHeader, RoutingHeaderList} from "../types";
+import {RootState} from "../../app/configureStore";
 
 export * from './types';
 

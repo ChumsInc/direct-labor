@@ -1,31 +1,39 @@
-import React, {ChangeEvent, FormEvent, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {loadingSelector, savingSelector, selectedWorkCenterSelector, workCenterSelector} from "./index";
-import {Alert, FormColumn, Input, SpinnerButton} from "chums-ducks";
-import numeral from "numeral";
-import {changeWorkCenterAction, saveWorkCenterRate, selectWorkCenterAction} from "./actions";
+import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {selectCurrentWorkCenter, selectLoading, selectSaving, selectWorkCenter} from "./index";
+import {Alert, FormColumn, SpinnerButton} from "chums-ducks";
+import {saveWorkCenter, setCurrentWorkCenter} from "./actions";
 import {useHistory} from "react-router-dom";
 import {workCentersPath} from "../../routerPaths";
 import {Helmet} from 'react-helmet'
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 
 export interface SelectedWorkCenterProps {
     workCenter?: string,
 }
 
 const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const history = useHistory();
-    const selected = useSelector(selectedWorkCenterSelector);
-    const saving = useSelector(savingSelector);
-    const loading = useSelector(loadingSelector);
-    const navWC = useSelector(workCenterSelector(workCenter));
+    const selected = useSelector(selectCurrentWorkCenter);
+    const saving = useSelector(selectSaving);
+    const loading = useSelector(selectLoading);
+    const navWC = useAppSelector((state) => selectWorkCenter(state, workCenter));
+    const [rate, setRate] = useState<number | null>(selected?.AverageHourlyRate ?? null);
+
+    useEffect(() => {
+        setRate(selected?.AverageHourlyRate ?? null);
+    }, [selected])
+
     const onChangeRate = (ev: ChangeEvent<HTMLInputElement>) => {
-        const rate = Number(ev.target.value || 0);
-        dispatch(changeWorkCenterAction(rate));
+        setRate(ev.target.valueAsNumber ?? 0);
     }
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
-        dispatch(saveWorkCenterRate());
+        if (!rate || !selected) {
+            return;
+        }
+        dispatch(saveWorkCenter({...selected, AverageHourlyRate: rate}));
     }
 
     useEffect(() => {
@@ -34,10 +42,10 @@ const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => 
             if (!navWC) {
                 return history.replace(workCentersPath);
             } else if (!selected || selected.WorkCenterCode !== workCenter) {
-                dispatch(selectWorkCenterAction(navWC));
+                dispatch(setCurrentWorkCenter(navWC));
             }
         } else {
-            dispatch(selectWorkCenterAction(null));
+            dispatch(setCurrentWorkCenter(null));
         }
     }, [workCenter, loading]);
 
@@ -46,7 +54,7 @@ const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => 
             <Alert color="info">Select a work center</Alert>
         )
     }
-    const {WorkCenterCode, Description, CommentLine1, CommentLine2, AverageHourlyRate} = selected;
+    const {WorkCenterCode, Description, CommentLine1, CommentLine2} = selected;
     return (
         <form onSubmit={onSubmit}>
             <Helmet>
@@ -61,10 +69,10 @@ const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => 
                 <div>{CommentLine2}</div>
             </FormColumn>
             <FormColumn label="Average Hourly Rate">
-                <Input type="number" className="form-control form-control-sm"
+                <input type="number" className="form-control form-control-sm"
                        onChange={onChangeRate}
-                       value={numeral(AverageHourlyRate || 0).format('0.0000')}
-                       min={0} max={100} step={0.01}/>
+                       value={rate ?? 0}
+                       min={0} max={100} step={0.0001}/>
             </FormColumn>
             <FormColumn label="">
                 <SpinnerButton type="submit" spinning={saving} disabled={loading}>Save</SpinnerButton>

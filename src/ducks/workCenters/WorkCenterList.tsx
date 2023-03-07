@@ -1,26 +1,27 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
+import {FormCheck, SpinnerButton} from "chums-ducks";
+import {useSelector} from "react-redux";
+import {loadWorkCenters, setPage, setRowsPerPage, setSort, toggleFilterRatedWC} from "./actions";
 import {
-    addPageSetAction,
-    FormCheck,
-    pagedDataSelector,
-    PagerDuck,
-    SortableTable,
-    sortableTableSelector,
-    SpinnerButton,
-    tableAddedAction
-} from "chums-ducks";
-import {useDispatch, useSelector} from "react-redux";
-import {loadWorkCentersAction} from "./actions";
-import {listSelector, loadedSelector, loadingSelector, selectedWorkCenterSelector} from "./index";
-import {defaultWorkCenterSort, workCenterKey, WorkCenterSorterProps, WorkCenterTableField} from "./types";
+    selectCurrentWorkCenter,
+    selectFilterRatedWC,
+    selectLoaded,
+    selectLoading,
+    selectPage,
+    selectRowsPerPage,
+    selectSort,
+    selectSortedWorkCenters
+} from "./index";
+import {workCenterKey} from "./types";
 import MultiLineField from "../../components/MultiLineField";
 import numeral from "numeral";
 import {useHistory} from "react-router-dom";
 import {selectedWorkCenterPath} from "../../routerPaths";
 import {WorkCenter} from "../types";
+import {SortableTable, SortableTableField, SortProps, TablePagination} from "chums-components";
+import {useAppDispatch} from "../../app/configureStore";
 
-const tableKey = 'work-centers-list';
-const fields: WorkCenterTableField[] = [
+const fields: SortableTableField<WorkCenter>[] = [
     {field: 'WorkCenterCode', title: 'W/C Code', sortable: true},
     {field: 'Description', title: 'Description', sortable: true},
     {
@@ -52,24 +53,28 @@ const fields: WorkCenterTableField[] = [
 ];
 
 const WorkCenterList: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const history = useHistory();
-    const loading = useSelector(loadingSelector);
-    const loaded = useSelector(loadedSelector);
+    const loading = useSelector(selectLoading);
+    const loaded = useSelector(selectLoaded);
+    const filter = useSelector(selectFilterRatedWC);
+    const list = useSelector(selectSortedWorkCenters);
+    const page = useSelector(selectPage);
+    const rowsPerPage = useSelector(selectRowsPerPage);
     useEffect(() => {
-        dispatch(tableAddedAction({key: tableKey, ...defaultWorkCenterSort}));
-        dispatch(addPageSetAction({key: tableKey}));
         if (!loaded && !loading) {
-            dispatch(loadWorkCentersAction());
+            dispatch(loadWorkCenters());
         }
     }, [])
-    const onReload = () => dispatch(loadWorkCentersAction());
-    const sort = useSelector(sortableTableSelector(tableKey));
-    const [showFilter, setShowFilter] = useState(true);
-    const list = useSelector(listSelector(sort as WorkCenterSorterProps)).filter(wc => !showFilter || wc.isStandardWC);
-    const pagedList = useSelector(pagedDataSelector(tableKey, list));
-    const onSelectWorkCenter = (row:WorkCenter) => history.push(selectedWorkCenterPath(row.WorkCenterCode));
-    const selected = useSelector(selectedWorkCenterSelector);
+    const onReload = () => dispatch(loadWorkCenters());
+    const sort = useSelector(selectSort);
+    const onSelectWorkCenter = (row: WorkCenter) => history.push(selectedWorkCenterPath(row.WorkCenterCode));
+    const selected = useSelector(selectCurrentWorkCenter);
+
+    const onChangeFilter = () => dispatch(toggleFilterRatedWC());
+    const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
+    const onChangePage = (page: number) => dispatch(setPage(page));
+    const onChangeRowsPerPage = (rpp: number) => dispatch(setRowsPerPage(rpp));
 
     return (
         <div>
@@ -81,14 +86,19 @@ const WorkCenterList: React.FC = () => {
                     </SpinnerButton>
                 </div>
                 <div className="col-auto">
-                    <FormCheck label={"Show Only Rated W/C"} checked={showFilter}
-                               onClick={() => setShowFilter(!showFilter)} type="checkbox" />
+                    <FormCheck label={"Show Only Rated W/C"} checked={filter}
+                               onClick={onChangeFilter} type="checkbox"/>
                 </div>
             </div>
-            <SortableTable tableKey={tableKey} keyField={workCenterKey} fields={fields} data={pagedList} size="xs"
+            <SortableTable keyField={workCenterKey} fields={fields}
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                           currentSort={sort} onChangeSort={onChangeSort}
+                           size="xs"
                            selected={selected?.WorkCenterCode}
                            onSelectRow={onSelectWorkCenter}/>
-            <PagerDuck pageKey={tableKey} dataLength={list.length} filtered={showFilter}/>
+            <TablePagination page={page} onChangePage={onChangePage} rowsPerPage={rowsPerPage}
+                             onChangeRowsPerPage={onChangeRowsPerPage}
+                             count={list.length}/>
         </div>
     )
 }

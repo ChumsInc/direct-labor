@@ -1,15 +1,16 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {deleteStepAction} from "./actions";
 import {DLCodeStep} from "../types";
 import {selectedLoadingSelector, selectedSavingSelector} from "./selectors";
+import {useAppDispatch} from "../../app/configureStore";
 
 export interface DeleteStepButtonProps {
-    step:DLCodeStep,
+    step: DLCodeStep,
 }
 
-const DeleteStepButton:React.FC<DeleteStepButtonProps> = ({step}) => {
-    const dispatch = useDispatch();
+const DeleteStepButton: React.FC<DeleteStepButtonProps> = ({step}) => {
+    const dispatch = useAppDispatch();
     const saving = useSelector(selectedSavingSelector);
     const loading = useSelector(selectedLoadingSelector);
 
@@ -20,8 +21,8 @@ const DeleteStepButton:React.FC<DeleteStepButtonProps> = ({step}) => {
     }
 
     return (
-        <button className="btn btn-xs btn-danger" type="button" onClick={clickHandler} disabled={saving||loading}>
-            <span className="bi-x-lg" />
+        <button className="btn btn-xs btn-danger" type="button" onClick={clickHandler} disabled={saving || loading}>
+            <span className="bi-x-lg"/>
         </button>
     )
 }

@@ -8,7 +8,7 @@ import {
     sortableTableSelector,
     tableAddedAction
 } from "chums-ducks";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {
     filteredListSelector,
     listSelector,
@@ -24,6 +24,7 @@ import classNames from "classnames";
 import {useHistory} from "react-router-dom";
 import {selectedRoutingPath} from "../../routerPaths";
 import StatusBadge from "../../components/StatusBadge";
+import {useAppDispatch} from "../../app/configureStore";
 
 const tableId = 'routing-list'
 
@@ -36,14 +37,24 @@ const routingListFields: SortableTableField[] = [
         sortable: true,
         render: (row: RoutingHeader) => numeral(row.StandardRateTotal).format('0,0.0000')
     },
-    {field: 'BillStatus', title: 'BOM Active', sortable: true, render: (row:RoutingHeader) => (<StatusBadge status={row.BillStatus} falseColor="danger" />)},
-    {field: 'ItemStatus', title: 'Item Active', sortable: true, render: (row:RoutingHeader) => (<StatusBadge status={row.ItemStatus} falseColor="danger"/>)},
+    {
+        field: 'BillStatus',
+        title: 'BOM Active',
+        sortable: true,
+        render: (row: RoutingHeader) => (<StatusBadge status={row.BillStatus} falseColor="danger"/>)
+    },
+    {
+        field: 'ItemStatus',
+        title: 'Item Active',
+        sortable: true,
+        render: (row: RoutingHeader) => (<StatusBadge status={row.ItemStatus} falseColor="danger"/>)
+    },
 ];
 
-const rowClassName = (row:RoutingHeader) => classNames({'text-danger': !(row.BillStatus && row.ItemStatus)});
+const rowClassName = (row: RoutingHeader) => classNames({'text-danger': !(row.BillStatus && row.ItemStatus)});
 
 const RoutingList: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const history = useHistory();
     useEffect(() => {
         dispatch(tableAddedAction({key: tableId, field: 'RoutingNo', ascending: true}));
@@ -70,7 +81,8 @@ const RoutingList: React.FC = () => {
     const pagedList = useSelector(pagedDataSelector(tableId, filteredList));
     return (
         <>
-            <SortableTable tableKey={tableId} keyField={"RoutingNo"} size="xs" fields={routingListFields} data={pagedList}
+            <SortableTable tableKey={tableId} keyField={"RoutingNo"} size="xs" fields={routingListFields}
+                           data={pagedList}
                            selected={selectedHeader?.RoutingNo}
                            rowClassName={rowClassName}
                            onSelectRow={onSelect}/>

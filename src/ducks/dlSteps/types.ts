@@ -10,8 +10,8 @@ import {
 } from "../types";
 import {ActionInterface} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
 import {filterInactiveStepsKey, getPreference} from "../../utils/preferences";
+import {RootState} from "../../app/configureStore";
 
 export const newDLStep: DLStep = {
     id: 0,

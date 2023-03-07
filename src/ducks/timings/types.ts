@@ -1,7 +1,7 @@
 import {ActionInterfacePayload, DLStep, DLTiming} from "../types";
 import {ActionInterface} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
+import {RootState} from "../../app/configureStore";
 
 export interface TimingsActionPayload extends ActionInterfacePayload {
     timings?: DLTiming[],

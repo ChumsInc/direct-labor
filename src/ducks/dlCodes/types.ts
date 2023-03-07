@@ -9,8 +9,8 @@ import {
     ListState
 } from "../types";
 import {ThunkAction} from "redux-thunk";
-import {RootState} from "../index";
 import {filterInactiveCodesKey, getPreference} from "../../utils/preferences";
+import {RootState} from "../../app/configureStore";
 
 export const newDLCode:DLCode = {
     id: 0,

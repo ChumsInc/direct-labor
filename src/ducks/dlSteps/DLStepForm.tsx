@@ -4,7 +4,7 @@ import numeral from "numeral";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import TextAreaAutosize from "react-textarea-autosize";
 import {Link} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {
     machinesSelector,
     selectedChangedSelector,
@@ -14,9 +14,10 @@ import {
 } from "./selectors";
 import {dlStepChangedAction, loadDLStepAction, saveDLStepAction} from "./actions";
 import {DLStep, WorkCenter} from "../types";
+import {useAppDispatch} from "../../app/configureStore";
 
 const DLStepForm: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const step = useSelector(selectedStepSelector);
     const loading = useSelector(selectedLoadingSelector);
     const saving = useSelector(selectedSavingSelector);
