@@ -1,25 +1,30 @@
-import React, {useEffect} from "react";
+import React from "react";
+import {SortableTable, SortableTableField, TablePagination} from "chums-components";
+import {OperationCode} from "../types";
+import {operationCodeKey} from "./utils";
+import {useSelector} from "react-redux";
 import {
-    addPageSetAction,
-    pagedDataSelector,
-    PagerDuck,
-    SortableTable,
-    sortableTableSelector,
-    tableAddedAction
-} from "chums-ducks";
-import {OperationCode, OperationCodeTableField} from "../types";
-import {operationCodeKey, OperationCodeSorterProps} from "./types";
-import {useDispatch, useSelector} from "react-redux";
-import {countRecordsSelector, filteredListSelector, selectedOCSelector} from './index'
+    loadOperationCode,
+    selectCurrentOperationCode,
+    selectPage,
+    selectRowsPerPage,
+    selectSort,
+    selectSortedList,
+    setPage,
+    setRowsPerPage,
+    setSort
+} from './index'
 import numeral from "numeral";
 import {useHistory} from "react-router-dom";
 import {operationCodesOperationPath} from "../../routerPaths";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {SortProps} from "chums-types";
 
 export interface OperationCodeListProps {
     tableKey: string,
 }
 
-const fields: OperationCodeTableField[] = [
+const fields: SortableTableField<OperationCode>[] = [
     {field: 'WorkCenter', title: 'Work Center', sortable: true},
     {field: 'OperationCode', title: 'Operation Code', sortable: true},
     {field: 'OperationDescription', title: 'Description', sortable: true},
@@ -33,27 +38,33 @@ const fields: OperationCodeTableField[] = [
     {field: 'PlannedPieceCostDivisor', title: 'Qty/Operation', sortable: true, className: 'right'},
 ]
 const OperationCodeList: React.FC<OperationCodeListProps> = ({tableKey}) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const history = useHistory();
-    useEffect(() => {
-        dispatch(addPageSetAction({key: tableKey}));
-        dispatch(tableAddedAction({key: tableKey, field: 'WorkCenter', ascending: true}))
-    }, [])
-    const records = useSelector(countRecordsSelector);
-    const sort = useSelector(sortableTableSelector(tableKey));
-    const list = useSelector(filteredListSelector(sort as OperationCodeSorterProps));
-    const pagedList = useSelector(pagedDataSelector(tableKey, list));
-    const selected = useSelector(selectedOCSelector);
+    const list = useSelector(selectSortedList);
+    const page = useSelector(selectPage);
+    const rowsPerPage = useSelector(selectRowsPerPage);
+    const sort = useAppSelector(selectSort);
+    const selected = useSelector(selectCurrentOperationCode);
 
     const onSelectOperationCode = (oc: OperationCode) => {
+        dispatch(loadOperationCode(oc));
         history.push(operationCodesOperationPath(oc.WorkCenter, oc.OperationCode));
     }
 
+    const sortChangeHandler = (sort: SortProps) => dispatch(setSort(sort));
+    const pageChangeHandler = (page: number) => dispatch(setPage(page));
+    const rowsPerPageChangeHandler = (rpp: number) => dispatch(setRowsPerPage(rpp));
+
     return (
         <>
-            <SortableTable tableKey={tableKey} keyField={operationCodeKey} fields={fields} data={pagedList} size="xs"
+            <SortableTable keyField={operationCodeKey} fields={fields}
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                           size="xs" currentSort={sort} onChangeSort={sortChangeHandler}
                            onSelectRow={onSelectOperationCode} selected={operationCodeKey(selected)}/>
-            <PagerDuck pageKey={tableKey} dataLength={list.length} filtered={list.length !== records}/>
+            <TablePagination page={page} onChangePage={pageChangeHandler}
+                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
+                             bsSize="sm"
+                             showFirst showLast count={list.length}/>
         </>
     )
 }

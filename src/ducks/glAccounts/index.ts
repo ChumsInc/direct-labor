@@ -1,34 +1,40 @@
-import {OperationCodeAction} from "../operationCodes/types";
-import {loadOCSucceeded} from "../operationCodes";
+import {loadOperationCode, loadOperationCodes} from "../operationCodes";
 import {GLAccount, GLAccountList} from "../types";
 import {RootState} from "../../app/configureStore";
+import {createReducer} from "@reduxjs/toolkit";
 
 
 export interface GlAccountsState {
     accounts: GLAccountList
 }
 
-export const defaultState = {accounts: {}};
+export const defaultState: GlAccountsState = {
+    accounts: {}
+};
 
 export const accountListSelector = (keys: string[]) => (state: RootState): GLAccount[] => {
     const {accounts} = state.glAccounts;
     return Object.keys(accounts).filter(key => keys.includes(key)).map(key => accounts[key]);
 }
 
-export const glAccountSelector = (accountKey: string) => (state: RootState): GLAccount | null => state.glAccounts.accounts[accountKey] || null;
+export const selectGLByAccountKey = (state: RootState, accountKey: string): GLAccount | null => state.glAccounts.accounts[accountKey] ?? null;
 
-const glAccountReducer = (state: GlAccountsState = defaultState, action: OperationCodeAction): GlAccountsState => {
-    const {type, payload} = action;
-    switch (type) {
-    case loadOCSucceeded:
-        if (payload?.accounts) {
-            payload.accounts.forEach(acct => state.accounts[acct.AccountKey] = acct);
-            return state;
-        }
-        return state;
-    default:
-        return state;
-    }
-}
-
+export const glAccountReducer = createReducer(defaultState, (builder) => {
+    builder
+        .addCase(loadOperationCodes.fulfilled, (state, action) => {
+            if (action.payload) {
+                state.accounts = {};
+                action.payload.accounts.forEach(row => {
+                    state.accounts[row.AccountKey] = row;
+                })
+            }
+        })
+        .addCase(loadOperationCode.fulfilled, (state, action) => {
+            if (action.payload) {
+                action.payload.accounts.forEach(row => {
+                    state.accounts[row.AccountKey] = row;
+                })
+            }
+        })
+})
 export default glAccountReducer;

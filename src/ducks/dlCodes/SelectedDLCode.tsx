@@ -1,25 +1,27 @@
-import React, {ChangeEvent, FormEvent, useEffect} from "react";
+import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {Link} from 'react-router-dom';
 import {useSelector} from "react-redux";
 import {
-    dlCodeSelector,
-    loadedSelector,
-    selectedChangedSelector,
-    selectedHeaderSelector,
-    selectedLoadingSelector,
-    selectedSavingSelector,
-    selectedStepsSelector
+    selectCurrentChanged,
+    selectCurrentHeader,
+    selectCurrentLoading,
+    selectCurrentSaving,
+    selectCurrentSteps,
+    selectDLCodeByID,
+    selectLoaded
 } from "./selectors";
-import {dlCodeChangedAction, loadDLCodeAction, saveDLCodeAction} from "./actions";
+import {loadDLCode, rebuildDLCode, saveDLCode} from "./actions";
 import {Helmet} from "react-helmet";
-import {Alert, FormCheck, FormColumn, Input, InputGroup, SpinnerButton} from "chums-ducks";
-import {DLCodeField, OperationCode, WorkCenter} from "../types";
+import {Alert, FormColumn, Input, InputGroup, SpinnerButton} from "chums-components";
+import {Editable} from 'chums-types'
+import {DLCode, DLCodeField, OperationCode, WorkCenter} from "../types";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import OperationCodeSelect from "../operationCodes/OperationCodeSelect";
 import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./types";
 import numeral from "numeral";
-import {useAppDispatch} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {FormCheck} from "chums-components";
 
 export interface SelectedDLCodeProps {
     id?: number,
@@ -27,21 +29,22 @@ export interface SelectedDLCodeProps {
 
 const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
     const dispatch = useAppDispatch();
-    const loading = useSelector(selectedLoadingSelector);
-    const saving = useSelector(selectedSavingSelector);
-    const loaded = useSelector(loadedSelector);
-    const selected = useSelector(selectedHeaderSelector);
-    const steps = useSelector(selectedStepsSelector);
-    const navDLCode = useSelector(dlCodeSelector(id || 0));
-    const changed = useSelector(selectedChangedSelector);
+    const loading = useSelector(selectCurrentLoading);
+    const saving = useSelector(selectCurrentSaving);
+    const loaded = useSelector(selectLoaded);
+    const selected = useSelector(selectCurrentHeader);
+    const steps = useSelector(selectCurrentSteps);
+    const navDLCode = useAppSelector((state) => selectDLCodeByID(state, id || 0));
+    const changed = useSelector(selectCurrentChanged);
+    const [DLCode, setDLCode] = useState<DLCode & Editable>({...(selected ?? newDLCode)})
 
     useEffect(() => {
         if (id === 0 && selected?.id !== id) {
-            dispatch(loadDLCodeAction(newDLCode));
+            setDLCode({...newDLCode});
             return;
         }
         if (id && selected?.id !== id && navDLCode) {
-            dispatch(loadDLCodeAction(navDLCode));
+            dispatch(loadDLCode(navDLCode));
         }
     }, [id, loaded]);
 
@@ -51,30 +54,31 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
         )
     }
     const changeHandler = (field: DLCodeField) => (ev: ChangeEvent<HTMLInputElement>) => {
-        dispatch(dlCodeChangedAction({[field]: ev.target.value}));
+        setDLCode({...DLCode, [field]: ev.target.value, changed: true});
     }
     const onChangeWorkCenter = (wc: WorkCenter | null) => {
-        dispatch(dlCodeChangedAction({workCenter: wc?.WorkCenterCode || ''}));
+        setDLCode({...DLCode, workCenter: wc?.WorkCenterCode ?? '', changed: true});
+
     }
 
     const onChangeOperationCode = (oc: OperationCode | null) => {
-        dispatch(dlCodeChangedAction({
-            workCenter: oc?.WorkCenter || workCenter,
-            operationCode: oc?.OperationCode || ''
-        }));
+        setDLCode({...DLCode, operationCode: oc?.OperationCode ?? '', changed: true})
     }
 
-    const onToggleActive = () => {
-        dispatch(dlCodeChangedAction({active: !selected.active}));
+    const onToggleActive = (ev: ChangeEvent<HTMLInputElement>) => {
+        setDLCode({...DLCode, active: ev.target.checked, changed: true});
     }
 
     const onReload = () => {
-        dispatch(loadDLCodeAction(selected));
+        if (!selected || selected.changed || !selected.id) {
+            return;
+        }
+        dispatch(rebuildDLCode(selected.id));
     }
 
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
-        dispatch(saveDLCodeAction(selected));
+        dispatch(saveDLCode(DLCode));
     }
 
     const {
@@ -92,9 +96,9 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
     return (
         <div>
             <Helmet>
-                <title>D/L Code: {dlCode}</title>
+                <title>D/L Code: {DLCode.dlCode}</title>
             </Helmet>
-            <h2>D/L Code Editor: <strong>{dlCode}</strong></h2>
+            <h2>D/L Code Editor: <strong>{DLCode.dlCode}</strong></h2>
 
             <form onSubmit={onSubmit}>
                 <FormColumn label={"Direct Labor Code"}>
@@ -103,7 +107,7 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                             <Input type="text" value={dlCode} onChange={changeHandler('dlCode')}/>
                         </div>
                         <div className="col-md-3">
-                            <FormCheck label="Active" checked={active} onClick={onToggleActive} type="checkbox"/>
+                            <FormCheck label="Active" checked={active} onChange={onToggleActive} type="checkbox"/>
                         </div>
                     </div>
                 </FormColumn>
@@ -174,14 +178,14 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                         <SpinnerButton type="button" spinning={loading} disabled={loading || saving} size="sm"
                                        color="secondary"
                                        onClick={onReload} spinnerAfter>
-                            Reload
+                            Rebuild Cost
                         </SpinnerButton>
                     </div>
                 </div>
             </form>
             {changed && <Alert color="warning">Don't forget to save your changes.</Alert>}
             <hr/>
-            <SelectedStepsList/>
+            {!!selected?.id && <SelectedStepsList/>}
         </div>
     )
 }

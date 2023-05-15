@@ -1,8 +1,8 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import {deleteStepAction} from "./actions";
+import {removeDLStep} from "./actions";
 import {DLCodeStep} from "../types";
-import {selectedLoadingSelector, selectedSavingSelector} from "./selectors";
+import {selectCurrentLoading, selectCurrentSaving} from "./selectors";
 import {useAppDispatch} from "../../app/configureStore";
 
 export interface DeleteStepButtonProps {
@@ -11,12 +11,12 @@ export interface DeleteStepButtonProps {
 
 const DeleteStepButton: React.FC<DeleteStepButtonProps> = ({step}) => {
     const dispatch = useAppDispatch();
-    const saving = useSelector(selectedSavingSelector);
-    const loading = useSelector(selectedLoadingSelector);
+    const saving = useSelector(selectCurrentSaving);
+    const loading = useSelector(selectCurrentLoading);
 
     const clickHandler = () => {
         if (window.confirm(`Are you sure you want to delete step #${step.stepOrder + 1} '${step.stepCode}'`)) {
-            dispatch(deleteStepAction(step));
+            dispatch(removeDLStep(step));
         }
     }
 

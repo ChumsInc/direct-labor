@@ -1,18 +1,20 @@
-import React from "react";
-import {RoutingDetail, RoutingDetailTableField} from "../types";
+import React, {useEffect} from "react";
+import {RoutingDetail} from "../types";
 import {Link} from 'react-router-dom';
-import {SortableTable} from "chums-ducks";
-import {routingDetailKey} from "./index";
+import {loadRoutings, selectLoaded, selectLoading} from "./index";
 import numeral from "numeral";
 import {operationCodesOperationPath, selectedRoutingPath, selectedWorkCenterPath} from "../../routerPaths";
+import {useAppDispatch} from "../../app/configureStore";
+import {useSelector} from "react-redux";
+import {routingDetailKey} from "./utils";
+import {DataTable, SortableTableField} from "chums-components";
 
 export interface RoutingDetailListProps {
     list: RoutingDetail[],
-    tableKey: string,
     tfoot?: React.ReactElement<HTMLTableSectionElement>;
 }
 
-const detailTableFields: RoutingDetailTableField[] = [
+const detailTableFields: SortableTableField<RoutingDetail>[] = [
     {
         field: 'RoutingNo',
         title: 'Routing No',
@@ -48,12 +50,20 @@ const detailTableFields: RoutingDetailTableField[] = [
 ];
 
 
-const RoutingDetailList: React.FC<RoutingDetailListProps> = ({list, tableKey, tfoot}) => {
+const RoutingDetailList = ({list, tfoot}: RoutingDetailListProps) => {
+    const dispatch = useAppDispatch();
+    const loaded = useSelector(selectLoaded);
+    const loading = useSelector(selectLoading);
 
+    useEffect(() => {
+        if (!loaded && !loading) {
+            dispatch(loadRoutings());
+        }
+    }, [])
     return (
-        <SortableTable tableKey={tableKey} keyField={routingDetailKey} size="xs" fields={detailTableFields}
-                       data={list}
-                       tfoot={tfoot}/>
+        <DataTable keyField={routingDetailKey} size="xs" fields={detailTableFields}
+                   data={list}
+                   tfoot={tfoot}/>
     )
 }
 

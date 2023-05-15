@@ -1,9 +1,15 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
-import {listSelector, loadedSelector, loadingSelector, selectedHeaderSelector} from "./selectors";
-import {loadDLCodeAction, loadDLCodesAction} from "./actions";
-import {addPageSetAction, sortableTableSelector, tableAddedAction} from "chums-ducks";
-import {defaultDLCodeSort, DLCodeSorterProps} from "./types";
+import {
+    selectCurrentHeader,
+    selectLoaded,
+    selectLoading,
+    selectPage,
+    selectRowsPerPage,
+    selectSort,
+    selectSortedList
+} from "./selectors";
+import {loadDLCode, loadDLCodes, setSort} from "./actions";
 import {DLCode} from "../types";
 import DLCodeList from "./DLCodeList";
 import {useHistory} from "react-router-dom";
@@ -17,28 +23,32 @@ export interface MainDLCodeListProps {
 const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
     const history = useHistory();
     const dispatch = useAppDispatch();
-    const loading = useSelector(loadingSelector);
-    const loaded = useSelector(loadedSelector);
-    const selected = useSelector(selectedHeaderSelector)
-
-    const sortProps = useSelector(sortableTableSelector(tableKey));
-    const list = useSelector(listSelector(sortProps as DLCodeSorterProps));
+    const loading = useSelector(selectLoading);
+    const loaded = useSelector(selectLoaded);
+    const selected = useSelector(selectCurrentHeader)
+    const page = useSelector(selectPage);
+    const rowsPerPage = useSelector(selectRowsPerPage);
+    const list = useSelector(selectSortedList);
+    const sort = useSelector(selectSort);
 
     useEffect(() => {
-        dispatch(addPageSetAction({key: tableKey}));
-        dispatch(tableAddedAction({key: tableKey, ...defaultDLCodeSort}));
         if (!loaded && !loading) {
-            dispatch(loadDLCodesAction());
+            dispatch(loadDLCodes());
         }
     }, [])
 
     const onSelectDLCode = (code: DLCode) => {
         history.push(dlCodePath(code.id));
-        dispatch(loadDLCodeAction(code));
+        dispatch(loadDLCode(code));
     }
 
     return (
-        <DLCodeList tableKey={tableKey} list={list} selected={selected} onSelectDLCode={onSelectDLCode}/>
+        <div>
+            <DLCodeList list={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                        sort={sort} onChangeSort={sort => dispatch(setSort(sort))}
+                        selected={selected} onSelectDLCode={onSelectDLCode}/>
+        </div>
+
     )
 }
 

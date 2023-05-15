@@ -1,15 +1,21 @@
 import React, {useEffect} from 'react';
 import {useSelector} from "react-redux";
-import {loadedSelector, operationCodeSelector, selectedOCSelector, whereUsedSelector} from "./index";
-import {Alert, FormColumn} from "chums-ducks";
+import {
+    loadOperationCode,
+    selectCurrentLoading,
+    selectCurrentOperationCode,
+    selectLoaded,
+    selectOperationCodeByCode,
+    selectWhereUsed
+} from "./index";
+import {Alert, FormColumn, LoadingProgressBar} from "chums-components";
 import GLAccountElement from "../glAccounts/GLAccountElement";
 import RoutingDetailList from "../routing/RoutingDetailList";
-import {whereUsedDetailSelector} from "../routing";
+import {selectWhereUsedByRoutingKeys} from "../routing";
 import numeral from "numeral";
-import {operationCodeKey} from "./types";
-import {selectOperationCodeAction} from "./actions";
+import {operationCodeKey} from "./utils";
 import {Helmet} from "react-helmet";
-import {useAppDispatch} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 
 export interface SelectedOperationCodeProps {
     workCenter?: string,
@@ -18,17 +24,18 @@ export interface SelectedOperationCodeProps {
 
 const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter, operationCode}) => {
     const dispatch = useAppDispatch();
-    const selected = useSelector(selectedOCSelector);
-    const whereUsedKeys = useSelector(whereUsedSelector);
-    const whereUsed = useSelector(whereUsedDetailSelector(whereUsedKeys));
-    const navOperationCode = useSelector(operationCodeSelector(workCenter, operationCode));
-    const loaded = useSelector(loadedSelector);
+    const selected = useSelector(selectCurrentOperationCode);
+    const whereUsedKeys = useSelector(selectWhereUsed);
+    const whereUsed = useAppSelector((state) => selectWhereUsedByRoutingKeys(state, whereUsedKeys));
+    const navOperationCode = useAppSelector((state) => selectOperationCodeByCode(state, workCenter ?? '', operationCode ?? ''));
+    const loaded = useSelector(selectLoaded);
+    const loading = useSelector(selectCurrentLoading);
 
     useEffect(() => {
         if (navOperationCode && (!selected || operationCodeKey(selected) !== operationCodeKey(navOperationCode))) {
-            dispatch(selectOperationCodeAction(navOperationCode));
+            dispatch(loadOperationCode(navOperationCode));
         } else if (!operationCode) {
-            dispatch(selectOperationCodeAction(null));
+            dispatch(loadOperationCode());
         }
     }, [loaded, workCenter, operationCode])
 
@@ -59,7 +66,10 @@ const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter
             <FormColumn label={"Operation Code"}>
                 <h3>{OperationCode}</h3>
             </FormColumn>
+            {loading && <LoadingProgressBar animated striped/>}
+
             <hr/>
+
             <FormColumn label="Description">
                 {OperationDescription}
             </FormColumn>
@@ -71,6 +81,7 @@ const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter
             </FormColumn>
 
             <hr/>
+
             <h4>GL Codes</h4>
             <FormColumn label="WIP Direct Account">
                 <GLAccountElement accountKey={WipDirectAcct} showDescription/>
@@ -87,9 +98,11 @@ const SelectedOperationCode: React.FC<SelectedOperationCodeProps> = ({workCenter
             <FormColumn label="Applied Fixed Overhead">
                 <GLAccountElement accountKey={AppliedFixedOvhdAcct} showDescription/>
             </FormColumn>
+
             <hr/>
+
             <h4>Where Used</h4>
-            <RoutingDetailList list={whereUsed} tableKey="routing-detail-where-used"/>
+            <RoutingDetailList list={whereUsed}/>
         </div>
     )
 }

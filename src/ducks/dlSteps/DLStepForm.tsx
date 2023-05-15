@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FormEvent} from 'react';
-import {Alert, FormCheck, FormColumn, Input, SpinnerButton} from "chums-ducks";
+import {Alert, FormCheck, FormColumn, Input, SpinnerButton} from "chums-components";
 import numeral from "numeral";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import TextAreaAutosize from "react-textarea-autosize";

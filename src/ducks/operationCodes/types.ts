@@ -12,6 +12,7 @@ import {
     RoutingDetail
 } from "../types";
 import {RootState} from "../../app/configureStore";
+import {SortProps} from "chums-types";
 
 
 export interface OperationCodeActionPayload extends ActionInterfacePayload {
@@ -29,37 +30,10 @@ export interface OperationCodeThunkAction extends ThunkAction<any, RootState, un
 }
 
 export const operationCodeKey = (oc?: OperationCodeKey | null) => !!oc ? [oc.WorkCenter, oc.OperationCode].join(':') : '';
-export const operationCodeSearchKey = ({
-                                           workCenter,
-                                           operationCode
-                                       }: { workCenter: string, operationCode: string }) => [workCenter, operationCode].join(':');
 
-export const operationCodeDefaultSort: OperationCodeSorterProps = {field: 'WorkCenter', ascending: true};
 
-export interface OperationCodeSorterProps extends SorterProps {
-    field: OperationCodeField
-}
-
-export const operationCodeSorter = ({field, ascending}: OperationCodeSorterProps) =>
-    (a: OperationCode, b: OperationCode): number => {
-        return (
-            a[field] === b[field]
-                ? (operationCodeKey(a) > operationCodeKey(b) ? 1 : -1)
-                : ((a[field] ?? '') === (b[field] ?? '') ? 0 : ((a[field] ?? '') > (b[field] ?? '') ? 1 : -1))
-        ) * (ascending ? 1 : -1);
-    };
-
-export interface OperationCodeState extends ListState {
-    list: OperationCodeList,
-    selected: OperationCode | null,
-    whereUsed: string[],
-    filterWC: string,
-}
-
-export const defaultState: OperationCodeState = {
-    ...defaultListState,
-    list: {},
-    selected: null,
-    whereUsed: [],
-    filterWC: '',
+export interface OperationCodeResponse {
+    operationCodes: OperationCode[];
+    accounts: GLAccount[];
+    whereUsed: RoutingDetail[];
 }

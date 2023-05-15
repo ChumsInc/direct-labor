@@ -1,27 +1,17 @@
-import React, {useEffect} from "react";
-import {
-    addPageSetAction,
-    pagedDataSelector,
-    PagerDuck,
-    SortableTable,
-    sortableTableSelector,
-    tableAddedAction
-} from "chums-ducks";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useState} from "react";
+import {useSelector} from "react-redux";
 
 import classNames from "classnames";
 import MultiLineField from "../../components/MultiLineField";
-import {billHeaderKey, BillHeaderSorterProps} from "./types";
+import {billHeaderKey} from "./types";
 import {billHeaderSelector} from "./index";
 import StatusBadge from "../../components/StatusBadge";
-import {BillHeader, BillHeaderTableField, BillType, BillTypeDesc} from "../types";
+import {BillHeader, BillType, BillTypeDesc} from "../types";
+import {SortableTable, SortableTableField, TablePagination} from "chums-components";
+import {billHeaderSorter, defaultBillSort} from "./utils";
+import {SortProps} from "chums-types";
 
-export interface BillWhereUsedProps {
-    tableKey: string,
-    className?: string,
-}
-
-const detailTableFields: BillHeaderTableField[] = [
+const detailTableFields: SortableTableField<BillHeader>[] = [
     {field: 'BillNo', title: 'Bill No', sortable: true},
     {field: 'Revision', title: 'Revision', sortable: true},
     {field: 'BillType', title: 'Bill Type', sortable: true, render: (row) => BillTypeDesc[row.BillType as BillType]},
@@ -55,26 +45,26 @@ const rowClassName = (row: BillHeader) => classNames({
     'text-danger': row.BillType === 'I',
 })
 
-const BillWhereUsed: React.FC<BillWhereUsedProps> = ({tableKey, className}) => {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(tableAddedAction({key: tableKey, field: 'BillNo', ascending: true}));
-        dispatch(addPageSetAction({key: tableKey, rowsPerPage: 10, current: 1}));
-    }, [])
-
-    const sort = useSelector(sortableTableSelector(tableKey));
-    const list = useSelector(billHeaderSelector(sort as BillHeaderSorterProps));
-    const pagedList = useSelector(pagedDataSelector(tableKey, list));
+const BillWhereUsed = ({className}: { className?: string }) => {
+    const list = useSelector(billHeaderSelector);
+    const [sort, setSort] = useState<SortProps<BillHeader>>({...defaultBillSort});
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     if (!list.length) {
         return null;
     }
     return (
         <div className={classNames(className)}>
             <h4>Where Used</h4>
-            <SortableTable tableKey={tableKey} keyField={billHeaderKey} size="xs" fields={detailTableFields}
+            <SortableTable keyField={billHeaderKey} size="xs" fields={detailTableFields}
+                           currentSort={sort} onChangeSort={(sort) => setSort(sort as SortProps<BillHeader>)}
                            rowClassName={rowClassName}
-                           data={pagedList}/>
-            {list.length > pagedList.length && (<PagerDuck pageKey={tableKey} dataLength={list.length}/>)}
+                           data={[...list].sort(billHeaderSorter(sort)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
+            <TablePagination page={page} onChangePage={setPage}
+                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={setRowsPerPage}
+                             count={list.length} bsSize="sm"
+                             showFirst={list.length > rowsPerPage * 2}
+                             showLast={list.length > rowsPerPage * 2}/>
         </div>
     )
 }

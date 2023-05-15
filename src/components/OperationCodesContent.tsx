@@ -1,10 +1,9 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
-import {loadedSelector, loadingSelector} from "../ducks/operationCodes";
+import {loadOperationCodes, selectLoaded, selectLoading} from "../ducks/operationCodes";
 import {ErrorBoundary} from "chums-ducks";
 import OperationCodeFilter from "../ducks/operationCodes/OperationCodeFilter";
 import OperationCodeList from "../ducks/operationCodes/OperationCodeList";
-import {loadOperationCodesAction} from "../ducks/operationCodes/actions";
 import SelectedOperationCode from "../ducks/operationCodes/SelectedOperationCode";
 import {RouteComponentProps} from "react-router-dom";
 import {Helmet} from "react-helmet";
@@ -17,11 +16,11 @@ interface OperationCodeMatchProps {
 
 const OperationCodesContent: React.FC<RouteComponentProps> = ({match}) => {
     const dispatch = useAppDispatch();
-    const loaded = useSelector(loadedSelector);
-    const loading = useSelector(loadingSelector);
+    const loaded = useSelector(selectLoaded);
+    const loading = useSelector(selectLoading);
     useEffect(() => {
         if (!loaded && !loading) {
-            dispatch(loadOperationCodesAction());
+            dispatch(loadOperationCodes());
         }
     }, [])
 
@@ -31,7 +30,7 @@ const OperationCodesContent: React.FC<RouteComponentProps> = ({match}) => {
             <Helmet>
                 <title>D/L OpCodes</title>
             </Helmet>
-            <div className="row g-3">
+            <div className="row g-5">
                 <div className="col-6">
                     <ErrorBoundary>
                         <OperationCodeFilter/>

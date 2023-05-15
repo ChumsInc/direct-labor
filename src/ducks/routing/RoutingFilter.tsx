@@ -1,22 +1,21 @@
 import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
-import {filterActiveSelector, filterSelector, loadingSelector} from "./index";
-import {fetchRoutingsAction, filterChangedAction, toggleFilterActiveAction} from "./actions";
-import {FormCheck, SpinnerButton} from "chums-ducks";
+import {loadRoutings, selectLoading, selectSearch, selectShowInactive, setSearch, toggleShowInactive} from "./index";
+import {FormCheck, SpinnerButton} from "chums-components";
 import SearchInput from "../../components/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
 
 const RoutingFilter: React.FC = () => {
     const dispatch = useAppDispatch();
-    const filter = useSelector(filterSelector);
-    const filterActive = useSelector(filterActiveSelector);
-    const loading = useSelector(loadingSelector);
+    const filter = useSelector(selectSearch);
+    const filterActive = useSelector(selectShowInactive);
+    const loading = useSelector(selectLoading);
 
     const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        dispatch(filterChangedAction(ev.target.value));
+        dispatch(setSearch(ev.target.value));
     }
 
-    const onToggleFilterActive = () => dispatch(toggleFilterActiveAction());
+    const onToggleFilterActive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
 
     return (
         <div className="row g-3">
@@ -24,12 +23,12 @@ const RoutingFilter: React.FC = () => {
                 <SearchInput value={filter} onChange={onChange} placeholder="Filter Routings" bsSize="sm"/>
             </div>
             <div className="col-auto">
-                <FormCheck label={"Hide Inactive"} checked={filterActive} onClick={onToggleFilterActive}
+                <FormCheck label={"Hide Inactive"} checked={filterActive} onChange={onToggleFilterActive}
                            type="checkbox"/>
             </div>
             <div className="col-auto">
                 <SpinnerButton type="button" spinning={loading} size="sm"
-                               onClick={() => dispatch(fetchRoutingsAction())}>
+                               onClick={() => dispatch(loadRoutings())}>
                     Load Routings
                 </SpinnerButton>
             </div>

@@ -1,25 +1,24 @@
 import React, {useEffect, useState} from "react";
-import {DLCodeStep, DLStep, DLStepCodeTableField, DLStepTotal} from "../types";
-import {SortableTable} from "chums-ducks";
+import {DLCodeStep, DLStep, DLStepTotal} from "../types";
 import numeral from "numeral";
-import {selectedHeaderSelector, selectedStepsSelector} from "./selectors";
+import {selectCurrentHeader, selectCurrentSteps} from "./selectors";
 import {useSelector} from "react-redux";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import DraggableTR from "./DraggableTR";
 import DeleteStepButton from "./DeleteStepButton";
-import {addDLCodeStepAction, saveDLCodeStepOrder} from "./actions";
-import {dlCodeStepSorter, stepTotalReducer} from "./utils";
+import {addDLStep, saveDLStepSort} from "./actions";
+import {stepTotalReducer} from "./utils";
 import {Link} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
 import classNames from "classnames";
 import StepSelect from "../dlSteps/StepSelect";
 import {newDLStep} from "../dlSteps/types";
 import {useAppDispatch} from "../../app/configureStore";
+import {SortableTableField} from "chums-components";
 
-const tableKey = 'dl-steps-detail';
 
-export const stepsListFields: DLStepCodeTableField[] = [
+export const stepsListFields: SortableTableField<DLCodeStep>[] = [
     {field: 'stepOrder', title: 'Step', render: ({stepOrder}: DLCodeStep) => String(stepOrder + 1)},
     {
         field: 'stepCode',
@@ -50,13 +49,13 @@ export const stepsListFields: DLStepCodeTableField[] = [
     {field: 'id', title: '-', className: 'text-center', render: (row: DLCodeStep) => <DeleteStepButton step={row}/>},
 ]
 
-const SelectedStepsList: React.FC = () => {
+const SelectedStepsList = () => {
     const dispatch = useAppDispatch();
-    const selected = useSelector(selectedHeaderSelector);
-    const steps = useSelector(selectedStepsSelector);
+    const selected = useSelector(selectCurrentHeader);
+    const steps = useSelector(selectCurrentSteps);
     const stepKeys = steps.map(step => step.id).join(':');
     const total: DLStepTotal = stepTotalReducer(steps);
-    const [list, setList] = useState(steps);
+    const [list, setList] = useState(steps ?? []);
     const [newStep, setNewStep] = useState(newDLStep);
 
     useEffect(() => {
@@ -64,27 +63,23 @@ const SelectedStepsList: React.FC = () => {
     }, [stepKeys])
 
     const onMoveStep = (dragIndex: number, hoverIndex: number) => {
+        console.log(list, dragIndex, hoverIndex);
         const sorted = [...list];
         const movingItem = sorted[dragIndex];
         sorted.splice(dragIndex, 1);
         sorted.splice(hoverIndex, 0, movingItem);
-        let priority = 0;
-        sorted.forEach(item => {
-            item.stepOrder = priority;
-            priority += 1;
-        });
-        setList(sorted);
+        setList(() => sorted.map((item, index) => ({...item, stepOrder: index})));
     }
 
     const dropHandler = () => {
-        dispatch(saveDLCodeStepOrder(list));
+        dispatch(saveDLStepSort(list));
     }
 
     const onAddStep = () => {
-        if (newStep.id === 0) {
+        if (!selected || newStep.id === 0) {
             return;
         }
-        dispatch(addDLCodeStepAction(selected.id, newStep.id));
+        dispatch(addDLStep({id: selected.id, stepId: newStep.id}));
         setNewStep(newDLStep);
     }
 
@@ -92,19 +87,34 @@ const SelectedStepsList: React.FC = () => {
         setNewStep(step || newStep);
     }
 
+    if (!selected) {
+        return null;
+    }
+    // return null;
     return (
         <div>
-            <SortableTable tableKey={tableKey} keyField={"id"} fields={stepsListFields} data={[]} size="xs">
-                <tbody>
+            <table className="table table-xs table-hover">
+                <thead>
+                <tr>
+                    {stepsListFields
+                        .map(field =>
+                            (<th key={field.id ?? field.field}
+                                 className={classNames(typeof field.className === "string" ? field.className : '')}>
+                                {field.title}
+                            </th>)
+                        )}
+                </tr>
+                </thead>
                 <DndProvider backend={HTML5Backend}>
-                    {list.sort(dlCodeStepSorter)
+                    <tbody>
+                    {list
                         .map((step, index) => (
                             <DraggableTR key={step.id} index={index} fields={stepsListFields} row={step}
                                          className={classNames({'table-danger': !step.active})}
                                          moveItem={onMoveStep} onDrop={dropHandler}/>
                         ))}
+                    </tbody>
                 </DndProvider>
-                </tbody>
                 <tfoot>
                 <tr>
                     <th colSpan={3}>Total</th>
@@ -116,7 +126,7 @@ const SelectedStepsList: React.FC = () => {
                     <th/>
                 </tr>
                 </tfoot>
-            </SortableTable>
+            </table>
             <div className="row g-3">
                 <div className="col-auto">
                     <StepSelect id={newStep.id} onChange={onChangeNewStep} filterInactive/>

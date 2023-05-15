@@ -128,6 +128,11 @@ export interface DLStep extends DLBasicStep {
     timings?: DLTiming[],
 }
 
+export interface DLTimingResponse {
+    timings: DLTiming[];
+    step: DLStep;
+}
+
 export interface DLStepField {
     field: keyof DLStep,
 }
@@ -236,7 +241,12 @@ export interface OperationCodeTableField extends SortableTableField {
     field: OperationCodeField
 }
 
-
+export interface RoutingResponse {
+    routingHeader:RoutingHeader[];
+    routingDetail:RoutingDetail[];
+    whereUsed:BillHeader[];
+    whereUsedOption:BillOptionHeader[];
+}
 
 
 export interface RoutingHeader {
@@ -261,6 +271,10 @@ export interface RoutingDetail {
     OperationDescription: string,
     StdRatePiece: number,
     PlannedPieceCostDivisor: number,
+}
+
+export interface RoutingDetailList {
+    [key:string]: RoutingDetail;
 }
 
 export type RoutingHeaderField = keyof RoutingHeader;

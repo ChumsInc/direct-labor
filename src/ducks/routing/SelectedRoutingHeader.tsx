@@ -1,11 +1,11 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import {selectedHeaderSelector} from "./index";
-import {Alert, FormColumn} from "chums-ducks";
+import {selectCurrentHeader} from "./index";
+import {Alert, FormColumn} from "chums-components";
 import numeral from "numeral";
 
 const SelectedRoutingHeader: React.FC = () => {
-    const header = useSelector(selectedHeaderSelector);
+    const header = useSelector(selectCurrentHeader);
     if (!header) {
         return (<Alert color="info">Select a routing</Alert>);
     }

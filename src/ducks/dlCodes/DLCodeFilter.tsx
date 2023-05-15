@@ -1,23 +1,23 @@
 import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {filterInactiveSelector, filterSelector, loadingSelector, wcFilterSelector} from "./selectors";
+import {selectFilter, selectLoading, selectShowInactive, selectWorkCenterFilter} from "./selectors";
 import {WorkCenter} from "../types";
-import {filterInactiveAction, loadDLCodesAction, setDLCodeFilterAction, setWCFilterAction} from "./actions";
+import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "./actions";
 import SearchInput from "../../components/SearchInput";
 import {FormCheck, SpinnerButton} from "chums-ducks";
 import {useAppDispatch} from "../../app/configureStore";
 
 const DLCodeFilter: React.FC = () => {
     const dispatch = useAppDispatch();
-    const filter = useSelector(filterSelector);
-    const wcFilter = useSelector(wcFilterSelector);
-    const loading = useSelector(loadingSelector);
-    const filterInactive = useSelector(filterInactiveSelector);
+    const filter = useSelector(selectFilter);
+    const wcFilter = useSelector(selectWorkCenterFilter);
+    const loading = useSelector(selectLoading);
+    const showInactive = useSelector(selectShowInactive);
 
-    const onSelectWC = (wc: WorkCenter | null) => dispatch(setWCFilterAction(wc?.WorkCenterCode || ''));
-    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setDLCodeFilterAction(ev.target.value || ''));
-    const onReloadList = () => dispatch(loadDLCodesAction());
+    const onSelectWC = (wc: WorkCenter | null) => dispatch(setWorkCenterFilter(wc?.WorkCenterCode || ''));
+    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearch(ev.target.value || ''));
+    const onReloadList = () => dispatch(loadDLCodes());
 
     return (
         <div className="row g-3">
@@ -25,8 +25,8 @@ const DLCodeFilter: React.FC = () => {
                 <WorkCenterSelect value={wcFilter} onSelectWorkCenter={onSelectWC}/>
             </div>
             <div className="col-auto">
-                <FormCheck label="Hide Inactive" checked={filterInactive}
-                           onClick={() => dispatch(filterInactiveAction(!filterInactive))} type="checkbox"/>
+                <FormCheck label="Show Inactive" checked={showInactive}
+                           onClick={() => dispatch(toggleShowInactive(!showInactive))} type="checkbox"/>
             </div>
             <div className="col-auto">
                 <SearchInput onChange={onChangeSearch} value={filter} bsSize="sm"/>

@@ -2,6 +2,7 @@ import React from 'react';
 import MainNav from "./MainNav";
 import RoutingContent from "./RoutingContent";
 import {AlertList} from "chums-ducks";
+import TKAlertList from "../ducks/alerts/AlertList";
 import WorkCenterContent from "./WorkCenterContent";
 import OperationCodesContent from "./OperationCodesContent";
 import {Route} from 'react-router-dom';
@@ -21,6 +22,7 @@ const App: React.FC = () => {
     return (
         <>
             <AlertList/>
+            <TKAlertList />
             <div className="row g-3">
                 <div className="col-auto">
                     <MainNav tabKey={mainTabKey}/>

@@ -1,205 +1,186 @@
-import {combineReducers} from "redux";
-import {
-    defaultDetailSort,
-    defaultState,
-    RoutingAction,
-    RoutingDetailSorterProps,
-    RoutingHeaderSorterProps,
-    SelectedRoutingState
-} from "./types";
-import {OperationCodeAction} from "../operationCodes/types";
-import {loadOCSucceeded} from "../operationCodes";
-import {RoutingDetail, RoutingHeader, RoutingHeaderList} from "../types";
+import {RoutingDetail, RoutingDetailList, RoutingHeader, RoutingHeaderList, RoutingResponse} from "../types";
 import {RootState} from "../../app/configureStore";
+import {SortProps} from "chums-types";
+import {getPreference, localStorageKeys} from "../../api/preferences";
+import {createAction, createAsyncThunk, createReducer, createSelector} from "@reduxjs/toolkit";
+import {fetchRouting, fetchRoutings} from "../../api/routing";
+import {routingDetailKey, routingDetailSorter, routingHeaderSorter} from "./utils";
+import {loadOperationCode} from "../operationCodes";
 
-export * from './types';
-
-export const loadListRequested = 'routing/loadListRequested';
-export const loadListSucceeded = 'routing/loadListSucceeded';
-export const loadListFailed = 'routing/loadListFailed';
-export const routingSelected = 'routing/routingSelected';
-export const loadRoutingRequested = 'routing/loadRoutingRequested';
-export const loadRoutingSucceeded = 'routing/loadRoutingSucceeded';
-export const loadRoutingFailed = 'routing/loadRoutingFailed';
-export const filterChanged = 'routing/filterChanged';
-export const filterActiveChanged = 'routing/filterActiveChanged';
-
-export const routingHeaderKey = (header: RoutingHeader) => header.RoutingNo;
-export const routingDetailKey = (detail: RoutingDetail) => [detail.RoutingNo, detail.StepNo].join(':');
-
-
-export const routingHeaderSorter = ({field, ascending}: RoutingHeaderSorterProps) =>
-    (a: RoutingHeader, b: RoutingHeader): number => {
-        return (
-            a[field] === b[field]
-                ? (routingHeaderKey(a) > routingHeaderKey(b) ? 1 : -1)
-                : ((a[field] ?? '') === (b[field] ?? '') ? 0 : ((a[field] ?? '') > (b[field] ?? '') ? 1 : -1))
-        ) * (ascending ? 1 : -1);
-    };
-
-export const routingDetailSorter = ({field, ascending}: RoutingDetailSorterProps) =>
-    (a: RoutingDetail, b: RoutingDetail): number => {
-        return (
-            a[field] === b[field]
-                ? (routingDetailKey(a) > routingDetailKey(b) ? -1 : 1)
-                : ((a[field] ?? '') === (b[field] ?? '') ? 0 : ((a[field] ?? '') > (b[field] ?? '') ? 1 : -1))
-        ) * (ascending ? 1 : -1);
-    };
-
-
-export const listSelector = (sort: RoutingHeaderSorterProps) => (state: RootState): RoutingHeader[] => {
-    return Object.values(state.routing.list).sort(routingHeaderSorter(sort));
-}
-
-export const filteredListSelector = (sort: RoutingHeaderSorterProps) => (state: RootState): RoutingHeader[] => {
-    let filter: RegExp = /^/;
-    try {
-        filter = new RegExp(state.routing.filter, 'i');
-    } catch (err) {
+export interface RoutingState {
+    list: RoutingHeaderList;
+    loaded: boolean;
+    loading: boolean;
+    current: {
+        header: RoutingHeader | null;
+        detail: RoutingDetail[];
+        loading: boolean;
     }
-    const filterActive = state.routing.filterActive;
-
-    return Object.values(state.routing.list)
-        .filter(row => !filterActive || (row.BillStatus && row.ItemStatus))
-        .filter(row => filter.test(row.RoutingNo) || filter.test(row.StepDescription))
-        .sort(routingHeaderSorter(sort));
+    detailList: RoutingDetailList;
+    search: string;
+    showInactive: boolean;
+    page: number;
+    rowsPerPage: number;
+    sort: SortProps<RoutingHeader>;
 }
 
-export const loadingSelector = (state: RootState): boolean => state.routing.loading;
-export const loadedSelector = (state: RootState): boolean => state.routing.loaded;
-export const selectedSelector = (state: RootState): SelectedRoutingState => state.routing.selected;
-export const routingHeaderSelector = (routingNo:string) => (state:RootState): RoutingHeader|null => {
-    return state.routing.list[routingNo] || null;
-}
-export const selectedHeaderSelector = (state: RootState): RoutingHeader | null => state.routing.selected.header;
+export const initialState = (): RoutingState => ({
+    list: {},
+    loaded: false,
+    loading: false,
+    current: {
+        header: null,
+        detail: [],
+        loading: false,
+    },
+    detailList: {},
+    search: '',
+    showInactive: getPreference(localStorageKeys.routingShowInactive, false),
+    page: 0,
+    rowsPerPage: getPreference(localStorageKeys.routingRowsPerPage, 25),
+    sort: {field: 'RoutingNo', ascending: true}
+});
 
-export const detailListSelector = (state:RootState):RoutingDetail[] => state.routing.detailList;
+export const setSearch = createAction<string>('routing/filter/setSearch');
+export const toggleShowInactive = createAction<boolean | undefined>('routing/filter/toggleShowInactive');
+export const setPage = createAction<number>('routing/setPage');
+export const setRowsPerPage = createAction<number>('routing/setRowsPerPage');
+export const setSort = createAction<SortProps<RoutingHeader>>('routing/setSort');
 
-export const whereUsedDetailSelector = (keyList:string[]) => (state:RootState):RoutingDetail[] => {
-    return state.routing.detailList.filter(rd => keyList.includes(routingDetailKey(rd)));
-}
-export const selectedDetailSelector = (sort: RoutingDetailSorterProps) =>
-    (state: RootState): RoutingDetail[] => state.routing.selected.detail.sort(routingDetailSorter(sort));
-
-export const selectedLoadingSelector = (state: RootState): boolean => state.routing.selected.loading;
-export const filterSelector = (state: RootState): string => state.routing.filter;
-export const filterActiveSelector = (state: RootState): boolean => state.routing.filterActive;
-
-const listReducer = (state: RoutingHeaderList = defaultState.list, action: RoutingAction): RoutingHeaderList => {
-    const {type, payload} = action;
-    switch (type) {
-    case loadListSucceeded:
-        return payload?.list || {};
-    default:
-        return state;
-    }
-}
-
-const detailListReducer = (state: RoutingDetail[] = defaultState.detailList, action: OperationCodeAction): RoutingDetail[] => {
-    const {type, payload} = action;
-    switch (type) {
-    case loadOCSucceeded:
-        if (payload?.routings) {
-            const keys = payload.routings.map(rd => routingDetailKey(rd));
-            return [
-                ...state.filter(detail => !keys.includes(routingDetailKey(detail))),
-                ...payload.routings,
-            ].sort(routingDetailSorter(defaultDetailSort));
+export const loadRoutings = createAsyncThunk<RoutingHeader[]>(
+    'routing/load',
+    async () => {
+        return await fetchRoutings()
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !selectLoading(state);
         }
-        return state;
-    default:
-        return state;
     }
-}
+)
 
-const loadingReducer = (state: boolean = defaultState.loading, action: RoutingAction): boolean => {
-    switch (action.type) {
-    case loadListRequested:
-        return true;
-    case loadListSucceeded:
-    case loadListFailed:
-        return false;
-    default:
-        return state;
+export const setCurrentRouting = createAsyncThunk<RoutingResponse | null, RoutingHeader>(
+    'routing/current/load',
+    async (arg) => {
+        return await fetchRouting(arg.RoutingNo);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !selectCurrentLoading(state);
+        }
     }
-}
+)
 
-const loadedReducer = (state: boolean = defaultState.loading, action: RoutingAction): boolean => {
-    switch (action.type) {
-    case loadListSucceeded:
-        return true;
-    default:
-        return state;
-    }
-}
-
-const filterReducer = (state: string = defaultState.filter, action: RoutingAction): string => {
-    const {type, payload} = action;
-    switch (type) {
-    case filterChanged:
-        return payload?.filter || '';
-    default:
-        return state;
-    }
-}
-
-const filterActiveReducer = (state: boolean = defaultState.filterActive, action: RoutingAction): boolean => {
-    switch (action.type) {
-    case filterActiveChanged:
-        return !state;
-    default:
-        return state;
-    }
-}
-
-const selectedHeaderReducer = (state: RoutingHeader | null = defaultState.selected.header, action: RoutingAction): RoutingHeader | null => {
-    const {type, payload} = action;
-    switch (type) {
-    case routingSelected:
-    case loadRoutingSucceeded:
-        return payload?.routing?.header || null;
-    default:
-        return state;
-    }
-}
-
-const selectedDetailReducer = (state: RoutingDetail[] = defaultState.selected.detail, action: RoutingAction): RoutingDetail[] => {
-    const {type, payload} = action;
-    switch (type) {
-    case routingSelected:
-        return [];
-    case loadRoutingSucceeded:
-        return (payload?.routing?.detail || []).sort(routingDetailSorter(defaultDetailSort));
-    default:
-        return state;
-    }
-}
-
-
-const selectedLoadingReducer = (state: boolean = defaultState.selected.loading, action: RoutingAction): boolean => {
-    switch (action.type) {
-    case loadRoutingRequested:
-        return true;
-    case loadRoutingSucceeded:
-    case loadRoutingFailed:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedReducer = combineReducers({
-    header: selectedHeaderReducer,
-    detail: selectedDetailReducer,
-    loading: selectedLoadingReducer,
+const routingReducer = createReducer(initialState, (builder) => {
+    builder
+        .addCase(loadRoutings.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(loadRoutings.fulfilled, (state, action) => {
+            state.loading = false;
+            state.loaded = true;
+            state.list = {}
+            action.payload.forEach(row => {
+                state.list[row.RoutingNo] = row;
+            })
+            if (state.current.header) {
+                const current = state.list[state.current.header.RoutingNo];
+                if (current?.RoutingNo !== state.current.header.RoutingNo) {
+                    state.current.detail = [];
+                }
+                state.current.detail.forEach(row => {
+                    state.detailList[routingDetailKey(row)] = row;
+                })
+                state.current.header = current ?? null;
+            }
+        })
+        .addCase(loadRoutings.rejected, (state) => {
+            state.loading = false;
+        })
+        .addCase(loadOperationCode.fulfilled, (state, action) => {
+            action.payload?.whereUsed.forEach(row => {
+                state.detailList[routingDetailKey(row)] = row;
+            })
+        })
+        .addCase(setCurrentRouting.pending, (state, action) => {
+            state.current.header = action.payload ?? null;
+            state.current.loading = true;
+        })
+        .addCase(setCurrentRouting.fulfilled, (state, action) => {
+            state.current.loading = false;
+            const [header] = action.payload?.routingHeader ?? [];
+            state.current.header = header ?? null;
+            state.current.detail = action.payload?.routingDetail ?? [];
+            const detailKeys = action.payload?.routingDetail?.map(row => routingDetailKey(row)) ?? [];
+            action.payload?.routingDetail.forEach(row => {
+                state.detailList[routingDetailKey(row)] = row;
+            })
+        })
+        .addCase(setCurrentRouting.rejected, (state) => {
+            state.current.loading = false;
+        })
+        .addCase(setSearch, (state, action) => {
+            state.search = action.payload;
+            state.page = 0;
+        })
+        .addCase(toggleShowInactive, (state, action) => {
+            state.showInactive = action.payload ?? !state.showInactive;
+            state.page = 0;
+        })
+        .addCase(setSort, (state, action) => {
+            state.sort = action.payload;
+            state.page = 0;
+        })
+        .addCase(setPage, (state, action) => {
+            state.page = action.payload;
+        })
+        .addCase(setRowsPerPage, (state, action) => {
+            state.page = 0;
+            state.rowsPerPage = action.payload;
+        })
 })
 
-export default combineReducers({
-    list: listReducer,
-    selected: selectedReducer,
-    detailList: detailListReducer,
-    loading: loadingReducer,
-    loaded: loadedReducer,
-    filter: filterReducer,
-    filterActive: filterActiveReducer,
-});
+export const selectRoutings = (state: RootState): RoutingHeader[] => {
+    return Object.values(state.routing.list).sort(routingHeaderSorter(state.routing.sort));
+}
+
+export const selectLoading = (state: RootState): boolean => state.routing.loading;
+export const selectLoaded = (state: RootState): boolean => state.routing.loaded;
+export const selectCurrentLoading = (state: RootState) => state.routing.current.loading;
+export const selectCurrent = (state: RootState) => state.routing.current;
+export const routingHeaderSelector = (routingNo: string) => (state: RootState): RoutingHeader | null => {
+    return state.routing.list[routingNo] || null;
+}
+export const selectCurrentHeader = (state: RootState): RoutingHeader | null => state.routing.current.header;
+
+export const selectRoutingDetailList = (state: RootState): RoutingDetail[] => Object.values(state.routing.detailList);
+
+export const selectWhereUsedByRoutingKeys = (state: RootState, keyList: string[]): RoutingDetail[] => {
+    return keyList.filter(key => !!state.routing.detailList[key]).map(key => state.routing.detailList[key]);
+}
+export const selectCurrentDetail = (state: RootState, sort: SortProps<RoutingDetail>): RoutingDetail[] => [...state.routing.current.detail].sort(routingDetailSorter(sort));
+export const selectPage = (state: RootState) => state.routing.page;
+export const selectRowsPerPage = (state: RootState) => state.routing.rowsPerPage;
+export const selectSearch = (state: RootState): string => state.routing.search;
+export const selectShowInactive = (state: RootState): boolean => state.routing.showInactive;
+export const selectSort = (state: RootState) => state.routing.sort
+export const selectSortedRoutingList = createSelector(
+    [selectRoutings, selectSearch, selectShowInactive, selectSort],
+    (list, search, showInactive, sort) => {
+        let regEx = /^/i;
+        try {
+            if (search) {
+                regEx = new RegExp('search', 'i');
+            }
+        } catch (err: unknown) {
+        }
+        return list
+            .filter(row => showInactive || (row.BillStatus && row.ItemStatus))
+            .filter(row => !search || regEx.test(row.RoutingNo) || regEx.test(row.StepDescription))
+            .sort(routingHeaderSorter(sort));
+    }
+)
+
+export default routingReducer;

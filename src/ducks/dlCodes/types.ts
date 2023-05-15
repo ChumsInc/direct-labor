@@ -4,13 +4,14 @@ import {
     defaultListState,
     DLCode,
     DLCodeField,
-    DLCodeList,
+    DLCodeList, DLCodeStep,
     DLCodeSteps,
     ListState
 } from "../types";
 import {ThunkAction} from "redux-thunk";
 import {filterInactiveCodesKey, getPreference} from "../../utils/preferences";
 import {RootState} from "../../app/configureStore";
+import {SortProps} from "chums-components";
 
 export const newDLCode:DLCode = {
     id: 0,
@@ -70,7 +71,7 @@ export interface DLCodesAction extends ActionInterface {
 export interface DLCodesThunkAction extends ThunkAction<any, RootState, unknown, DLCodesAction> {
 }
 
-export const defaultDLCodeSort: DLCodeSorterProps = {field: 'dlCode', ascending: true};
+export const defaultDLCodeSort: SortProps<DLCode> = {field: 'dlCode', ascending: true};
 
 export const dlCodeKey = (dl: DLCode) => dl.id;
 
@@ -78,7 +79,7 @@ export interface DLCodeSorterProps extends SorterProps {
     field: DLCodeField,
 }
 
-export const dlCodeSorter = ({field, ascending}: DLCodeSorterProps) =>
+export const dlCodeSorter = ({field, ascending}: SortProps<DLCode>) =>
     (a: DLCode, b: DLCode): number => {
         return (
             a[field] === b[field]
@@ -88,3 +89,12 @@ export const dlCodeSorter = ({field, ascending}: DLCodeSorterProps) =>
     };
 
 
+export interface DLCodeResponse {
+    dlCode: DLCode,
+    steps: DLCodeStep[],
+}
+
+export interface AddDLStepArg {
+    id: number,
+    stepId: number,
+}

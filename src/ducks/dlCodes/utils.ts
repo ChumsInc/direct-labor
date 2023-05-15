@@ -23,4 +23,6 @@ export const stepTotalReducer = (steps: DLCodeStep[], ):DLStepTotal =>
         stepCost: previousValue.stepCost + step.stepCost,
     }), stepTotalInitialValue);
 
-export const dlCodeStepSorter = (a: DLCodeStep, b: DLCodeStep):number => a.stepOrder - b.stepOrder;
+export const dlCodeStepSorter = (a: DLCodeStep, b: DLCodeStep):number => {
+    return (a?.stepOrder ?? 0) - (b?.stepOrder ?? 0);
+}

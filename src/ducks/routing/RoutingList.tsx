@@ -1,34 +1,31 @@
 import React, {useEffect} from "react";
-import {
-    addPageSetAction,
-    pagedDataSelector,
-    PagerDuck,
-    SortableTable,
-    SortableTableField,
-    sortableTableSelector,
-    tableAddedAction
-} from "chums-ducks";
+import {SortableTable, SortableTableField, TablePagination} from "chums-components";
 import {useSelector} from "react-redux";
 import {
-    filteredListSelector,
-    listSelector,
-    loadedSelector,
-    loadingSelector,
-    RoutingHeaderSorterProps,
-    selectedHeaderSelector
+    loadRoutings,
+    selectCurrentHeader,
+    selectLoaded,
+    selectLoading,
+    selectPage,
+    selectRowsPerPage,
+    selectSort,
+    selectSortedRoutingList,
+    setCurrentRouting,
+    setPage,
+    setRowsPerPage,
+    setSort
 } from "./index";
 import {RoutingHeader} from "../types";
 import numeral from "numeral";
-import {fetchRoutingsAction, selectRoutingAction} from "./actions";
 import classNames from "classnames";
 import {useHistory} from "react-router-dom";
 import {selectedRoutingPath} from "../../routerPaths";
 import StatusBadge from "../../components/StatusBadge";
 import {useAppDispatch} from "../../app/configureStore";
+import {SortProps} from "chums-types";
 
-const tableId = 'routing-list'
 
-const routingListFields: SortableTableField[] = [
+const routingListFields: SortableTableField<RoutingHeader>[] = [
     {field: 'RoutingNo', title: 'Routing No', sortable: true},
     {field: 'StepDescription', title: 'Description', sortable: true},
     {
@@ -53,41 +50,44 @@ const routingListFields: SortableTableField[] = [
 
 const rowClassName = (row: RoutingHeader) => classNames({'text-danger': !(row.BillStatus && row.ItemStatus)});
 
-const RoutingList: React.FC = () => {
+const RoutingList = () => {
     const dispatch = useAppDispatch();
     const history = useHistory();
-    useEffect(() => {
-        dispatch(tableAddedAction({key: tableId, field: 'RoutingNo', ascending: true}));
-        dispatch(addPageSetAction({key: tableId, rowsPerPage: 25, current: 1}))
-    }, []);
-    const loaded = useSelector(loadedSelector);
-    const loading = useSelector(loadingSelector);
-    const selectedHeader = useSelector(selectedHeaderSelector);
-    const sort = useSelector(sortableTableSelector(tableId));
+    const loaded = useSelector(selectLoaded);
+    const loading = useSelector(selectLoading);
+    const selectedHeader = useSelector(selectCurrentHeader);
+    const filteredList = useSelector(selectSortedRoutingList);
+    const page = useSelector(selectPage);
+    const rowsPerPage = useSelector(selectRowsPerPage);
+    const sort = useSelector(selectSort);
+    const pagedList = filteredList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     useEffect(() => {
         if (!loaded && !loading) {
-            dispatch(fetchRoutingsAction());
+            dispatch(loadRoutings());
         }
     }, []);
 
     const onSelect = (header: RoutingHeader) => {
-        dispatch(selectRoutingAction(header));
+        dispatch(setCurrentRouting(header));
         history.push(selectedRoutingPath(header.RoutingNo));
     }
+    const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
+    const pageChangeHandler = (page: number) => dispatch(setPage(page));
+    const rowsPerPageChangeHandler = (page: number) => dispatch(setRowsPerPage(page));
 
-    const list = useSelector(listSelector(sort as RoutingHeaderSorterProps));
-    const filteredList = useSelector(filteredListSelector(sort as RoutingHeaderSorterProps));
-    const pagedList = useSelector(pagedDataSelector(tableId, filteredList));
     return (
         <>
-            <SortableTable tableKey={tableId} keyField={"RoutingNo"} size="xs" fields={routingListFields}
+            <SortableTable keyField={"RoutingNo"} size="xs" fields={routingListFields}
                            data={pagedList}
+                           currentSort={sort} onChangeSort={onChangeSort}
                            selected={selectedHeader?.RoutingNo}
                            rowClassName={rowClassName}
                            onSelectRow={onSelect}/>
-            <PagerDuck pageKey={tableId} dataLength={filteredList.length}
-                       filtered={list.length !== filteredList.length}/>
+            <TablePagination page={page} onChangePage={pageChangeHandler}
+                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
+                             showFirst showLast bsSize="sm"
+                             count={filteredList.length}/>
         </>
     )
 }

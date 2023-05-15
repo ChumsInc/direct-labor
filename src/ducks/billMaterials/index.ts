@@ -1,49 +1,45 @@
-import {combineReducers} from "redux";
 import {
+    billHeaderKey,
     billHeaderSorter,
-    BillHeaderSorterProps,
+    billOptionHeaderKey,
     billOptionHeaderSorter,
-    BillOptionHeaderSorterProps,
-    defaultState
-} from "./types";
+    defaultBillOptionSort,
+    defaultBillSort
+} from "./utils";
 import {RootState} from "../../app/configureStore";
-import {loadRoutingSucceeded, RoutingAction, routingSelected} from "../routing";
+import {setCurrentRouting} from "../routing";
 import {BillHeader, BillHeaderList, BillOptionHeader, BillOptionHeaderList} from "../types";
+import {SortProps} from "chums-types";
+import {createReducer} from "@reduxjs/toolkit";
 
-
-export const billHeaderSelector = (sort: BillHeaderSorterProps) =>
-    (state: RootState): BillHeader[] => Object.values(state.billMaterials.headerList).sort(billHeaderSorter(sort));
-
-export const billOptionHeaderSelector = (sort: BillOptionHeaderSorterProps) =>
-    (state: RootState): BillOptionHeader[] => Object.values(state.billMaterials.headerOptionList).sort(billOptionHeaderSorter(sort));
-
-
-const headerListReducer = (state: BillHeaderList = defaultState.headerList, action: RoutingAction): BillHeaderList => {
-    const {type, payload} = action;
-    switch (type) {
-    case routingSelected:
-        return {};
-    case loadRoutingSucceeded:
-        return payload?.routing?.whereUsed || {};
-    default:
-        return state;
-    }
+export interface BOMState {
+    headerList: BillHeaderList;
+    headerOptionList: BillOptionHeaderList;
 }
 
-const headerOptionListReducer = (state: BillOptionHeaderList = defaultState.optionHeaderList,
-                                           action: RoutingAction): BillOptionHeaderList => {
-    const {type, payload} = action;
-    switch (type) {
-    case routingSelected:
-        return {};
-    case loadRoutingSucceeded:
-        return payload?.routing?.whereUsedInOptions || {};
-    default:
-        return state;
-    }
+export const initialState: BOMState = {
+    headerList: {},
+    headerOptionList: {},
 }
 
-export default combineReducers({
-    headerList: headerListReducer,
-    headerOptionList: headerOptionListReducer,
+
+export const billHeaderSelector = (state: RootState, sort: SortProps<BillHeader> = defaultBillSort): BillHeader[] => Object.values(state.billMaterials.headerList).sort(billHeaderSorter(sort));
+export const billOptionHeaderSelector = (state: RootState, sort: SortProps<BillOptionHeader> = defaultBillOptionSort): BillOptionHeader[] => Object.values(state.billMaterials.headerOptionList).sort(billOptionHeaderSorter(sort));
+
+export const billMaterialsReducer = createReducer(initialState, (builder) => {
+    builder
+        .addCase(setCurrentRouting.pending, (state) => {
+            state.headerList = {};
+            state.headerOptionList = {};
+        })
+        .addCase(setCurrentRouting.fulfilled, (state, action) => {
+            action.payload?.whereUsed?.forEach(row => {
+                state.headerList[billHeaderKey(row)] = row;
+            })
+            action.payload?.whereUsedOption?.forEach(row => {
+                state.headerOptionList[billOptionHeaderKey(row)] = row;
+            })
+        })
 })
+
+export default billMaterialsReducer;

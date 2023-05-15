@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FormEvent, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentLoading, selectCurrentSaving, selectCurrentTiming, selectTimingsIsEditing} from "./selectors";
-import {DateInput, FormColumn, Input, InputGroup, SpinnerButton} from "chums-ducks";
+import {DateInput, FormColumn, Input, InputGroup, SpinnerButton} from "chums-components";
 import {changeTimingAction, editTimingAction, saveTimingAction} from "./actions";
 import {DLTiming} from "../types";
 import numeral from "numeral";

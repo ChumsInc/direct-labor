@@ -1,20 +1,20 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Link} from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {addPageSetAction, pagedDataSelector, PagerDuck, SortableTable, tableAddedAction} from "chums-ducks";
-import {defaultDLCodeSort} from "./types";
 import {dlCodePath, operationCodesOperationPath} from "../../routerPaths";
 import numeral from "numeral";
-import {DLCode, DLCodeTableField} from "../types";
+import {DLCode} from "../types";
+import {SortableTable, SortableTableField, SortProps} from "chums-components";
+import classNames from "classnames";
 
 export interface DLCodeListProps {
-    tableKey: string,
-    list: DLCode[],
-    selected?: DLCode,
+    list: DLCode[];
+    selected?: DLCode | null;
+    sort: SortProps<DLCode>;
+    onChangeSort: (props: SortProps<DLCode>) => void;
     onSelectDLCode?: (code: DLCode) => void,
 }
 
-const fields: DLCodeTableField[] = [
+const fields: SortableTableField<DLCode>[] = [
     {
         field: "dlCode",
         title: 'D/L Code',
@@ -63,7 +63,7 @@ const fields: DLCodeTableField[] = [
     {
         field: 'StdRatePiece',
         title: 'Sage Cost',
-        className: (row: DLCode) => ({
+        className: (row: DLCode) => classNames({
             'right': true,
             'text-danger': Math.round(row.directLaborCost * 1000) !== Math.round(row.StdRatePiece * 1000)
         }),
@@ -71,23 +71,13 @@ const fields: DLCodeTableField[] = [
         render: (row: DLCode) => numeral(row.StdRatePiece).format('$0,0.000')
     },
 ]
-const DLCodeList: React.FC<DLCodeListProps> = ({tableKey, list, selected, onSelectDLCode}) => {
-    const dispatch = useDispatch();
-    const pagedList = useSelector(pagedDataSelector(tableKey, list));
-
-    useEffect(() => {
-        dispatch(addPageSetAction({key: tableKey}));
-        dispatch(tableAddedAction({key: tableKey, ...defaultDLCodeSort}));
-    }, [])
-
+const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: DLCodeListProps) => {
     return (
-        <>
-            <SortableTable tableKey={tableKey} keyField="id" fields={fields} data={pagedList} size="xs"
-                           rowClassName={(row:DLCode) => ({'table-warning': !row.active})}
-                           selected={selected?.id}
-                           onSelectRow={onSelectDLCode}/>
-            <PagerDuck dataLength={list.length} pageKey={tableKey}/>
-        </>
+        <SortableTable keyField="id" fields={fields} data={list} size="xs"
+                       rowClassName={(row: DLCode) => classNames({'table-warning': !row.active})}
+                       currentSort={sort} onChangeSort={onChangeSort}
+                       selected={selected?.id}
+                       onSelectRow={onSelectDLCode}/>
     )
 }
 

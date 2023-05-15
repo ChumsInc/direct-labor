@@ -1,10 +1,10 @@
 import React, {useRef} from "react";
-import {SortableTR} from "chums-ducks";
-import {SortableTRProps} from "chums-ducks/dist/ducks/sortableTables/SortableTR";
+import {SortableTRProps, SortableTR} from "chums-components";
 import {DLCodeStep} from "../types";
 import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
 import "./DraggableTR.scss";
 import classNames from "classnames";
+import {Identifier} from "dnd-core";
 
 export interface DraggableTRProps extends SortableTRProps {
     row: DLCodeStep,
@@ -19,17 +19,18 @@ interface DragItem {
     type: string,
 }
 
-const DraggableTR: React.FC<DraggableTRProps> = ({fields, row, className, index, moveItem, onDrop}) => {
+const DraggableTR = ({fields, row, className, index, moveItem, onDrop}:DraggableTRProps) => {
     const ref = useRef<HTMLTableRowElement>(null);
 
-    const [{handlerId}, drop] = useDrop({
+    const [{handlerId}, drop] = useDrop<DragItem, void, {handlerId: Identifier|null}>({
         accept: 'item',
         collect(monitor) {
             return {
                 handlerId: monitor.getHandlerId(),
             }
         },
-        hover(item: DragItem, monitor: DropTargetMonitor) {
+
+        hover(item: DragItem, monitor) {
             if (!ref.current) {
                 return;
             }
@@ -42,23 +43,22 @@ const DraggableTR: React.FC<DraggableTRProps> = ({fields, row, className, index,
             const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
             const hoverMiddleX = (hoverBoundingRect.left - hoverBoundingRect.right) / 2;
             const clientOffset = monitor.getClientOffset();
-            const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
-            const hoverClientX = (clientOffset as XYCoord).x - hoverBoundingRect.left;
+            if (!clientOffset) {
+                return;
+            }
+            const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+            const hoverClientX = clientOffset.x - hoverBoundingRect.left;
 
-            if (dragIndex < hoverIndex && (hoverClientX < hoverMiddleX || hoverClientY < hoverMiddleY)) {
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+                return;
+            }
+
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
                 return;
             }
 
             moveItem(dragIndex, hoverIndex);
             item.index = hoverIndex;
-        },
-        drop(item: DragItem, monitor) {
-            if(!ref.current) {
-                return;
-            }
-            if (!!onDrop) {
-                onDrop();
-            }
         }
     });
 
@@ -73,8 +73,9 @@ const DraggableTR: React.FC<DraggableTRProps> = ({fields, row, className, index,
     });
 
     drag(drop(ref));
+    const opacity = isDragging ? 0.5 : 1;
     return (
-        <SortableTR fields={fields} row={row} trRef={ref}
+        <SortableTR fields={fields} row={row} trRef={ref} style={{opacity}}
                     className={classNames(className, 'draggable-tr', {'is-dragging': isDragging})}/>
     )
 }

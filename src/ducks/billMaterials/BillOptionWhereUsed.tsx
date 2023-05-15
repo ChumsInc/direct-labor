@@ -1,27 +1,22 @@
-import React, {useEffect} from "react";
-import {
-    addPageSetAction,
-    pagedDataSelector,
-    PagerDuck,
-    SortableTable,
-    sortableTableSelector,
-    tableAddedAction
-} from "chums-ducks";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useState} from "react";
+import {SortableTable, SortableTableField} from "chums-components";
+import {useSelector} from "react-redux";
 
 import classNames from "classnames";
 import numeral from "numeral";
 import MultiLineField from "../../components/MultiLineField";
-import {billOptionHeaderKey, BillOptionHeaderSorterProps} from "./types";
+import {billOptionHeaderKey} from "./types";
 import {billOptionHeaderSelector} from "./index";
-import {BillOptionHeaderTableField} from "../types";
+import {BillOptionHeader} from "../types";
+import {SortProps} from "chums-types";
+import {billOptionHeaderSorter, defaultBillOptionSort} from "./utils";
 
 export interface BillWhereUsedInOptionProps {
     tableKey: string,
     className?: string,
 }
 
-const detailTableFields: BillOptionHeaderTableField[] = [
+const detailTableFields: SortableTableField<BillOptionHeader>[] = [
     {field: 'BillNo', title: 'Bill No', sortable: true},
     {field: 'Revision', title: 'Revision', sortable: true},
     {field: 'BillOptionCategory', title: 'Option Category', sortable: true},
@@ -49,16 +44,9 @@ const detailTableFields: BillOptionHeaderTableField[] = [
     {field: 'updatedByUser', title: 'Updated By'},
 ];
 
-const BillOptionWhereUsed: React.FC<BillWhereUsedInOptionProps> = ({tableKey, className}) => {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(tableAddedAction({key: tableKey, field: 'BillNo', ascending: true}));
-        dispatch(addPageSetAction({key: tableKey, rowsPerPage: 10, current: 1}));
-    }, [])
-
-    const sort = useSelector(sortableTableSelector(tableKey));
-    const list = useSelector(billOptionHeaderSelector(sort as BillOptionHeaderSorterProps));
-    const pagedList = useSelector(pagedDataSelector(tableKey, list));
+const BillOptionWhereUsed = ({className}:{className?:string}) => {
+    const list = useSelector(billOptionHeaderSelector);
+    const [sort, setSort] = useState<SortProps<BillOptionHeader>>({...defaultBillOptionSort});
     if (!list.length) {
         return null;
     }
@@ -66,9 +54,9 @@ const BillOptionWhereUsed: React.FC<BillWhereUsedInOptionProps> = ({tableKey, cl
     return (
         <div className={classNames(className)}>
             <h4>Where Used In Bill Options</h4>
-            <SortableTable tableKey={tableKey} keyField={billOptionHeaderKey} size="xs" fields={detailTableFields}
-                           data={pagedList}/>
-            {list.length > pagedList.length && (<PagerDuck pageKey={tableKey} dataLength={list.length}/>)}
+            <SortableTable keyField={billOptionHeaderKey} size="xs" fields={detailTableFields}
+                           currentSort={sort} onChangeSort={(sort) => setSort(sort as SortProps<BillOptionHeader>)}
+                           data={[...list].sort(billOptionHeaderSorter(sort))}/>
         </div>
     )
 }

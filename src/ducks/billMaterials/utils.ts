@@ -1,12 +1,4 @@
-import {SorterProps} from "chums-ducks";
-import {
-    BillHeader,
-    BillHeaderField,
-    BillHeaderList,
-    BillOptionHeader,
-    BillOptionHeaderField,
-    BillOptionHeaderList
-} from "../types";
+import {BillHeader, BillOptionHeader} from "../types";
 import {SortProps} from "chums-types";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";
@@ -15,28 +7,9 @@ import Decimal from "decimal.js";
 export const billHeaderKey = (header: BillHeader) => [header.BillNo, header.Revision].join(':');
 export const billOptionHeaderKey = (header: BillOptionHeader) => [header.BillNo, header.Revision, header.BillOptionCategory, header.BillOption].join(':');
 
+export const defaultBillSort: SortProps<BillHeader> = {field: "BillNo", ascending: true};
+export const defaultBillOptionSort: SortProps<BillOptionHeader> = {field: "BillNo", ascending: true};
 
-export interface BillHeaderSorterProps extends SorterProps {
-    field: BillHeaderField
-}
-
-export interface BillOptionHeaderSorterProps extends SorterProps {
-    field: BillOptionHeaderField
-}
-
-export const defaultBillSort: BillHeaderSorterProps = {field: "BillNo", ascending: true};
-export const defaultBillOptionSort: BillHeaderSorterProps = {field: "BillNo", ascending: true};
-
-
-export interface BillMaterialsState {
-    headerList: BillHeaderList,
-    optionHeaderList: BillOptionHeaderList,
-}
-
-export const defaultState: BillMaterialsState = {
-    headerList: {},
-    optionHeaderList: {},
-}
 
 export const billHeaderSorter = ({field, ascending}: SortProps<BillHeader>) =>
     (a: BillHeader, b: BillHeader) => {

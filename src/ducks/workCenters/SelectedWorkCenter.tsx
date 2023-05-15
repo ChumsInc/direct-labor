@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentWorkCenter, selectLoading, selectSaving, selectWorkCenter} from "./index";
-import {Alert, FormColumn, SpinnerButton} from "chums-ducks";
+import {Alert, FormColumn, SpinnerButton} from "chums-components";
 import {saveWorkCenter, setCurrentWorkCenter} from "./actions";
 import {useHistory} from "react-router-dom";
 import {workCentersPath} from "../../routerPaths";

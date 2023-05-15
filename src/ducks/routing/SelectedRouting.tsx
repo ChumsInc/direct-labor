@@ -4,13 +4,13 @@ import SelectedRoutingDetail from "./SelectedRoutingDetail";
 import BillWhereUsed from "../billMaterials/BillWhereUsed";
 import BillOptionWhereUsed from "../billMaterials/BillOptionWhereUsed";
 import {useSelector} from "react-redux";
-import {loadedSelector, routingHeaderKey, routingHeaderSelector, selectedHeaderSelector} from "./index";
-import {selectRoutingAction} from "./actions";
+import {routingHeaderSelector, selectCurrentHeader, selectLoaded, setCurrentRouting} from "./index";
 import {useHistory} from "react-router-dom";
 import {routingPath} from "../../routerPaths";
 import {Helmet} from "react-helmet";
-import {Alert} from "chums-ducks";
+import {Alert} from "chums-components";
 import {useAppDispatch} from "../../app/configureStore";
+import {routingHeaderKey} from "./utils";
 
 export interface SelectedRoutingProps {
     routingNo?: string,
@@ -19,13 +19,13 @@ export interface SelectedRoutingProps {
 const SelectedRouting: React.FC<SelectedRoutingProps> = ({routingNo}) => {
     const dispatch = useAppDispatch();
     const history = useHistory();
-    const selected = useSelector(selectedHeaderSelector);
-    const loaded = useSelector(loadedSelector);
+    const selected = useSelector(selectCurrentHeader);
+    const loaded = useSelector(selectLoaded);
     const navRouting = useSelector(routingHeaderSelector(routingNo || ''));
 
     useEffect(() => {
         if (loaded && !!navRouting && (!selected || routingHeaderKey(selected) !== routingHeaderKey(navRouting))) {
-            dispatch(selectRoutingAction(navRouting));
+            dispatch(setCurrentRouting(navRouting));
         } else if (loaded && !navRouting && !!routingNo) {
             return history.replace(routingPath);
         }
@@ -41,9 +41,9 @@ const SelectedRouting: React.FC<SelectedRoutingProps> = ({routingNo}) => {
                 <title>D/L Routing: {selected?.RoutingNo || ''}</title>
             </Helmet>
             <SelectedRoutingHeader/>
-            <SelectedRoutingDetail tableKey={'selected-routing-detail'} className="mt-3"/>
-            <BillWhereUsed tableKey={'selected-routing-where-used'} className="mt-3"/>
-            <BillOptionWhereUsed tableKey={'selected-routing-where-used-options'} className="mt-3"/>
+            <SelectedRoutingDetail className="mt-3"/>
+            <BillWhereUsed className="mt-3"/>
+            <BillOptionWhereUsed className="mt-3"/>
         </div>
     )
 }

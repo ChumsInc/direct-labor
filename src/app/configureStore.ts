@@ -1,5 +1,6 @@
 import {combineReducers} from "redux";
 import {alertsReducer, pagesReducer, sortableTablesReducer, tabsReducer} from "chums-ducks";
+import {default as tkAlertsReducer} from "../ducks/alerts";
 import {default as billMaterialsReducer} from "../ducks/billMaterials";
 import {default as routingReducer} from '../ducks/routing';
 import {default as workCentersReducer} from '../ducks/workCenters';
@@ -13,6 +14,7 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 
 export const rootReducer = combineReducers({
     alerts: alertsReducer,
+    tkAlerts: tkAlertsReducer,
     billMaterials: billMaterialsReducer,
     dlCodes: dlCodesReducer,
     dlSteps: dlStepsReducer,

@@ -1,36 +1,38 @@
-import {dlCodeSorter, DLCodeSorterProps} from "./types";
+import {dlCodeSorter} from "./types";
 import {DLCode, DLCodeStep} from "../types";
-import {dlCodeStepSorter} from "./utils";
 import {RootState} from "../../app/configureStore";
+import {createSelector} from "@reduxjs/toolkit";
 
-export const listSelector = (sort: DLCodeSorterProps) => (state: RootState): DLCode[] => {
-    const {list, filter, wcFilter, filterInactive} = state.dlCodes;
-    let re = /^/;
-    try {
-
-        re = new RegExp(filter, 'i');
-    } catch (err) {
-    }
-
-    return Object.values(list)
-        .filter(dl => !filterInactive || dl.active)
-        .filter(dl => !wcFilter || dl.workCenter === wcFilter)
-        .filter(dl => re.test(dl.dlCode) || re.test(dl.description) || re.test(dl.operationCode))
-        .sort(dlCodeSorter(sort));
-}
 
 export const listLengthSelector = (state: RootState): number => Object.keys(state.dlCodes.list).length;
-export const dlCodeSelector = (id: number) => (state: RootState): DLCode | null => state.dlCodes.list[id] || null;
-export const loadingSelector = (state: RootState): boolean => state.dlCodes.loading;
-export const loadedSelector = (state: RootState): boolean => state.dlCodes.loaded;
-export const selectedHeaderSelector = (state: RootState): DLCode => state.dlCodes.selected.header;
-export const selectedStepsSelector = (state: RootState): DLCodeStep[] => {
-    const {steps} = state.dlCodes.selected;
-    return Object.values(steps).sort(dlCodeStepSorter);
-}
-export const selectedLoadingSelector = (state: RootState): boolean => state.dlCodes.selected.loading;
-export const selectedSavingSelector = (state: RootState): boolean => state.dlCodes.selected.saving;
-export const selectedChangedSelector = (state: RootState): boolean => state.dlCodes.selected.changed;
-export const filterSelector = (state: RootState): string => state.dlCodes.filter;
-export const wcFilterSelector = (state: RootState): string => state.dlCodes.wcFilter;
-export const filterInactiveSelector = (state:RootState): boolean => state.dlCodes.filterInactive;
+export const selectDLCodeByID = (state: RootState, id:number): DLCode | null => state.dlCodes.list[id] || null;
+export const selectLoading = (state: RootState): boolean => state.dlCodes.loading;
+export const selectLoaded = (state: RootState): boolean => state.dlCodes.loaded;
+export const selectCurrentHeader = (state: RootState) => state.dlCodes.current.header;
+export const selectCurrentSteps = (state: RootState): DLCodeStep[] => state.dlCodes.current.steps;
+export const selectCurrentLoading = (state: RootState): boolean => state.dlCodes.current.loading;
+export const selectCurrentSaving = (state: RootState): boolean => state.dlCodes.current.saving;
+export const selectCurrentChanged = (state: RootState): boolean => state.dlCodes.current.changed;
+export const selectFilter = (state: RootState): string => state.dlCodes.search;
+export const selectWorkCenterFilter = (state: RootState): string => state.dlCodes.workCenter;
+export const selectShowInactive = (state: RootState): boolean => state.dlCodes.showInactive;
+export const selectPage = (state: RootState) => state.dlCodes.page;
+export const selectRowsPerPage = (state: RootState) => state.dlCodes.rowsPerPage;
+export const selectSort = (state: RootState) => state.dlCodes.sort;
+export const selectList = (state: RootState) => Object.values(state.dlCodes.list) as DLCode[];
+export const selectSortedList = createSelector(
+    [selectList, selectFilter, selectWorkCenterFilter, selectShowInactive, selectSort],
+    (list, search, wcFilter, showInactive, sort) => {
+        let re = /^/;
+        try {
+            re = new RegExp(search, 'i');
+        } catch (err) {
+        }
+
+        return list
+            .filter(dl => showInactive || dl.active)
+            .filter(dl => !wcFilter || dl.workCenter === wcFilter)
+            .filter(dl => re.test(dl.dlCode) || re.test(dl.description) || re.test(dl.operationCode))
+            .sort(dlCodeSorter(sort));
+    }
+)
