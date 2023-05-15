@@ -63,7 +63,7 @@ export async function postDLCode(arg:DLCode):Promise<DLCodeResponse> {
     }
 }
 
-export async function fetchDLCode(arg:number):Promise<DLCodeResponse> {
+export async function fetchDLCode(arg:number):Promise<DLCodeResponse|null> {
     try {
         const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg)}`;
         return await fetchJSON<DLCodeResponse>(url, {cache: 'no-cache'})

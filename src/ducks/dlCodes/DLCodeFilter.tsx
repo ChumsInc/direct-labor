@@ -5,7 +5,7 @@ import {selectFilter, selectLoading, selectShowInactive, selectWorkCenterFilter}
 import {WorkCenter} from "../types";
 import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "./actions";
 import SearchInput from "../../components/SearchInput";
-import {FormCheck, SpinnerButton} from "chums-ducks";
+import {FormCheck, SpinnerButton} from "chums-components";
 import {useAppDispatch} from "../../app/configureStore";
 
 const DLCodeFilter: React.FC = () => {
@@ -17,6 +17,7 @@ const DLCodeFilter: React.FC = () => {
 
     const onSelectWC = (wc: WorkCenter | null) => dispatch(setWorkCenterFilter(wc?.WorkCenterCode || ''));
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearch(ev.target.value || ''));
+    const onToggleShowInactive = (ev:ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
     const onReloadList = () => dispatch(loadDLCodes());
 
     return (
@@ -25,8 +26,7 @@ const DLCodeFilter: React.FC = () => {
                 <WorkCenterSelect value={wcFilter} onSelectWorkCenter={onSelectWC}/>
             </div>
             <div className="col-auto">
-                <FormCheck label="Show Inactive" checked={showInactive}
-                           onClick={() => dispatch(toggleShowInactive(!showInactive))} type="checkbox"/>
+                <FormCheck label="Show Inactive" checked={showInactive} onChange={onToggleShowInactive} type="checkbox"/>
             </div>
             <div className="col-auto">
                 <SearchInput onChange={onChangeSearch} value={filter} bsSize="sm"/>

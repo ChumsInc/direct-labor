@@ -36,17 +36,21 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
     const steps = useSelector(selectCurrentSteps);
     const navDLCode = useAppSelector((state) => selectDLCodeByID(state, id || 0));
     const changed = useSelector(selectCurrentChanged);
-    const [DLCode, setDLCode] = useState<DLCode & Editable>({...(selected ?? newDLCode)})
+    const [current, setCurrent] = useState<DLCode & Editable>({...(selected ?? newDLCode)})
 
     useEffect(() => {
-        if (id === 0 && selected?.id !== id) {
-            setDLCode({...newDLCode});
-            return;
+        if (!id) {
+            return setCurrent({...newDLCode});
         }
-        if (id && selected?.id !== id && navDLCode) {
-            dispatch(loadDLCode(navDLCode));
+        dispatch(loadDLCode(id));
+    }, [id])
+
+    useEffect(() => {
+        if (selected) {
+            return setCurrent({...selected})
         }
-    }, [id, loaded]);
+        setCurrent({...newDLCode});
+    }, [selected]);
 
     if (!selected) {
         return (
@@ -54,19 +58,19 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
         )
     }
     const changeHandler = (field: DLCodeField) => (ev: ChangeEvent<HTMLInputElement>) => {
-        setDLCode({...DLCode, [field]: ev.target.value, changed: true});
+        setCurrent({...current, [field]: ev.target.value, changed: true});
     }
     const onChangeWorkCenter = (wc: WorkCenter | null) => {
-        setDLCode({...DLCode, workCenter: wc?.WorkCenterCode ?? '', changed: true});
+        setCurrent({...current, workCenter: wc?.WorkCenterCode ?? '', changed: true});
 
     }
 
     const onChangeOperationCode = (oc: OperationCode | null) => {
-        setDLCode({...DLCode, operationCode: oc?.OperationCode ?? '', changed: true})
+        setCurrent({...current, operationCode: oc?.OperationCode ?? '', changed: true})
     }
 
     const onToggleActive = (ev: ChangeEvent<HTMLInputElement>) => {
-        setDLCode({...DLCode, active: ev.target.checked, changed: true});
+        setCurrent({...current, active: ev.target.checked, changed: true});
     }
 
     const onReload = () => {
@@ -78,80 +82,68 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
 
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
-        dispatch(saveDLCode(DLCode));
+        dispatch(saveDLCode(current));
     }
-
-    const {
-        dlCode,
-        operationCode,
-        description,
-        active,
-        directLaborCost,
-        laborBudget,
-        fixedCosts,
-        workCenter,
-        timestamp
-    } = selected;
 
     return (
         <div>
             <Helmet>
-                <title>D/L Code: {DLCode.dlCode}</title>
+                <title>D/L Code: {current.dlCode}</title>
             </Helmet>
-            <h2>D/L Code Editor: <strong>{DLCode.dlCode}</strong></h2>
+            <h2>D/L Code Editor: <strong>{current.dlCode}</strong></h2>
 
             <form onSubmit={onSubmit}>
-                <FormColumn label={"Direct Labor Code"}>
+                <FormColumn label={"Direct Labor Code"} width={9}>
                     <div className="row g-3 align-items-baseline">
                         <div className="col-md-9">
-                            <Input type="text" value={dlCode} onChange={changeHandler('dlCode')}/>
+                            <Input type="text" value={current.dlCode} onChange={changeHandler('dlCode')}/>
                         </div>
                         <div className="col-md-3">
-                            <FormCheck label="Active" checked={active} onChange={onToggleActive} type="checkbox"/>
+                            <FormCheck label="Active" checked={current.active} onChange={onToggleActive} type="checkbox"/>
                         </div>
                     </div>
                 </FormColumn>
-                <FormColumn label={"Description"}>
-                    <Input type="text" value={description} onChange={changeHandler('description')}/>
+                <FormColumn label={"Description"} width={9}>
+                    <Input type="text" value={current.description} onChange={changeHandler('description')}/>
                 </FormColumn>
-                <FormColumn label="Sage Operation">
+                <FormColumn label="Sage Operation" width={9}>
                     <div className="row g-3">
                         <div className="col-6">
-                            <WorkCenterSelect value={workCenter} onSelectWorkCenter={onChangeWorkCenter}/>
+                            <WorkCenterSelect value={current.workCenter} onSelectWorkCenter={onChangeWorkCenter}/>
                         </div>
                         <div className="col-6">
-                            <OperationCodeSelect operationCode={operationCode} workCenter={workCenter}
+                            <OperationCodeSelect operationCode={current.operationCode} workCenter={current.workCenter}
                                                  onChange={onChangeOperationCode}/>
                         </div>
                     </div>
                 </FormColumn>
-                <FormColumn label="Costs">
+                <FormColumn label="Costs" width={9}>
                     <div className="row g-3">
                         <div className="col-4">
                             <InputGroup>
                                 <span className="input-group-text">Labor</span>
-                                <Input type="text" value={numeral(laborBudget).format('$0,0.0000')} readOnly
+                                <Input type="text" value={numeral(current.laborBudget).format('$0,0.0000')} readOnly
                                        className="text-end"/>
                             </InputGroup>
                         </div>
                         <div className="col-4">
                             <InputGroup>
                                 <span className="input-group-text">Fixed</span>
-                                <Input type="text" value={numeral(fixedCosts).format('$0,0.0000')} readOnly
+                                <Input type="text" value={numeral(current.fixedCosts).format('$0,0.0000')} readOnly
                                        className="text-end"/>
                             </InputGroup>
                         </div>
                         <div className="col-4">
                             <InputGroup>
                                 <span className="input-group-text">Total</span>
-                                <Input type="text" value={numeral(directLaborCost).format('$0,0.0000')} readOnly
+                                <Input type="text" value={numeral(current.directLaborCost).format('$0,0.0000')} readOnly
                                        className="text-end"/>
                             </InputGroup>
                         </div>
                     </div>
                 </FormColumn>
-                <FormColumn label="Last Updated">
-                    {!!timestamp ? new Date(timestamp).toLocaleString() : ''}
+                <FormColumn label="Last Updated" width={9}>
+                    {!!current.timestamp && <small className="text-muted">{new Date(current.timestamp).toLocaleString()}</small>}
                 </FormColumn>
 
 

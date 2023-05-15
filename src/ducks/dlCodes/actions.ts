@@ -1,35 +1,6 @@
-import {DLCode, DLCodeList, DLCodeStep, DLCodeSteps} from "../types";
-import {fetchDELETE, fetchJSON, fetchPOST} from "chums-ducks";
-import {
-    dlCodeChanged,
-    deleteStepFailed,
-    deleteStepRequested, deleteStepSucceeded,
-    dlCodeSelected,
-    dlCodeStepOrderChanged,
-    filterChanged,
-    filterInactiveChanged,
-    loadDLCodeFailed,
-    loadDLCodeRequested,
-    loadDLCodesFailed,
-    loadDLCodesRequested,
-    loadDLCodesSucceeded,
-    loadDLCodeSucceeded,
-    saveDLCodeFailed,
-    saveDLCodeRequested,
-    saveDLCodeSucceeded,
-    sortDLStepFailed,
-    sortDLStepRequested,
-    sortDLStepSucceeded,
-    stepAddFailed,
-    stepAddRequested,
-    stepAddSucceeded,
-    wcFilterChanged
-} from "./actionTypes";
-import {selectLoading, selectCurrentHeader, selectCurrentLoading, selectCurrentSaving,} from "./selectors";
-import {AddDLStepArg, dlCodeKey, DLCodeResponse, DLCodesAction, DLCodesThunkAction} from "./types";
-import {dlCodeStepSorter, dlStepList} from "./utils";
-import {dlStepKey} from "../dlSteps/types";
-import {filterInactiveCodesKey, setPreference} from "../../utils/preferences";
+import {DLCode, DLCodeList, DLCodeStep} from "../types";
+import {selectCurrentHeader, selectCurrentLoading, selectCurrentSaving, selectLoading,} from "./selectors";
+import {AddDLStepArg, DLCodeResponse} from "./types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {SortProps} from "chums-components";
 import {
@@ -37,20 +8,15 @@ import {
     fetchDLCode,
     fetchDLCodeList,
     postAddStep,
-    postDLCode, postRecalculateDLCode,
+    postDLCode,
+    postRecalculateDLCode,
     postRecalculateDLCodes,
     postStepSort
 } from "../../api/dl-codes";
 import {RootState} from "../../app/configureStore";
-import {useSelector} from "react-redux";
-
-const dlCodesListURL = (dlCode?: string) => `/api/operations/production/dl/codes/list/${encodeURIComponent(dlCode || '')}`;
-const dlCodeURL = (id: string | number) => `/api/operations/production/dl/codes/${encodeURIComponent(id)}`;
-const dlCodeStepURL = (id: number | string, stepId: string | number) => `/api/operations/production/dl/codes/${encodeURIComponent(id)}/step/${encodeURIComponent(stepId)}`;
-const dlCodeStepsOrderURL = (id: number) => `/api/operations/production/dl/codes/${encodeURIComponent(id)}/steps`;
 
 export const setWorkCenterFilter = createAction<string>('dlCodes/filter/workCenter');
-export const toggleShowInactive = createAction<boolean|undefined>('dlCodes/filter/toggleShowInactive');
+export const toggleShowInactive = createAction<boolean | undefined>('dlCodes/filter/toggleShowInactive');
 export const setSearch = createAction<string>('dlCodes/filter/setSearch');
 export const setPage = createAction<number>('dlCodes/setPage');
 export const setRowsPerPage = createAction<number>('dlCodes/setRowsPerPage');
@@ -68,13 +34,10 @@ export const loadDLCodes = createAsyncThunk<DLCodeList>(
     }
 )
 
-export const loadDLCode = createAsyncThunk<DLCodeResponse|null, DLCode|undefined>(
+export const loadDLCode = createAsyncThunk<DLCodeResponse | null, number>(
     'dlCodes/current/load',
     async (arg) => {
-        if (!arg) {
-            return null;
-        }
-        return await fetchDLCode(arg.id) ?? null;
+        return await fetchDLCode(arg) ?? null;
     },
     {
         condition: (arg, {getState}) => {
@@ -84,7 +47,7 @@ export const loadDLCode = createAsyncThunk<DLCodeResponse|null, DLCode|undefined
     }
 )
 
-export const saveDLCode = createAsyncThunk<DLCodeResponse|null, DLCode>(
+export const saveDLCode = createAsyncThunk<DLCodeResponse | null, DLCode>(
     'dlCodes/current/save',
     async (arg) => {
         return await postDLCode(arg) ?? null;
@@ -97,7 +60,7 @@ export const saveDLCode = createAsyncThunk<DLCodeResponse|null, DLCode>(
     }
 )
 
-export const addDLStep = createAsyncThunk<DLCodeResponse|null, AddDLStepArg>(
+export const addDLStep = createAsyncThunk<DLCodeResponse | null, AddDLStepArg>(
     'dlCodes/current/addStep',
     async (arg) => {
         return await postAddStep(arg) ?? null;
@@ -113,7 +76,7 @@ export const addDLStep = createAsyncThunk<DLCodeResponse|null, AddDLStepArg>(
     }
 )
 
-export const saveDLStepSort = createAsyncThunk<DLCodeResponse|null, DLCodeStep[]>(
+export const saveDLStepSort = createAsyncThunk<DLCodeResponse | null, DLCodeStep[]>(
     'dlCodes/current/saveStepSort',
     async (arg, {getState}) => {
         const state = getState() as RootState;
@@ -129,7 +92,7 @@ export const saveDLStepSort = createAsyncThunk<DLCodeResponse|null, DLCodeStep[]
     }
 )
 
-export const removeDLStep = createAsyncThunk<DLCodeResponse|null, DLCodeStep>(
+export const removeDLStep = createAsyncThunk<DLCodeResponse | null, DLCodeStep>(
     'dlCodes/current/removeStep',
     async (arg) => {
         return await deleteStep(arg) ?? null;
@@ -155,7 +118,7 @@ export const recalcDLCodes = createAsyncThunk<DLCodeList>(
     }
 )
 
-export const rebuildDLCode = createAsyncThunk<DLCodeResponse|null, number>(
+export const rebuildDLCode = createAsyncThunk<DLCodeResponse | null, number>(
     'dlCodes/rebuildCost',
     async (arg) => {
         return await postRecalculateDLCode(arg);

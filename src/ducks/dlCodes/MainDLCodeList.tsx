@@ -40,7 +40,7 @@ const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
 
     const onSelectDLCode = (code: DLCode) => {
         history.push(dlCodePath(code.id));
-        dispatch(loadDLCode(code));
+        dispatch(loadDLCode(code.id));
     }
 
     const pageChangeHandler = (page:number) => dispatch(setPage(page));
