@@ -21,6 +21,39 @@ import {
 } from "./actionTypes";
 import {defaultDLCodeSort, DLCodesAction, dlCodeSorter} from "../dlCodes/types";
 
+export interface DLStepsState {
+    list: DLSteps|null;
+    whereUsed: DLCode[];
+    machines: string[];
+    current: {
+        step:DLStep|null;
+        loading: boolean;
+        saving: boolean;
+        changed: boolean;
+    }
+    loading: boolean;
+    loaded: boolean;
+    filter: string;
+    wcFilter: string;
+    filterInactive: boolean;
+}
+
+export const initialStepsState:DLStepsState = {
+    list: {},
+    whereUsed: [],
+    machines: [],
+    current: {
+        step: null,
+        loading: false,
+        saving: false,
+        changed: false,
+    },
+    loading: false,
+    loaded: false,
+    filter: '',
+    wcFilter: '',
+    filterInactive: true,
+}
 
 const listReducer = (state: DLSteps = defaultState.list, action: DLStepsAction): DLSteps => {
     const {type, payload} = action;
