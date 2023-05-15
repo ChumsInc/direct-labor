@@ -15,6 +15,7 @@ import {
 } from "../routerPaths";
 import DirectLaborCodesContent from "./DirectLaborCodesContent";
 import DirectLaborStepsContent from "./DirectLaborStepsContent";
+import VersionInfo from "../ducks/version/VersionInfo";
 
 const mainTabKey = 'dl-main';
 
@@ -26,6 +27,7 @@ const App: React.FC = () => {
             <div className="row g-3">
                 <div className="col-auto">
                     <MainNav tabKey={mainTabKey}/>
+                    <VersionInfo />
                 </div>
                 <div className="col">
                     <Route path={routingRouterPath} component={RoutingContent}/>

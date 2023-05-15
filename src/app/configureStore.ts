@@ -11,6 +11,7 @@ import {default as dlStepsReducer} from '../ducks/dlSteps';
 import {default as timingsReducer} from '../ducks/timings';
 import {configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
+import versionReducer from "../ducks/version";
 
 export const rootReducer = combineReducers({
     alerts: alertsReducer,
@@ -26,6 +27,7 @@ export const rootReducer = combineReducers({
     tabs: tabsReducer,
     timings: timingsReducer,
     workCenters: workCentersReducer,
+    version: versionReducer
 });
 
 const store = configureStore({
