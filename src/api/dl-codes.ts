@@ -5,7 +5,7 @@ import {dlCodeStepSorter} from "../ducks/dlCodes/utils";
 
 export async function deleteStep(arg:DLCodeStep):Promise<DLCodeResponse> {
     try {
-        const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg.id)}/step/${encodeURIComponent(arg.stepId)}`;
+        const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg.dlCodeId)}/step/${encodeURIComponent(arg.stepId)}`;
         return await fetchJSON<DLCodeResponse>(url, {method: 'DELETE'});
     } catch(err:unknown) {
         if (err instanceof Error) {
