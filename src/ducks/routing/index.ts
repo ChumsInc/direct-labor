@@ -172,7 +172,7 @@ export const selectSortedRoutingList = createSelector(
         let regEx = /^/i;
         try {
             if (search) {
-                regEx = new RegExp('search', 'i');
+                regEx = new RegExp(search, 'i');
             }
         } catch (err: unknown) {
         }
