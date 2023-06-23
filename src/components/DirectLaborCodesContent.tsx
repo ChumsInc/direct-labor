@@ -1,7 +1,7 @@
 import React from 'react';
-import {RouteComponentProps} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import DLCodeFilter from "../ducks/dlCodes/DLCodeFilter";
-import {ErrorBoundary} from "chums-ducks";
+import {ErrorBoundary} from "react-error-boundary";
 import SelectedDLCode from "../ducks/dlCodes/SelectedDLCode";
 import MainDLCodeList from "../ducks/dlCodes/MainDLCodeList";
 
@@ -9,8 +9,8 @@ interface DLCodesMatchProps {
     id?: string,
 }
 
-const DirectLaborCodesContent: React.FC<RouteComponentProps> = ({match}) => {
-    const {id} = match.params as DLCodesMatchProps;
+const DirectLaborCodesContent = () => {
+    const {id} = useParams<'id'>()
 
     return (
         <div className="row g-3">
@@ -19,7 +19,7 @@ const DirectLaborCodesContent: React.FC<RouteComponentProps> = ({match}) => {
                 <MainDLCodeList tableKey={'dl-main-list'}/>
             </div>
             <div className="col-6">
-                <ErrorBoundary>
+                <ErrorBoundary fallback={<div>Error in SelectedDLCode</div>}>
                     <SelectedDLCode id={Number(id)}/>
                 </ErrorBoundary>
             </div>

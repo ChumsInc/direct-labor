@@ -8,10 +8,10 @@ import {
     DLTiming,
     ListState
 } from "../types";
-import {ActionInterface} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
 import {filterInactiveStepsKey, getPreference} from "../../utils/preferences";
 import {RootState} from "../../app/configureStore";
+import {SortProps} from "chums-types";
 
 export const newDLStep: DLStep = {
     id: 0,
@@ -71,23 +71,25 @@ export interface DLStepsActionPayload extends ActionInterfacePayload {
     timing?: DLTiming,
 }
 
-export interface DLStepsAction extends ActionInterface {
-    payload?: DLStepsActionPayload,
+export interface DLStepResponse {
+    step: DLStep |null,
+    whereUsed: DLCode[]
 }
 
-export interface DLStepsThunkAction extends ThunkAction<any, RootState, unknown, DLStepsAction> {
+export interface DLStepsResponse {
+    list: DLSteps,
+    machines: string[];
 }
 
-
-export const dlStepsDefaultSort: DLStepSorterProps = {
-    field: 'id',
-    ascending: true,
+export const defaultDLStepSort:SortProps<DLStep> = {
+    field: 'stepCode',
+    ascending: true
 }
 
 
 export const dlStepKey = (dl: DLStep | DLBasicStep) => dl.id;
 
-export const dlStepSorter = ({field, ascending}: DLStepSorterProps) =>
+export const dlStepSorter = ({field, ascending}: SortProps<DLStep>) =>
     (a: DLStep, b: DLStep): number => {
         return (
             a[field] === b[field]

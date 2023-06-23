@@ -1,112 +1,72 @@
-import {DLStepsAction, DLStepsThunkAction, newDLStep} from "./types";
-import {fetchJSON, fetchPOST} from "chums-ducks";
-import {DLBasicStep, DLStep, DLSteps, DLTiming} from "../types";
+import {DLStepResponse} from "./types";
+import {DLBasicStep, DLStep, DLTiming} from "../types";
 import {
     filterChanged,
     filterInactiveChanged,
     stepChanged,
-    stepSelected,
-    stepsLoadListFailed,
-    stepsLoadListRequested,
-    stepsLoadListSucceeded,
-    stepsLoadStepFailed,
-    stepsLoadStepRequested,
-    stepsLoadStepSucceeded,
-    stepsSaveFailed,
-    stepsSaveRequested,
-    stepsSaveSucceeded,
+    stepsLoadList,
+    stepsLoadStep,
     stepTimingChanged,
     wcFilterChanged
 } from "./actionTypes";
-import {loadingSelector, selectedLoadingSelector, selectedSavingSelector} from "./selectors";
+import {loadingSelector, selectCurrentStepLoading} from "./selectors";
 import {filterInactiveStepsKey, setPreference} from "../../utils/preferences";
+import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
+import {getPreference} from "../../api/preferences";
+import {fetchDLStep, fetchDLSteps, postDLStep} from "../../api/dl-steps";
+import {RootState} from "../../app/configureStore";
+import {SortProps} from "chums-types";
 
 const listURL = `/api/operations/production/dl/steps`;
 const stepURL = (step: DLBasicStep) => `/api/operations/production/dl/steps/${encodeURIComponent(step.id)}`;
 
-export const dlStepChangedAction = (change: Object) => ({type: stepChanged, payload: {change}});
-export const dlStepChangeTimingAction = (timing: DLTiming) => ({type: stepTimingChanged, payload: {timing}});
+export const dlStepChangedAction = createAction<Partial<DLStep>>(stepChanged);
+export const dlStepChangeTimingAction = createAction<DLTiming>(stepTimingChanged);
 
-export const filterInactiveAction = (filterInactive: boolean): DLStepsAction => {
-    setPreference(filterInactiveStepsKey, filterInactive);
-    return {type: filterInactiveChanged}
-}
-
-export const setWCFilterAction = (workCenter: string): DLStepsAction => ({
-    type: wcFilterChanged,
-    payload: {filter: workCenter}
+export const filterInactiveAction = createAction(filterInactiveChanged, (arg: boolean) => {
+    setPreference(filterInactiveStepsKey, arg ?? !getPreference(filterInactiveStepsKey, false));
+    return {payload: arg};
 });
 
-export const setDLStepFilterAction = (filter: string): DLStepsAction => ({
-    type: filterChanged,
-    payload: {filter: filter}
-})
+export const setWCFilterAction = createAction<string>(wcFilterChanged);
+export const setDLStepFilterAction = createAction<string>(filterChanged)
+export const setStepsSort = createAction<SortProps<DLStep>>('steps/setSort');
+export const setStepsPage = createAction
 
-export const loadDLStepsAction = (): DLStepsThunkAction =>
-    async (dispatch, getState) => {
-        try {
-            const state = getState();
-            if (loadingSelector(state)) {
-                return;
-            }
-            dispatch({type: stepsLoadListRequested});
-            const {steps, machines} = await fetchJSON(listURL, {cache: 'no-cache'});
-            const list: DLSteps = {};
-            steps.forEach((step: DLStep) => {
-                list[step.id] = step;
-            })
-            dispatch({type: stepsLoadListSucceeded, payload: {list, machines}});
-        } catch (err) {
-            if (err instanceof Error) {
-                console.warn("loadDLStepsAction()", err.message);
-                return dispatch({type: stepsLoadListFailed, payload: {error: err, context: stepsLoadListRequested}});
-            }
-            console.error(err);
+export const loadDLStepsAction = createAsyncThunk(
+    stepsLoadList,
+    async () => {
+        return await fetchDLSteps();
+    }, {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !loadingSelector(state);
         }
     }
+)
 
-export const loadDLStepAction = (step: DLBasicStep = newDLStep): DLStepsThunkAction =>
-    async (dispatch, getState) => {
-        try {
-            const state = getState();
-            if (selectedLoadingSelector(state)) {
-                return;
-            }
-            dispatch({type: stepSelected, payload: {basicStep: step}});
-            if (!step.id) {
-                // selected a new step, so no need to load it
-                return;
-            }
-            dispatch({type: stepsLoadStepRequested});
-            const url = stepURL(step)
-            const {step: _step, whereUsed} = await fetchJSON(url, {cache: 'no-cache'});
-            dispatch({type: stepsLoadStepSucceeded, payload: {step: _step || newDLStep, codes: whereUsed}});
-        } catch (err) {
-            if (err instanceof Error) {
-                console.warn("loadDLStepAction()", err.message);
-                return dispatch({type: stepsLoadStepFailed, payload: {error: err, context: stepsLoadStepRequested}});
-            }
-            console.error(err);
+export const loadDLStepAction = createAsyncThunk<DLStepResponse, DLBasicStep>(
+    stepsLoadStep,
+    async (arg) => {
+        return await fetchDLStep(arg.id);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !selectCurrentStepLoading(state);
         }
     }
+)
 
-export const saveDLStepAction = (step: DLStep): DLStepsThunkAction =>
-    async (dispatch, getState) => {
-        try {
-            const state = getState();
-            if (selectedLoadingSelector(state) || selectedSavingSelector(state)) {
-                return;
-            }
-            const replaceStep = step.id === 0;
-            dispatch({type: stepsSaveRequested});
-            const url = stepURL(step);
-            const {step: _step, whereUsed} = await fetchPOST(url, step);
-            dispatch({type: stepsSaveSucceeded, payload: {step: _step, codes: whereUsed}});
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.log("saveDLStepAction()", error.message);
-                return dispatch({type: stepsSaveFailed, payload: {error, context: stepsSaveRequested}})
-            }
-            console.error("saveDLStepAction()", error);
+
+export const saveDLStepAction = createAsyncThunk<DLStepResponse, DLStep>(
+    'steps/current/save',
+    async (arg) => {
+        return await postDLStep(arg);
+    }, {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !selectCurrentStepLoading(state);
         }
     }
+)

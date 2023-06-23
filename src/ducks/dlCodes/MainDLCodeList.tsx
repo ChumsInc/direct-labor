@@ -12,7 +12,7 @@ import {
 import {loadDLCode, loadDLCodes, setPage, setRowsPerPage, setSort} from "./actions";
 import {DLCode} from "../types";
 import DLCodeList from "./DLCodeList";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {dlCodePath} from "../../routerPaths";
 import {useAppDispatch} from "../../app/configureStore";
 import {TablePagination} from "chums-components";
@@ -22,7 +22,7 @@ export interface MainDLCodeListProps {
 }
 
 const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const loading = useSelector(selectLoading);
     const loaded = useSelector(selectLoaded);
@@ -39,7 +39,7 @@ const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
     }, [])
 
     const onSelectDLCode = (code: DLCode) => {
-        history.push(dlCodePath(code.id));
+        navigate(dlCodePath(code.id));
         dispatch(loadDLCode(code.id));
     }
 

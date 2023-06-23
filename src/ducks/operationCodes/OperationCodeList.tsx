@@ -15,7 +15,7 @@ import {
     setSort
 } from './index'
 import numeral from "numeral";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {operationCodesOperationPath} from "../../routerPaths";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {SortProps} from "chums-types";
@@ -39,7 +39,7 @@ const fields: SortableTableField<OperationCode>[] = [
 ]
 const OperationCodeList: React.FC<OperationCodeListProps> = ({tableKey}) => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const list = useSelector(selectSortedList);
     const page = useSelector(selectPage);
     const rowsPerPage = useSelector(selectRowsPerPage);
@@ -48,7 +48,7 @@ const OperationCodeList: React.FC<OperationCodeListProps> = ({tableKey}) => {
 
     const onSelectOperationCode = (oc: OperationCode) => {
         dispatch(loadOperationCode(oc));
-        history.push(operationCodesOperationPath(oc.WorkCenter, oc.OperationCode));
+        navigate(operationCodesOperationPath(oc.WorkCenter, oc.OperationCode));
     }
 
     const sortChangeHandler = (sort: SortProps) => dispatch(setSort(sort));

@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {selectCurrentWorkCenter, selectLoading, selectSaving, selectWorkCenter} from "./index";
 import {Alert, FormColumn, SpinnerButton} from "chums-components";
 import {saveWorkCenter, setCurrentWorkCenter} from "./actions";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {workCentersPath} from "../../routerPaths";
 import {Helmet} from 'react-helmet'
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
@@ -14,7 +14,7 @@ export interface SelectedWorkCenterProps {
 
 const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const selected = useSelector(selectCurrentWorkCenter);
     const saving = useSelector(selectSaving);
     const loading = useSelector(selectLoading);
@@ -40,7 +40,7 @@ const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => 
         console.log(workCenter, navWC, selected);
         if (!!workCenter) {
             if (!navWC) {
-                return history.replace(workCentersPath);
+                return navigate(workCentersPath, {replace: true});
             } else if (!selected || selected.WorkCenterCode !== workCenter) {
                 dispatch(setCurrentWorkCenter(navWC));
             }

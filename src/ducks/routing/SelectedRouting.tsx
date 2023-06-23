@@ -5,7 +5,7 @@ import BillWhereUsed from "../billMaterials/BillWhereUsed";
 import BillOptionWhereUsed from "../billMaterials/BillOptionWhereUsed";
 import {useSelector} from "react-redux";
 import {routingHeaderSelector, selectCurrentHeader, selectLoaded, setCurrentRouting} from "./index";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {routingPath} from "../../routerPaths";
 import {Helmet} from "react-helmet";
 import {Alert} from "chums-components";
@@ -18,7 +18,7 @@ export interface SelectedRoutingProps {
 
 const SelectedRouting: React.FC<SelectedRoutingProps> = ({routingNo}) => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const selected = useSelector(selectCurrentHeader);
     const loaded = useSelector(selectLoaded);
     const navRouting = useSelector(routingHeaderSelector(routingNo || ''));
@@ -27,7 +27,7 @@ const SelectedRouting: React.FC<SelectedRoutingProps> = ({routingNo}) => {
         if (loaded && !!navRouting && (!selected || routingHeaderKey(selected) !== routingHeaderKey(navRouting))) {
             dispatch(setCurrentRouting(navRouting));
         } else if (loaded && !navRouting && !!routingNo) {
-            return history.replace(routingPath);
+            return navigate(routingPath, {replace: true});
         }
     }, [routingNo, loaded])
 

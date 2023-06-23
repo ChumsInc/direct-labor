@@ -18,7 +18,7 @@ import {
 import {RoutingHeader} from "../types";
 import numeral from "numeral";
 import classNames from "classnames";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {selectedRoutingPath} from "../../routerPaths";
 import StatusBadge from "../../components/StatusBadge";
 import {useAppDispatch} from "../../app/configureStore";
@@ -52,7 +52,7 @@ const rowClassName = (row: RoutingHeader) => classNames({'text-danger': !(row.Bi
 
 const RoutingList = () => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const loaded = useSelector(selectLoaded);
     const loading = useSelector(selectLoading);
     const selectedHeader = useSelector(selectCurrentHeader);
@@ -70,7 +70,7 @@ const RoutingList = () => {
 
     const onSelect = (header: RoutingHeader) => {
         dispatch(setCurrentRouting(header));
-        history.push(selectedRoutingPath(header.RoutingNo));
+        navigate(selectedRoutingPath(header.RoutingNo));
     }
     const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
     const pageChangeHandler = (page: number) => dispatch(setPage(page));

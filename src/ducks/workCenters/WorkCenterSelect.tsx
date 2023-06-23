@@ -2,7 +2,7 @@ import React, {ChangeEvent, SelectHTMLAttributes, useEffect} from "react";
 import {defaultWorkCenterSort} from "./types";
 import {useSelector} from "react-redux";
 import {listSelector, selectLoaded} from './index'
-import {BootstrapSize, Select} from "chums-ducks";
+import {BootstrapSize, Select} from "chums-components";
 import {loadWorkCenters} from "./actions";
 import {workCenterIcon} from "../../icons";
 import {WorkCenter} from "../types";

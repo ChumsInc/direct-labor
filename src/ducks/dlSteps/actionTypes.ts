@@ -1,4 +1,7 @@
-export const stepsLoadListRequested = 'steps/loadListRequested';
+export const stepsLoadList = 'steps/loadList';
+export const stepsLoadStep = 'steps/loadStep';
+
+export const stepsLoadListRequested = `${stepsLoadList}/Requested`;
 export const stepsLoadListSucceeded = 'steps/loadListSucceeded';
 export const stepsLoadListFailed = 'steps/loadListFailed';
 

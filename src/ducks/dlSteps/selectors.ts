@@ -21,16 +21,18 @@ export const filteredListSelector = (sort: DLStepSorterProps) => (state: RootSta
 export const listSelector = (sort: DLStepSorterProps) => (state: RootState) => Object.values(state.dlSteps.list).sort(dlStepSorter(sort));
 export const listLengthSelector = (state: RootState) => Object.values(state.dlSteps.list).length;
 export const machinesSelector = (state: RootState) => state.dlSteps.machines;
-export const selectStepSelector = (key: number) => (state: RootState) => state.dlSteps.list[key] || newDLStep;
-export const selectedStepSelector = (state: RootState) => state.dlSteps.selected.step;
-export const selectCurrentStep = (state: RootState) => state.dlSteps.selected.step;
-export const selectedStepTimingsSelector = (state: RootState) => (state.dlSteps.selected.step.timings || []).sort(dlStepTimingSorter);
-export const selectedLoadingSelector = (state: RootState) => state.dlSteps.selected.loading;
-export const selectedSavingSelector = (state: RootState) => state.dlSteps.selected.saving;
-export const selectedChangedSelector = (state: RootState) => state.dlSteps.selected.changed;
+export const selectStepSelector = (key: number) => (state: RootState) => state.dlSteps.list[key] ?? newDLStep;
+export const selectedStepSelector = (state: RootState) => state.dlSteps.current.step;
+export const selectCurrentStep = (state: RootState) => state.dlSteps.current.step;
+export const selectedStepTimingsSelector = (state: RootState) => (state.dlSteps.current.step?.timings ?? []).sort(dlStepTimingSorter);
+export const selectedLoadingSelector = (state: RootState) => state.dlSteps.current.loading;
+export const selectedSavingSelector = (state: RootState) => state.dlSteps.current.saving;
+export const selectedChangedSelector = (state: RootState) => state.dlSteps.current.changed;
 export const loadingSelector = (state: RootState) => state.dlSteps.loading;
 export const loadedSelector = (state: RootState) => state.dlSteps.loaded;
 export const filterSelector = (state: RootState): string => state.dlSteps.filter;
 export const wcFilterSelector = (state: RootState): string => state.dlSteps.wcFilter;
 export const filterInactiveSelector = (state:RootState):boolean => state.dlSteps.filterInactive;
 export const whereUsedSelector = (sort:DLCodeSorterProps) => (state:RootState) => state.dlSteps.whereUsed.sort(dlCodeSorter(sort));
+
+export const selectCurrentStepLoading = (state:RootState) => state.dlSteps.current.loading;

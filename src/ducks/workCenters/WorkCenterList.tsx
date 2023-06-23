@@ -15,7 +15,7 @@ import {
 import {workCenterKey} from "./types";
 import MultiLineField from "../../components/MultiLineField";
 import numeral from "numeral";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {selectedWorkCenterPath} from "../../routerPaths";
 import {WorkCenter} from "../types";
 import {SortableTable, SortableTableField, SortProps, TablePagination} from "chums-components";
@@ -54,7 +54,7 @@ const fields: SortableTableField<WorkCenter>[] = [
 
 const WorkCenterList: React.FC = () => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const loading = useSelector(selectLoading);
     const loaded = useSelector(selectLoaded);
     const filter = useSelector(selectFilterRatedWC);
@@ -68,7 +68,7 @@ const WorkCenterList: React.FC = () => {
     }, [])
     const onReload = () => dispatch(loadWorkCenters());
     const sort = useSelector(selectSort);
-    const onSelectWorkCenter = (row: WorkCenter) => history.push(selectedWorkCenterPath(row.WorkCenterCode));
+    const onSelectWorkCenter = (row: WorkCenter) => navigate(selectedWorkCenterPath(row.WorkCenterCode));
     const selected = useSelector(selectCurrentWorkCenter);
 
     const onChangeFilter = () => dispatch(toggleFilterRatedWC());

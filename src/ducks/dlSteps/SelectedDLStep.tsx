@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {loadedSelector, selectedStepSelector, selectStepSelector} from "./selectors";
 import {loadDLStepAction} from "./actions";
 import {Helmet} from "react-helmet";
-import {selectedTabSelector, Tab, TabList, tabListCreatedAction} from "chums-ducks";
+import {selectedTabSelector, Tab, TabList, tabListCreatedAction} from "chums-components";
 import SelectedStepTimings from "../timings/SelectedStepTimings";
 import {dlCodeIcon, dlTextIcon, dlTimingIcon} from "../../icons";
 import DLStepForm from "./DLStepForm";

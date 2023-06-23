@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {loadOperationCodes, selectLoaded, selectLoading} from "../ducks/operationCodes";
-import {ErrorBoundary} from "chums-ducks";
+import {ErrorBoundary} from "react-error-boundary";
 import OperationCodeFilter from "../ducks/operationCodes/OperationCodeFilter";
 import OperationCodeList from "../ducks/operationCodes/OperationCodeList";
 import SelectedOperationCode from "../ducks/operationCodes/SelectedOperationCode";
-import {RouteComponentProps} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {Helmet} from "react-helmet";
 import {useAppDispatch} from "../app/configureStore";
 
@@ -14,17 +14,17 @@ interface OperationCodeMatchProps {
     operationCode?: string,
 }
 
-const OperationCodesContent: React.FC<RouteComponentProps> = ({match}) => {
+const OperationCodesContent = () => {
     const dispatch = useAppDispatch();
     const loaded = useSelector(selectLoaded);
     const loading = useSelector(selectLoading);
+    const {workCenter, operationCode} = useParams<'workCenter'|'operationCode'>()
     useEffect(() => {
         if (!loaded && !loading) {
             dispatch(loadOperationCodes());
         }
     }, [])
 
-    const {workCenter, operationCode} = match.params as OperationCodeMatchProps;
     return (
         <>
             <Helmet>
@@ -32,13 +32,13 @@ const OperationCodesContent: React.FC<RouteComponentProps> = ({match}) => {
             </Helmet>
             <div className="row g-5">
                 <div className="col-6">
-                    <ErrorBoundary>
+                    <ErrorBoundary fallback={<div>Yikes... something failed.</div>}>
                         <OperationCodeFilter/>
                         <OperationCodeList tableKey={'operation-code-list'}/>
                     </ErrorBoundary>
                 </div>
                 <div className="col-6">
-                    <ErrorBoundary>
+                    <ErrorBoundary fallback={<div>Fucking hell... something failed.</div>}>
                         <SelectedOperationCode workCenter={workCenter} operationCode={operationCode}/>
                     </ErrorBoundary>
                 </div>

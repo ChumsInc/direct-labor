@@ -19,7 +19,7 @@ import {
 import {DLStep, DLStepSorterProps} from "../types";
 import {dlStepKey} from "./types";
 import {stepsListFields} from "./StepsListFields";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
 import DLStepsFilter from "./DLStepsFilter";
 import {useAppDispatch} from "../../app/configureStore";
@@ -31,7 +31,7 @@ const defaultSort: DLStepSorterProps = {
 }
 
 const StepsList: React.FC = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const sort = useSelector(sortableTableSelector(tableKey))
     const loading = useSelector(loadingSelector);
@@ -52,7 +52,7 @@ const StepsList: React.FC = () => {
     }, [loading, loaded]);
 
     const onSelectRow = (row: DLStep) => {
-        history.push(dlStepPath(row.id));
+        navigate(dlStepPath(row.id));
     }
 
     return (

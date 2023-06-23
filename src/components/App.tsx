@@ -5,7 +5,7 @@ import {AlertList} from "chums-ducks";
 import TKAlertList from "../ducks/alerts/AlertList";
 import WorkCenterContent from "./WorkCenterContent";
 import OperationCodesContent from "./OperationCodesContent";
-import {Route} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import {
     dlCodesRouterPath,
     dlStepsRouterPath,
@@ -16,6 +16,7 @@ import {
 import DirectLaborCodesContent from "./DirectLaborCodesContent";
 import DirectLaborStepsContent from "./DirectLaborStepsContent";
 import VersionInfo from "../ducks/version/VersionInfo";
+import AppContainer from "./AppContainer";
 
 const mainTabKey = 'dl-main';
 
@@ -30,11 +31,14 @@ const App: React.FC = () => {
                     <VersionInfo />
                 </div>
                 <div className="col">
-                    <Route path={routingRouterPath} component={RoutingContent}/>
-                    <Route path={workCenterRouterPath} component={WorkCenterContent}/>
-                    <Route path={operationCodesRouterPath} component={OperationCodesContent}/>
-                    <Route path={dlCodesRouterPath} component={DirectLaborCodesContent}/>
-                    <Route path={dlStepsRouterPath} component={DirectLaborStepsContent}/>
+                    <Routes>
+                        <Route path="/" element={<AppContainer />} />
+                        <Route path={routingRouterPath} element={<RoutingContent />}/>
+                        <Route path={workCenterRouterPath} element={<WorkCenterContent />}/>
+                        <Route path={operationCodesRouterPath} element={<OperationCodesContent />}/>
+                        <Route path={dlCodesRouterPath} element={<DirectLaborCodesContent />}/>
+                        <Route path={dlStepsRouterPath} element={<DirectLaborStepsContent />}/>
+                    </Routes>
                 </div>
             </div>
         </>

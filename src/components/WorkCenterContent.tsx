@@ -1,20 +1,19 @@
 import React from "react";
 import WorkCenterList from "../ducks/workCenters/WorkCenterList";
 import SelectedWorkCenter from "../ducks/workCenters/SelectedWorkCenter";
-import {ErrorBoundary} from "chums-ducks";
-import {RouteComponentProps} from "react-router-dom";
+import {ErrorBoundary} from "react-error-boundary";
+import {useParams} from "react-router-dom";
 import {Helmet} from "react-helmet";
-import {useAppDispatch, useAppSelector} from "../app/configureStore";
-import {recalcDLCodes} from "../ducks/dlCodes/actions";
+import {useAppDispatch} from "../app/configureStore";
 import DirectLaborRecalc from "../ducks/dlCodes/DirectLaborRecalc";
 
 interface WorkCenterMatchProps {
     workCenter?: string,
 }
 
-const WorkCenterContent: React.FC<RouteComponentProps> = ({match}) => {
+const WorkCenterContent = () => {
     const dispatch = useAppDispatch();
-    const {workCenter} = match.params as WorkCenterMatchProps;
+    const {workCenter} = useParams<'workCenter'>()
 
     return (
         <div className="row g-3">
@@ -22,15 +21,15 @@ const WorkCenterContent: React.FC<RouteComponentProps> = ({match}) => {
                 <title>D/L Work Centers</title>
             </Helmet>
             <div className="col-8">
-                <ErrorBoundary>
+                <ErrorBoundary fallback={<div>Something went wrong in WorkCenterList.</div>}>
                     <WorkCenterList/>
                 </ErrorBoundary>
             </div>
             <div className="col-4">
-                <ErrorBoundary>
+                <ErrorBoundary fallback={<div>Something failed in SelectedWorkCenter.</div>}>
                     <SelectedWorkCenter workCenter={workCenter}/>
                 </ErrorBoundary>
-                <DirectLaborRecalc />
+                <DirectLaborRecalc/>
             </div>
         </div>
     )
