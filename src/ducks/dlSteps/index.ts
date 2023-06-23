@@ -10,10 +10,10 @@ import {
     loadDLStepAction,
     loadDLStepsAction,
     saveDLStepAction,
-    setDLStepFilterAction,
+    setDLStepFilterAction, setStepsPage, setStepsRowsPerPage,
     setWCFilterAction
 } from "./actions";
-import {filterInactiveStepsKey} from "../../utils/preferences";
+import {filterInactiveStepsKey, stepsRowsPerPageKey} from "../../utils/preferences";
 import {getPreference} from "../../api/preferences";
 import {SortProps} from "chums-types";
 
@@ -33,7 +33,9 @@ export interface DLStepsState {
     filter: string;
     wcFilter: string;
     filterInactive: boolean;
-    sort: SortProps<DLStep>
+    sort: SortProps<DLStep>;
+    page: number;
+    rowsPerPage: number;
 }
 
 export const initialStepsState: DLStepsState = {
@@ -52,7 +54,9 @@ export const initialStepsState: DLStepsState = {
     filter: '',
     wcFilter: '',
     filterInactive: getPreference(filterInactiveStepsKey, true),
-    sort: {...defaultDLStepSort}
+    sort: {...defaultDLStepSort},
+    page: 0,
+    rowsPerPage: getPreference(stepsRowsPerPageKey, 25),
 }
 
 const dlStepsReducer = createReducer(initialStepsState, builder => {
@@ -120,6 +124,13 @@ const dlStepsReducer = createReducer(initialStepsState, builder => {
         })
         .addCase(saveDLStepAction.rejected, (state) => {
             state.current.loading = false;
+        })
+        .addCase(setStepsPage, (state, action) => {
+            state.page = action.payload;
+        })
+        .addCase(setStepsRowsPerPage, (state, action) => {
+            state.page = 0;
+            state.rowsPerPage = action.payload;
         })
 })
 export default dlStepsReducer;

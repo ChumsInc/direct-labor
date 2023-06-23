@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {
-    filteredListSelector,
+    selectFilteredStepsList,
     listLengthSelector,
-    loadedSelector,
-    loadingSelector,
-    selectedStepSelector
+    selectStepsLoaded,
+    selectStepsLoading,
+    selectCurrentStep
 } from "./selectors";
 import {loadDLStepsAction} from "./actions";
 import {
@@ -34,12 +34,12 @@ const StepsList: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const sort = useSelector(sortableTableSelector(tableKey))
-    const loading = useSelector(loadingSelector);
-    const loaded = useSelector(loadedSelector);
-    const list = useSelector(filteredListSelector(sort as DLStepSorterProps));
+    const loading = useSelector(selectStepsLoading);
+    const loaded = useSelector(selectStepsLoaded);
+    const list = useSelector(selectFilteredStepsList(sort as DLStepSorterProps));
     const stepsCount = useSelector(listLengthSelector)
     const pagedList = useSelector(pagedDataSelector(tableKey, list));
-    const selected = useSelector(selectedStepSelector);
+    const selected = useSelector(selectCurrentStep);
 
     useEffect(() => {
         dispatch(tableAddedAction({key: tableKey, ...defaultSort}))

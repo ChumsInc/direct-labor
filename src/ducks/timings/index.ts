@@ -14,137 +14,96 @@ import {
     timingsSelectedChanged,
     timingsSelectTiming
 } from "./actionTypes";
+import {SortProps} from "chums-types";
+import {createReducer} from "@reduxjs/toolkit";
+import {loadDLStepAction} from "../dlSteps/actions";
 
-
-const listReducer = (state: DLTiming[] = [], action: TimingsAction): DLTiming[] => {
-    const {type, payload} = action;
-    switch (type) {
-    case stepSelected:
-        return [];
-    case stepsLoadStepSucceeded:
-        if (payload?.step && payload.step?.timings) {
-            return [...payload.step.timings];
-        }
-        return state;
-    case loadTimingEntriesSucceeded:
-    case saveTimingEntriesSucceeded:
-        if (payload?.timings) {
-            return [...payload.timings];
-        }
-        return state;
-    default:
-        return state;
+export interface TimingsState {
+    list: DLTiming[];
+    current: {
+        timing: DLTiming|null;
+        changed: boolean;
+        loading: boolean;
+        saving: boolean;
     }
+    edit: boolean;
+    sort: SortProps<DLTiming>;
 }
 
-const selectedTimingReducer = (state: DLTiming = newTiming, action: TimingsAction): DLTiming => {
-    const {type, payload} = action;
-    switch (type) {
-    case timingsSelectTiming:
-        if (payload?.timing) {
-            return {...payload.timing};
-        }
-        return state;
-    case loadTimingEntriesSucceeded:
-        if (payload?.timings) {
-            const [timing] = payload.timings.filter(t => t.id === state.id);
-            if (timing) {
-                return {...timing};
+export const defaultTimingSort:SortProps<DLTiming> = {field: 'id', ascending: true};
+
+export const initialTimingsState:TimingsState = {
+    list: [],
+    current: {
+        timing: null,
+        changed: false,
+        loading: false,
+        saving: false,
+    },
+    edit: false,
+    sort: {field: 'timingDate', ascending: false},
+}
+
+const timingsReducer = createReducer(initialTimingsState, (builder) => {
+    builder
+        .addCase(loadDLStepAction.pending, (state, action) => {
+            state.list = [];
+        })
+        .addCase(loadDLStepAction.fulfilled, (state, action) => {
+            state.list = action.payload.step?.timings ?? [];
+            if (state.current) {
+                const [timing] = state.list.filter(t => t.id === state.current.timing?.id);
+                state.current.timing = timing ?? null;
+                state.current.changed = false;
             }
-        }
-        return state;
-    case editTiming:
-        if (payload?.timing) {
-            return {...payload.timing};
-        }
-        return {...newTiming};
-    case changeTiming:
-        if (payload?.change) {
-            return {
-                ...state,
-                ...payload.change,
-            };
-        }
-        return state;
-    case stepTimingChanged:
-        if (payload?.timing) {
-            return payload.timing;
-        }
-        return state;
-    case stepSelected:
-    case saveTimingEntriesSucceeded:
-        return {...newTiming};
-    default:
-        return state;
-    }
-}
+        })
+        .addDefaultCase((state, action) => {
+            switch (action.type) {
+                case loadTimingEntriesRequested:
+                    state.current.loading = true;
+                    return;
+                case loadTimingEntriesFailed:
+                    state.current.loading = false
+                    return;
+                case loadTimingEntriesSucceeded:
+                case saveTimingEntriesSucceeded:
+                    state.edit = false;
+                    state.current.loading = false;
+                    state.current.saving = false;
+                    if (action.payload?.timings) {
+                        state.list =  [...action.payload.timings];
+                        const [timing] = action.payload.timings.filter((t:DLTiming) => t.id === state.current.timing?.id);
+                        state.current.timing = timing ?? null;
+                    }
+                    return;
+                case timingsSelectTiming:
+                    state.current.timing = action.payload?.timings ?? null;
+                    state.current.changed = false;
+                    return;
+                case editTiming:
+                    state.current.timing = action.payload?.timing ?? null;
+                    state.current.changed = false;
+                    return;
+                case changeTiming:
+                    if (state.current.timing) {
+                        state.current.timing = {...state.current.timing, ...action.payload.change} as DLTiming;
+                        state.current.changed = true;
+                    }
+                    return;
+                case stepTimingChanged:
+                    state.current.timing = action.payload?.timing ?? null;
+                    state.current.changed = false;
+                    return;
+                case saveTimingEntriesRequested:
+                    state.current.saving = true;
+                    return;
+                case saveTimingEntriesFailed:
+                    state.current.saving = false;
+                    return;
 
-const selectedChangedReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case timingsSelectedChanged:
-        return true;
-    case editTiming:
-        if (action.payload?.change) {
-            return true;
-        }
-        return state;
-    case stepSelected:
-    case stepsLoadStepSucceeded:
-    case loadTimingEntriesSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
+            }
+        })
+})
 
-const selectedLoadingReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case loadTimingEntriesRequested:
-        return true;
-    case loadTimingEntriesFailed:
-    case loadTimingEntriesSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedSavingReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case saveTimingEntriesRequested:
-        return true;
-    case saveTimingEntriesFailed:
-    case saveTimingEntriesSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const editReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case editTiming:
-        return action.payload?.edit || false;
-    case saveTimingEntriesSucceeded:
-    case stepSelected:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedReducer = combineReducers({
-    timing: selectedTimingReducer,
-    changed: selectedChangedReducer,
-    saving: selectedSavingReducer,
-    loading: selectedLoadingReducer,
-});
-
-export default combineReducers({
-    list: listReducer,
-    selected: selectedReducer,
-    edit: editReducer,
-});
-
-
+export default timingsReducer;
 

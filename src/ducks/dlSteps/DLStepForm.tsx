@@ -6,11 +6,11 @@ import TextAreaAutosize from "react-textarea-autosize";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {
-    machinesSelector,
-    selectedChangedSelector,
-    selectedLoadingSelector,
-    selectedSavingSelector,
-    selectedStepSelector
+    selectMachines,
+    selectCurrentStepChanged,
+    selectCurrentStepLoading,
+    selectCurrentStepSaving,
+    selectCurrentStep
 } from "./selectors";
 import {dlStepChangedAction, loadDLStepAction, saveDLStepAction} from "./actions";
 import {DLStep, WorkCenter} from "../types";
@@ -18,11 +18,11 @@ import {useAppDispatch} from "../../app/configureStore";
 
 const DLStepForm: React.FC = () => {
     const dispatch = useAppDispatch();
-    const step = useSelector(selectedStepSelector);
-    const loading = useSelector(selectedLoadingSelector);
-    const saving = useSelector(selectedSavingSelector);
-    const changed = useSelector(selectedChangedSelector);
-    const machines = useSelector(machinesSelector);
+    const step = useSelector(selectCurrentStep);
+    const loading = useSelector(selectCurrentStepLoading);
+    const saving = useSelector(selectCurrentStepSaving);
+    const changed = useSelector(selectCurrentStepChanged);
+    const machines = useSelector(selectMachines);
 
     const changeHandler = (field: keyof DLStep) => (ev: ChangeEvent<HTMLInputElement>) => {
         dispatch(dlStepChangedAction({[field]: ev.target.value}));

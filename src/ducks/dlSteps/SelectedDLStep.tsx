@@ -1,21 +1,14 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {loadedSelector, selectedStepSelector, selectStepSelector} from "./selectors";
+import {selectCurrentStep, selectStepSelector, selectStepsLoaded} from "./selectors";
 import {loadDLStepAction} from "./actions";
 import {Helmet} from "react-helmet";
-import {selectedTabSelector, Tab, TabList, tabListCreatedAction} from "chums-components";
+import {Tab, TabList} from "chums-components";
 import SelectedStepTimings from "../timings/SelectedStepTimings";
 import {dlCodeIcon, dlTextIcon, dlTimingIcon} from "../../icons";
 import DLStepForm from "./DLStepForm";
 import SelectedWhereUsedList from "./SelectedWhereUsedList";
 import {useAppDispatch} from "../../app/configureStore";
-
-export interface SelectedDLStepProps {
-    id?: number,
-}
-
-
-const tabsKey = 'dl-steps-tabs';
 
 const tabID = {
     settings: 'settings',
@@ -28,35 +21,31 @@ const tabs: Tab[] = [
     {id: tabID.whereUsed, title: 'Where Used', icon: dlCodeIcon},
 ]
 
-const SelectedDLStep: React.FC<SelectedDLStepProps> = ({id}) => {
+const SelectedDLStep = ({id}:{
+    id?: number
+}) => {
     const dispatch = useAppDispatch();
-    const step = useSelector(selectedStepSelector);
-    const loaded = useSelector(loadedSelector);
+    const step = useSelector(selectCurrentStep);
+    const loaded = useSelector(selectStepsLoaded);
     const navStep = useSelector(selectStepSelector(id || 0));
-    const tab = useSelector(selectedTabSelector(tabsKey));
+    const [tab, setTab] = useState<string>(tabID.settings);
 
     useEffect(() => {
-        dispatch(tabListCreatedAction(tabs, tabsKey, tabID.settings));
-    }, []);
-    useEffect(() => {
-        if (id !== step.id) {
+        if (id !== step?.id) {
             dispatch(loadDLStepAction(navStep))
         }
     }, [id, loaded]);
 
-    const {
-        stepCode,
-        description,
-    } = step;
+
     return (
         <div>
             <Helmet>
-                <title>D/L Step: {stepCode}</title>
+                <title>D/L Step: {step?.stepCode}</title>
             </Helmet>
-            <h2>Step Editor: <strong>{stepCode}</strong></h2>
-            <h3>{description}</h3>
+            <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
+            <h3>{step?.description}</h3>
 
-            <TabList tabKey={tabsKey} className="mt-3 mb-1"/>
+            <TabList tabs={tabs} currentTabId={tab} onSelectTab={(tab) => setTab(tab.id)} className="mt-3 mb-1"/>
             {tab === tabID.settings && (
                 <DLStepForm/>
             )}

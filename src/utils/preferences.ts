@@ -4,6 +4,7 @@ export const currentOCWorkCenterKey: string = `${localStoragePrefix}.current-ope
 export const currentMenuCollapseKey: string = `${localStoragePrefix}.current-menu-collapse`;
 export const filterInactiveStepsKey: string = `${localStoragePrefix}.filter-inactive-steps`;
 export const filterInactiveCodesKey: string = `${localStoragePrefix}.filter-inactive-codes`;
+export const stepsRowsPerPageKey: string = `${localStoragePrefix}.steps-rowsPerPage`;
 
 export const setPreference = (key:string, value:any) => {
     try {

@@ -1,38 +1,47 @@
-import {DLStep, DLStepSorterProps} from "../types";
+import {DLStep} from "../types";
 import {dlStepSorter, dlStepTimingSorter, newDLStep} from "./types";
 import {dlCodeSorter, DLCodeSorterProps} from "../dlCodes/types";
 import {RootState} from "../../app/configureStore";
+import {createSelector} from "@reduxjs/toolkit";
+import {DLCode, SortProps} from "chums-types";
 
-export const filteredListSelector = (sort: DLStepSorterProps) => (state: RootState): DLStep[] => {
-    const {list, filter, wcFilter, filterInactive} = state.dlSteps;
-    let re = /^/;
-    try {
-        re = new RegExp(filter, 'i');
-    } catch (err) {
-    }
+export const selectStepsList = (state: RootState) => state.dlSteps.list;
 
-    return Object.values(list)
-        .filter(dl => !filterInactive || dl.active)
-        .filter(dl => !wcFilter || dl.workCenter === wcFilter)
-        .filter(dl => re.test(dl.stepCode) || re.test(dl.description) || re.test(dl.machine))
-        .sort(dlStepSorter(sort));
-}
-
-export const listSelector = (sort: DLStepSorterProps) => (state: RootState) => Object.values(state.dlSteps.list).sort(dlStepSorter(sort));
+export const listSelector = (sort: SortProps<DLStep>) => (state: RootState) => Object.values(state.dlSteps.list).sort(dlStepSorter(sort));
 export const listLengthSelector = (state: RootState) => Object.values(state.dlSteps.list).length;
-export const machinesSelector = (state: RootState) => state.dlSteps.machines;
+export const selectMachines = (state: RootState) => state.dlSteps.machines;
 export const selectStepSelector = (key: number) => (state: RootState) => state.dlSteps.list[key] ?? newDLStep;
-export const selectedStepSelector = (state: RootState) => state.dlSteps.current.step;
 export const selectCurrentStep = (state: RootState) => state.dlSteps.current.step;
 export const selectedStepTimingsSelector = (state: RootState) => (state.dlSteps.current.step?.timings ?? []).sort(dlStepTimingSorter);
-export const selectedLoadingSelector = (state: RootState) => state.dlSteps.current.loading;
-export const selectedSavingSelector = (state: RootState) => state.dlSteps.current.saving;
-export const selectedChangedSelector = (state: RootState) => state.dlSteps.current.changed;
-export const loadingSelector = (state: RootState) => state.dlSteps.loading;
-export const loadedSelector = (state: RootState) => state.dlSteps.loaded;
-export const filterSelector = (state: RootState): string => state.dlSteps.filter;
-export const wcFilterSelector = (state: RootState): string => state.dlSteps.wcFilter;
-export const filterInactiveSelector = (state:RootState):boolean => state.dlSteps.filterInactive;
-export const whereUsedSelector = (sort:DLCodeSorterProps) => (state:RootState) => state.dlSteps.whereUsed.sort(dlCodeSorter(sort));
+export const selectCurrentStepLoading = (state: RootState) => state.dlSteps.current.loading;
+export const selectCurrentStepSaving = (state: RootState) => state.dlSteps.current.saving;
+export const selectCurrentStepChanged = (state: RootState) => state.dlSteps.current.changed;
+export const selectStepsLoading = (state: RootState) => state.dlSteps.loading;
+export const selectStepsLoaded = (state: RootState) => state.dlSteps.loaded;
+export const selectStepsFilter = (state: RootState): string => state.dlSteps.filter;
+export const selectStepsWCFilter = (state: RootState): string => state.dlSteps.wcFilter;
+export const selectStepsInactiveFilter = (state: RootState): boolean => state.dlSteps.filterInactive;
+export const whereUsedSelector = (sort: SortProps<DLCode>) => (state: RootState) => state.dlSteps.whereUsed.sort(dlCodeSorter(sort));
 
-export const selectCurrentStepLoading = (state:RootState) => state.dlSteps.current.loading;
+
+export const selectStepsPage = (state: RootState) => state.dlSteps.page;
+export const selectStepsRowsPerPage = (state: RootState) => state.dlSteps.rowsPerPage;
+export const selectStepsSort = (state: RootState) => state.dlSteps.sort;
+
+export const selectFilteredStepsList = createSelector(
+    [selectStepsList, selectStepsFilter, selectStepsWCFilter, selectStepsInactiveFilter, selectStepsSort],
+    (list, filter, wcFilter, filterInactive, sort) => {
+        let re = /^/;
+        try {
+            re = new RegExp(filter, 'i');
+        } catch (err) {
+        }
+
+        return Object.values(list)
+            .filter(dl => !filterInactive || dl.active)
+            .filter(dl => !wcFilter || dl.workCenter === wcFilter)
+            .filter(dl => re.test(dl.stepCode) || re.test(dl.description) || re.test(dl.machine))
+            .sort(dlStepSorter(sort));
+
+    }
+)

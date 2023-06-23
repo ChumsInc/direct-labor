@@ -9,8 +9,8 @@ import {
     stepTimingChanged,
     wcFilterChanged
 } from "./actionTypes";
-import {loadingSelector, selectCurrentStepLoading} from "./selectors";
-import {filterInactiveStepsKey, setPreference} from "../../utils/preferences";
+import {selectStepsLoading, selectCurrentStepLoading} from "./selectors";
+import {filterInactiveStepsKey, setPreference, stepsRowsPerPageKey} from "../../utils/preferences";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {getPreference} from "../../api/preferences";
 import {fetchDLStep, fetchDLSteps, postDLStep} from "../../api/dl-steps";
@@ -31,7 +31,11 @@ export const filterInactiveAction = createAction(filterInactiveChanged, (arg: bo
 export const setWCFilterAction = createAction<string>(wcFilterChanged);
 export const setDLStepFilterAction = createAction<string>(filterChanged)
 export const setStepsSort = createAction<SortProps<DLStep>>('steps/setSort');
-export const setStepsPage = createAction
+export const setStepsPage = createAction<number>('steps/setPage');
+export const setStepsRowsPerPage = createAction('steps/setRowsPerPage', (arg:number) => {
+    setPreference(stepsRowsPerPageKey, arg);
+    return {payload: arg};
+})
 
 export const loadDLStepsAction = createAsyncThunk(
     stepsLoadList,
@@ -40,7 +44,7 @@ export const loadDLStepsAction = createAsyncThunk(
     }, {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !loadingSelector(state);
+            return !selectStepsLoading(state);
         }
     }
 )

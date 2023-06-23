@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {filterInactiveSelector, filterSelector, loadingSelector, wcFilterSelector} from "./selectors";
+import {selectStepsInactiveFilter, selectStepsFilter, selectStepsLoading, selectStepsWCFilter} from "./selectors";
 import {WorkCenter} from "../types";
 import {filterInactiveAction, loadDLStepsAction, setDLStepFilterAction, setWCFilterAction} from "./actions";
 import SearchInput from "../../components/SearchInput";
@@ -10,10 +10,10 @@ import {useAppDispatch} from "../../app/configureStore";
 
 const DLCodeFilter: React.FC = () => {
     const dispatch = useAppDispatch();
-    const filter = useSelector(filterSelector);
-    const wcFilter = useSelector(wcFilterSelector);
-    const loading = useSelector(loadingSelector);
-    const filterInactive = useSelector(filterInactiveSelector)
+    const filter = useSelector(selectStepsFilter);
+    const wcFilter = useSelector(selectStepsWCFilter);
+    const loading = useSelector(selectStepsLoading);
+    const filterInactive = useSelector(selectStepsInactiveFilter)
 
     const onSelectWC = (wc: WorkCenter | null) => dispatch(setWCFilterAction(wc?.WorkCenterCode || ''));
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setDLStepFilterAction(ev.target.value || ''));
