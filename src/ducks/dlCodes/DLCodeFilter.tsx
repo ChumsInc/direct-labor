@@ -2,7 +2,7 @@ import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {selectFilter, selectLoading, selectShowInactive, selectWorkCenterFilter} from "./selectors";
-import {WorkCenter} from "../types";
+import {WorkCenter} from "chums-types";
 import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "./actions";
 import SearchInput from "../../components/SearchInput";
 import {FormCheck, SpinnerButton} from "chums-components";

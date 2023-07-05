@@ -6,10 +6,11 @@ import MultiLineField from "../../components/MultiLineField";
 import {billHeaderKey} from "./types";
 import {billHeaderSelector} from "./index";
 import StatusBadge from "../../components/StatusBadge";
-import {BillHeader, BillType, BillTypeDesc} from "../types";
+import {BillTypeDesc} from "../types";
 import {SortableTable, SortableTableField, TablePagination} from "chums-components";
 import {billHeaderSorter, defaultBillSort} from "./utils";
-import {SortProps} from "chums-types";
+import {BillType, SortProps} from "chums-types";
+import {BillHeader} from "chums-types/src/bill-materials";
 
 const detailTableFields: SortableTableField<BillHeader>[] = [
     {field: 'BillNo', title: 'Bill No', sortable: true},

@@ -1,16 +1,17 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {DLCodeStep, DLStep, DLStepTableField} from "../types";
+import {DLStep} from "chums-types";
 import numeral from "numeral";
 import {dlStepPath} from "../../routerPaths";
+import {SortableTableField} from "chums-components";
 
 
-export const stepsListFields: DLStepTableField[] = [
+export const stepsListFields: SortableTableField<DLStep>[] = [
     {
         field: 'stepCode',
         title: 'Step Code',
         sortable: true,
-        render: (row: DLStep) => (<Link to={dlStepPath(row.id)}>{row.stepCode}</Link>)
+        render: (row) => (<Link to={dlStepPath(row.id)}>{row.stepCode}</Link>)
     },
     {field: 'description', title: 'Description', sortable: true,},
     {field: 'workCenter', title: 'Work Center', sortable: true},
@@ -18,22 +19,22 @@ export const stepsListFields: DLStepTableField[] = [
     {
         field: 'standardAllowedMinutes',
         title: 'SAM',
-        className: (row:DLCodeStep) => ({'text-end': true, 'text-muted': row.standardAllowedMinutes === 0}),
+        className: (row) => ({'text-end': true, 'text-muted': row.standardAllowedMinutes === 0}),
         sortable: true,
-        render: ({standardAllowedMinutes}: DLCodeStep) => numeral(standardAllowedMinutes).format('0,0.0000')
+        render: ({standardAllowedMinutes}) => numeral(standardAllowedMinutes).format('0,0.0000')
     },
     {
         field: 'fixedCosts',
         title: 'Fixed Costs',
-        className: (row:DLCodeStep) => ({'text-end': true, 'text-muted': row.fixedCosts === 0}),
+        className: (row) => ({'text-end': true, 'text-muted': row.fixedCosts === 0}),
         sortable: true,
-        render: ({fixedCosts}: DLCodeStep) => numeral(fixedCosts).format('0,0.0000')
+        render: ({fixedCosts}) => numeral(fixedCosts).format('0,0.0000')
     },
     {
         field: 'stepCost',
         title: 'Step Cost',
         className: 'text-end',
         sortable: true,
-        render: ({stepCost}: DLCodeStep) => numeral(stepCost).format('0,0.0000')
+        render: ({stepCost}) => numeral(stepCost).format('0,0.0000')
     },
 ];

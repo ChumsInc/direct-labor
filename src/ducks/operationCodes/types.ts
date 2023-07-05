@@ -1,18 +1,10 @@
-import {ActionInterface, SorterProps} from "chums-ducks";
+import {ActionInterface} from "chums-ducks";
 import {ThunkAction} from "redux-thunk";
-import {
-    ActionInterfacePayload,
-    defaultListState,
-    GLAccount,
-    ListState,
-    OperationCode,
-    OperationCodeField,
-    OperationCodeKey,
-    OperationCodeList,
-    RoutingDetail
-} from "../types";
+import {ActionInterfacePayload, OperationCodeList,} from "../types";
 import {RootState} from "../../app/configureStore";
-import {SortProps} from "chums-types";
+import {OperationCode, OperationCodeKey} from "chums-types";
+import {GLAccount} from "chums-types/src/general-ledger";
+import {RoutingDetail} from "chums-types/src/work-order";
 
 
 export interface OperationCodeActionPayload extends ActionInterfacePayload {

@@ -1,4 +1,4 @@
-import {RoutingDetail, RoutingHeader} from "../types";
+import {RoutingDetail, RoutingHeader} from "chums-types";
 import {SortProps} from "chums-types";
 
 export const routingHeaderKey = (header: RoutingHeader) => header.RoutingNo;

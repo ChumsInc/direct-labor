@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {FormCheck, SpinnerButton} from "chums-ducks";
+import {FormCheck, SpinnerButton} from "chums-components";
 import {useSelector} from "react-redux";
 import {loadWorkCenters, setPage, setRowsPerPage, setSort, toggleFilterRatedWC} from "./actions";
 import {
@@ -17,7 +17,7 @@ import MultiLineField from "../../components/MultiLineField";
 import numeral from "numeral";
 import {useNavigate} from "react-router-dom";
 import {selectedWorkCenterPath} from "../../routerPaths";
-import {WorkCenter} from "../types";
+import {WorkCenter} from "chums-types";
 import {SortableTable, SortableTableField, SortProps, TablePagination} from "chums-components";
 import {useAppDispatch} from "../../app/configureStore";
 

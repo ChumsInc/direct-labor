@@ -1,4 +1,4 @@
-import {OperationCode} from "../ducks/types";
+import {OperationCode} from "chums-types";
 import {fetchJSON} from "chums-components";
 import {OperationCodeResponse} from "../ducks/operationCodes/types";
 

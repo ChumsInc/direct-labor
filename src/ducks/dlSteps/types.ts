@@ -1,17 +1,6 @@
-import {
-    ActionInterfacePayload,
-    DLBasicStep,
-    DLCode,
-    DLStep,
-    DLSteps,
-    DLStepSorterProps,
-    DLTiming,
-    ListState
-} from "../types";
-import {ThunkAction} from "redux-thunk";
+import {ActionInterfacePayload, DLSteps, ListState} from "../types";
 import {filterInactiveStepsKey, getPreference} from "../../utils/preferences";
-import {RootState} from "../../app/configureStore";
-import {SortProps} from "chums-types";
+import {DLBasicStep, DLCode, DLStep, SortProps, StepTiming} from "chums-types";
 
 export const newDLStep: DLStep = {
     id: 0,
@@ -29,7 +18,8 @@ export const newDLStep: DLStep = {
     averageHourlyRate: 0,
     laborCost: 0,
     timings: [],
-    timestamp: ''
+    timestamp: '',
+    lastUpdated: '',
 }
 
 export interface DLStepsState extends ListState {
@@ -68,11 +58,11 @@ export interface DLStepsActionPayload extends ActionInterfacePayload {
     codes?: DLCode[],
     machines?: string[],
     change?: object,
-    timing?: DLTiming,
+    timing?: StepTiming,
 }
 
 export interface DLStepResponse {
-    step: DLStep |null,
+    step: DLStep | null,
     whereUsed: DLCode[]
 }
 
@@ -81,7 +71,7 @@ export interface DLStepsResponse {
     machines: string[];
 }
 
-export const defaultDLStepSort:SortProps<DLStep> = {
+export const defaultDLStepSort: SortProps<DLStep> = {
     field: 'stepCode',
     ascending: true
 }
@@ -98,6 +88,6 @@ export const dlStepSorter = ({field, ascending}: SortProps<DLStep>) =>
         ) * (ascending ? 1 : -1);
     };
 
-export const dlStepTimingSorter = (a: DLTiming, b: DLTiming): number => {
+export const dlStepTimingSorter = (a: StepTiming, b: StepTiming): number => {
     return (new Date(a.timingDate).valueOf() - new Date(b.timingDate).valueOf() || (a.id > b.id ? 1 : -1)) * -1;
 };

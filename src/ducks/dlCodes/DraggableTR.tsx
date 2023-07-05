@@ -1,12 +1,12 @@
 import React, {useRef} from "react";
-import {SortableTRProps, SortableTR} from "chums-components";
-import {DLCodeStep} from "../types";
-import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
+import {DataTableRow, DataTableRowProps} from "chums-components";
+import {DLCodeStep} from "chums-types";
+import {useDrag, useDrop} from "react-dnd";
 import "./DraggableTR.scss";
 import classNames from "classnames";
 import {Identifier} from "dnd-core";
 
-export interface DraggableTRProps extends SortableTRProps {
+export interface DraggableTRProps extends DataTableRowProps {
     row: DLCodeStep,
     index: number,
     moveItem: (dragIndex: number, hoverIndex: number) => void,
@@ -19,10 +19,10 @@ interface DragItem {
     type: string,
 }
 
-const DraggableTR = ({fields, row, className, index, moveItem, onDrop}:DraggableTRProps) => {
+const DraggableTR = ({fields, row, className, index, moveItem, onDrop}: DraggableTRProps) => {
     const ref = useRef<HTMLTableRowElement>(null);
 
-    const [{handlerId}, drop] = useDrop<DragItem, void, {handlerId: Identifier|null}>({
+    const [{handlerId}, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
         accept: 'item',
         collect(monitor) {
             return {
@@ -75,8 +75,8 @@ const DraggableTR = ({fields, row, className, index, moveItem, onDrop}:Draggable
     drag(drop(ref));
     const opacity = isDragging ? 0.5 : 1;
     return (
-        <SortableTR fields={fields} row={row} trRef={ref} style={{opacity}}
-                    className={classNames(className, 'draggable-tr', {'is-dragging': isDragging})}/>
+        <DataTableRow fields={fields} row={row} trRef={ref} style={{opacity}}
+                      className={classNames(className, 'draggable-tr', {'is-dragging': isDragging})}/>
     )
 }
 

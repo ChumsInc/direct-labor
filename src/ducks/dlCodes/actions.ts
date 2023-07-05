@@ -1,4 +1,5 @@
-import {DLCode, DLCodeList, DLCodeStep} from "../types";
+import {DLCodeList} from "../types";
+
 import {selectCurrentHeader, selectCurrentLoading, selectCurrentSaving, selectLoading,} from "./selectors";
 import {AddDLStepArg, DLCodeResponse} from "./types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
@@ -14,6 +15,7 @@ import {
     postStepSort
 } from "../../api/dl-codes";
 import {RootState} from "../../app/configureStore";
+import {DLCode, DLCodeStep} from "chums-types";
 
 export const setWorkCenterFilter = createAction<string>('dlCodes/filter/workCenter');
 export const toggleShowInactive = createAction<boolean | undefined>('dlCodes/filter/toggleShowInactive');

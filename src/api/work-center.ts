@@ -1,5 +1,6 @@
-import {WorkCenter, WorkCenterList} from "../ducks/types";
+import {WorkCenterList} from "../ducks/types";
 import {fetchJSON} from "chums-components";
+import {WorkCenter} from "chums-types/src/work-order";
 
 const workCenterURL = (workCenter:string = '') => '/api/operations/production/wo/chums/work-centers/:workCenter'
     .replace(':workCenter', encodeURIComponent(workCenter));

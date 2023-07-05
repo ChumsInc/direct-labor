@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {loadOperationCodes, selectLoading, selectSearch, selectWorkCenter, setSearch, setWorkCenter} from "./index";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {WorkCenter} from "../types";
+import {WorkCenter} from "chums-types";
 import {SpinnerButton} from "chums-ducks";
 import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
 import SearchInput from "../../components/SearchInput";

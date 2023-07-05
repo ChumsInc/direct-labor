@@ -1,11 +1,12 @@
-import {RoutingDetail, RoutingDetailList, RoutingHeader, RoutingHeaderList, RoutingResponse} from "../types";
+import {RoutingDetailList, RoutingHeaderList, RoutingResponse} from "../types";
 import {RootState} from "../../app/configureStore";
-import {SortProps} from "chums-types";
+import {RoutingHeader, SortProps} from "chums-types";
 import {getPreference, localStorageKeys} from "../../api/preferences";
 import {createAction, createAsyncThunk, createReducer, createSelector} from "@reduxjs/toolkit";
 import {fetchRouting, fetchRoutings} from "../../api/routing";
 import {routingDetailKey, routingDetailSorter, routingHeaderSorter} from "./utils";
 import {loadOperationCode} from "../operationCodes";
+import {RoutingDetail} from "chums-types/src/work-order";
 
 export interface RoutingState {
     list: RoutingHeaderList;

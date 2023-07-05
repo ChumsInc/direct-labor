@@ -1,7 +1,8 @@
-import {DLCode, DLCodeList, DLCodeStep} from "../ducks/types";
+import {DLCodeList} from "../ducks/types";
 import {AddDLStepArg, dlCodeKey, DLCodeResponse} from "../ducks/dlCodes/types";
 import {fetchJSON} from "chums-components";
 import {dlCodeStepSorter} from "../ducks/dlCodes/utils";
+import {DLCode, DLCodeStep} from "chums-types";
 
 export async function deleteStep(arg:DLCodeStep):Promise<DLCodeResponse> {
     try {

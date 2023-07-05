@@ -13,7 +13,7 @@ import {
     selectCurrentStep
 } from "./selectors";
 import {dlStepChangedAction, loadDLStepAction, saveDLStepAction} from "./actions";
-import {DLStep, WorkCenter} from "../types";
+import {DLStep, WorkCenter} from "chums-types";
 import {useAppDispatch} from "../../app/configureStore";
 
 const DLStepForm: React.FC = () => {
@@ -42,56 +42,53 @@ const DLStepForm: React.FC = () => {
     }
 
     const onChangeActive = () => {
+        if (!step) {
+            return;
+        }
         dispatch(dlStepChangedAction({active: !step.active}));
     }
 
     const onReload = () => {
+        if (!step) {
+            return;
+        }
         dispatch(loadDLStepAction(step));
     }
 
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
+        if (!step) {
+            return;
+        }
         dispatch(saveDLStepAction(step));
     }
-    const {
-        stepCode,
-        laborCost,
-        fixedCosts,
-        workCenter,
-        instructions,
-        notes,
-        description,
-        machine,
-        standardAllowedMinutes,
-        active,
-    } = step;
 
     return (
         <form onSubmit={onSubmit}>
             <FormColumn label="Step Code">
                 <div className="row g-3">
                     <div className="col-sm-6">
-                        <Input type="text" value={stepCode} onChange={changeHandler('stepCode')}/>
+                        <Input type="text" value={step?.stepCode ?? ''} onChange={changeHandler('stepCode')}/>
                     </div>
                     <div className="col-sm-6">
-                        <FormCheck label="Active" checked={active} onClick={onChangeActive} type="checkbox"/>
+                        <FormCheck label="Active" checked={step?.active ?? false} onClick={onChangeActive} type="checkbox"/>
                     </div>
                 </div>
             </FormColumn>
             <FormColumn label="Description">
-                <Input type="text" value={description} onChange={changeHandler('description')}/>
+                <Input type="text" value={step?.description ?? ''} onChange={changeHandler('description')}/>
             </FormColumn>
             <FormColumn label="SAM">
                 <div className="row g-3 align-items-baseline">
                     <div className="col-4">
-                        <Input value={numeral(standardAllowedMinutes).format('0.0000')} readOnly/>
+                        <Input value={numeral(step?.standardAllowedMinutes ?? 0).format('0.0000')} readOnly/>
                     </div>
                     <div className="col-4">
                         <label className="form-label">UPH</label>
                     </div>
                     <div className="col-4">
                         <Input
-                            value={!standardAllowedMinutes ? '0' : numeral(60 / standardAllowedMinutes).format('0,0.0')}
+                            value={!step?.standardAllowedMinutes ? '0' : numeral(60 / step.standardAllowedMinutes).format('0,0.0')}
                             readOnly/>
                     </div>
                 </div>
@@ -99,32 +96,32 @@ const DLStepForm: React.FC = () => {
             <FormColumn label="Fixed Costs">
                 <div className="row g-3 align-items-baseline">
                     <div className="col-4">
-                        <Input type="number" value={fixedCosts} onChange={onChangeFixedCost} step="0.0001"/>
+                        <Input type="number" value={step?.fixedCosts ?? 0} onChange={onChangeFixedCost} step="0.0001"/>
                     </div>
                     <div className="col-4">
                         <label>Total Cost</label>
                     </div>
                     <div className="col-4">
-                        <Input value={numeral(laborCost + fixedCosts).format('$0.0000')} readOnly/>
+                        <Input value={numeral((step?.laborCost ?? 0) + (step?.fixedCosts ?? 0)).format('$0.0000')} readOnly/>
                     </div>
                 </div>
             </FormColumn>
             <FormColumn label="Machine">
-                <Input type="text" value={machine} onChange={changeHandler('machine')} list="input-machine-list"/>
+                <Input type="text" value={step?.machine ?? ''} onChange={changeHandler('machine')} list="input-machine-list"/>
                 <datalist id="input-machine-list">
                     {machines.map((machine, index) => (<option value={machine} key={index}/>))}
                 </datalist>
             </FormColumn>
             <FormColumn label="Work Center">
-                <WorkCenterSelect value={workCenter} onSelectWorkCenter={onChangeWorkCenter}/>
+                <WorkCenterSelect value={step?.workCenter ?? ''} onSelectWorkCenter={onChangeWorkCenter}/>
             </FormColumn>
             <FormColumn label="Instructions">
-                <TextAreaAutosize value={instructions || ''} placeholder="Instructions"
+                <TextAreaAutosize value={step?.instructions ?? ''} placeholder="Instructions"
                                   className="form-control form-control-sm mb-1"
                                   onChange={onChangeInstructions} minRows={2}/>
             </FormColumn>
             <FormColumn label="Notes">
-                <TextAreaAutosize value={notes || ''} placeholder="Notes"
+                <TextAreaAutosize value={step?.notes ?? ''} placeholder="Notes"
                                   className="form-control form-control-sm mb-1"
                                   onChange={onChangeNotes} minRows={2}/>
             </FormColumn>
@@ -138,7 +135,7 @@ const DLStepForm: React.FC = () => {
                 </div>
                 <div className="col-auto">
                     <SpinnerButton type="button" color="danger"
-                                   disabled={loading || saving || !step.id} size="sm"
+                                   disabled={loading || saving || !step?.id} size="sm"
                                    onClick={() => window.alert('Not implemented. Call Steve if you really need this.')}
                                    spinnerAfter>
                         Delete DL Step

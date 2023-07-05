@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useEffect} from 'react';
 import {useSelector} from "react-redux";
-import {OperationCode} from "../types";
+import {OperationCode} from "chums-types";
 import {InputGroup, Select} from "chums-components";
 import {listSelector, loadOperationCodes, selectLoaded} from "./index";
 import {operationCodeKey} from "./utils";

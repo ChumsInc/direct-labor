@@ -1,22 +1,21 @@
 import React, {ChangeEvent, useState} from "react";
-import {Input} from "chums-ducks";
-import {InputProps} from "chums-ducks/dist/components/Input";
+import {Input, InputProps} from "chums-components";
 import classNames from "classnames";
 
 export interface SearchInputProps extends InputProps {
     icon?: string,
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({
-                                                     value,
-                                                     icon,
-                                                     bsSize,
-                                                     type = 'search',
-                                                     placeholder,
-                                                     className,
-                                                     onChange,
-                                                     ...rest
-                                                 }) => {
+const SearchInput = ({
+                         value,
+                         icon,
+                         bsSize,
+                         type = 'search',
+                         placeholder,
+                         className,
+                         onChange,
+                         ...rest
+                     }: SearchInputProps) => {
     const [valid, setValid] = useState(true);
 
     const groupClassName = {

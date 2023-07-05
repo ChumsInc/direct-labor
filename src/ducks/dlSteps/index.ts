@@ -1,8 +1,8 @@
-import {DLCode, DLStep, DLSteps} from "../types";
+import {DLCode, DLStep, SortProps} from "chums-types";
 import {defaultDLStepSort, newDLStep} from "./types";
 import {defaultDLCodeSort, dlCodeSorter} from "../dlCodes/types";
 import {tabID} from "./constants";
-import {createReducer, EmptyObject} from "@reduxjs/toolkit";
+import {createReducer} from "@reduxjs/toolkit";
 import {
     dlStepChangedAction,
     dlStepChangeTimingAction,
@@ -10,17 +10,22 @@ import {
     loadDLStepAction,
     loadDLStepsAction,
     saveDLStepAction,
-    setDLStepFilterAction, setStepsPage, setStepsRowsPerPage,
-    setWCFilterAction
+    setDLStepFilterAction,
+    setPage,
+    setRowsPerPage,
+    setWCFilterAction, setWhereUsedSort
 } from "./actions";
 import {filterInactiveStepsKey, stepsRowsPerPageKey} from "../../utils/preferences";
 import {getPreference} from "../../api/preferences";
-import {SortProps} from "chums-types";
+import {DLSteps} from "../types";
 
 export interface DLStepsState {
     list: DLSteps;
     tab: string;
-    whereUsed: DLCode[];
+    whereUsed: {
+        list: DLCode[];
+        sort: SortProps<DLCode>
+    };
     machines: string[];
     current: {
         step: DLStep | null;
@@ -41,7 +46,10 @@ export interface DLStepsState {
 export const initialStepsState: DLStepsState = {
     list: {},
     tab: tabID.settings,
-    whereUsed: [],
+    whereUsed: {
+        list: [],
+        sort: {...defaultDLCodeSort}
+    },
     machines: [],
     current: {
         step: null,
@@ -96,7 +104,7 @@ const dlStepsReducer = createReducer(initialStepsState, builder => {
             state.loaded = true;
         })
         .addCase(loadDLStepAction.pending, (state, action) => {
-            state.whereUsed = [];
+            state.whereUsed.list = [];
             state.current.changed = false;
             state.current.loading = true;
             state.current.step = {
@@ -105,7 +113,7 @@ const dlStepsReducer = createReducer(initialStepsState, builder => {
             }
         })
         .addCase(loadDLStepAction.fulfilled, (state, action) => {
-            state.whereUsed = [...action.payload.whereUsed].sort(dlCodeSorter(defaultDLCodeSort));
+            state.whereUsed.list = [...action.payload.whereUsed].sort(dlCodeSorter(defaultDLCodeSort));
             state.current.step = action.payload.step;
             state.current.loading = false;
             state.current.changed = false;
@@ -117,7 +125,7 @@ const dlStepsReducer = createReducer(initialStepsState, builder => {
             state.current.loading = true;
         })
         .addCase(saveDLStepAction.fulfilled, (state, action) => {
-            state.whereUsed = [...action.payload.whereUsed].sort(dlCodeSorter(defaultDLCodeSort));
+            state.whereUsed.list = [...action.payload.whereUsed].sort(dlCodeSorter(defaultDLCodeSort));
             state.current.step = action.payload.step;
             state.current.loading = false;
             state.current.changed = false;
@@ -125,12 +133,15 @@ const dlStepsReducer = createReducer(initialStepsState, builder => {
         .addCase(saveDLStepAction.rejected, (state) => {
             state.current.loading = false;
         })
-        .addCase(setStepsPage, (state, action) => {
+        .addCase(setPage, (state, action) => {
             state.page = action.payload;
         })
-        .addCase(setStepsRowsPerPage, (state, action) => {
+        .addCase(setRowsPerPage, (state, action) => {
             state.page = 0;
             state.rowsPerPage = action.payload;
+        })
+        .addCase(setWhereUsedSort, (state, action) => {
+            state.whereUsed.sort = action.payload;
         })
 })
 export default dlStepsReducer;

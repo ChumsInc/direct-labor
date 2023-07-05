@@ -1,20 +1,23 @@
-import {fetchJSON, fetchPOST} from "chums-components";
-import {DLBasicStep, DLStep, DLSteps} from "../ducks/types";
+import {fetchJSON} from "chums-components";
+import {DLStep} from "chums-types";
 import {DLStepResponse, DLStepsResponse, newDLStep} from "../ducks/dlSteps/types";
-import {DLCode} from "chums-types";
+import {DLSteps} from "../ducks/types";
 
 const listURL = `/api/operations/production/dl/steps`;
-const stepURL = (id:number) => `/api/operations/production/dl/steps/${encodeURIComponent(id)}`;
+const stepURL = (id: number) => `/api/operations/production/dl/steps/${encodeURIComponent(id)}`;
 
-export async function fetchDLSteps():Promise<DLStepsResponse> {
+export async function fetchDLSteps(): Promise<DLStepsResponse> {
     try {
-        const {steps, machines} = await fetchJSON<{steps:DLStep[], machines: string[]}>(listURL, {cache: 'no-cache'});
+        const {steps, machines} = await fetchJSON<{
+            steps: DLStep[],
+            machines: string[]
+        }>(listURL, {cache: 'no-cache'});
         const list: DLSteps = {};
         steps.forEach((step: DLStep) => {
             list[step.id] = step;
         })
         return {list, machines};
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchDLSteps()", err.message);
             return Promise.reject(err);
@@ -25,14 +28,14 @@ export async function fetchDLSteps():Promise<DLStepsResponse> {
 }
 
 
-export async function fetchDLStep(arg:number):Promise<DLStepResponse> {
+export async function fetchDLStep(arg: number): Promise<DLStepResponse> {
     try {
         if (!arg) {
             return {step: {...newDLStep}, whereUsed: []};
         }
         const url = stepURL(arg)
         return await fetchJSON<DLStepResponse>(url, {cache: 'no-cache'});
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchDLStep()", err.message);
             return Promise.reject(err);
@@ -42,11 +45,11 @@ export async function fetchDLStep(arg:number):Promise<DLStepResponse> {
     }
 }
 
-export async function postDLStep(arg:DLStep):Promise<DLStepResponse> {
+export async function postDLStep(arg: DLStep): Promise<DLStepResponse> {
     try {
         const url = stepURL(arg.id);
         return await fetchJSON<DLStepResponse>(url, {body: JSON.stringify(arg)});
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("postDLStep()", err.message);
             return Promise.reject(err);

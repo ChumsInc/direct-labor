@@ -1,26 +1,20 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {whereUsedSelector} from "./selectors";
-import {addPageSetAction, sortableTableSelector, tableAddedAction} from "chums-ducks";
-import {defaultDLCodeSort, DLCodeSorterProps} from "../dlCodes/types";
+import React from "react";
+import {selectWhereUsed, selectWhereUsedSort} from "./selectors";
 import DLCodeList from "../dlCodes/DLCodeList";
-import {noop} from "chums-components";
-
-const tableKey = 'selected-step-where-used';
+import {SortProps} from "chums-components";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {setWhereUsedSort} from "./actions";
+import {DLCode} from "chums-types";
 
 const SelectedWhereUsedList: React.FC = () => {
-    const dispatch = useDispatch();
-    const sortProps = useSelector(sortableTableSelector(tableKey));
-    const list = useSelector(whereUsedSelector(sortProps as DLCodeSorterProps));
+    const dispatch = useAppDispatch();
+    const list = useAppSelector(selectWhereUsed);
+    const sort = useAppSelector(selectWhereUsedSort);
 
-
-    useEffect(() => {
-        dispatch(addPageSetAction({key: tableKey}));
-        dispatch(tableAddedAction({key: tableKey, ...defaultDLCodeSort}));
-    }, [])
+    const onChangeSort = (sort: SortProps<DLCode>) => dispatch(setWhereUsedSort(sort));
 
     return (
-        <DLCodeList list={list} sort={{field: 'dlCode', ascending: true}} onChangeSort={noop}/>
+        <DLCodeList list={list} sort={sort} onChangeSort={onChangeSort}/>
     )
 }
 export default SelectedWhereUsedList;

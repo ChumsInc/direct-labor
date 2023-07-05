@@ -9,6 +9,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
     "chums-components": "github:UtahGooner/chums-components",
+    "chums-ducks": "github:UtahGooner/chums-ducks",
     "chums-types": "github:UtahGooner/chums-types",
     "classnames": "^2.2.6",
     "date-fns": "^2.23.0",
@@ -58,7 +59,7 @@
     "style-loader": "^3.0.0",
     "terser-webpack-plugin": "^5.1.1",
     "ts-loader": "^9.2.3",
-    "typescript": "^4.3.5",
+    "typescript": "^5.1.6",
     "webpack": "^5.31.2",
     "webpack-bundle-analyzer": "^4.3.0",
     "webpack-chunk-hash": "^0.6.0",

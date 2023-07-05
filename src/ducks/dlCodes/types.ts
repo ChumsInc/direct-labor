@@ -2,9 +2,8 @@ import {ActionInterface, SorterProps} from "chums-ducks";
 import {
     ActionInterfacePayload,
     defaultListState,
-    DLCode,
     DLCodeField,
-    DLCodeList, DLCodeStep,
+    DLCodeList,
     DLCodeSteps,
     ListState
 } from "../types";
@@ -12,6 +11,7 @@ import {ThunkAction} from "redux-thunk";
 import {filterInactiveCodesKey, getPreference} from "../../utils/preferences";
 import {RootState} from "../../app/configureStore";
 import {SortProps} from "chums-components";
+import {DLCode, DLCodeStep} from "chums-types";
 
 export const newDLCode:DLCode = {
     id: 0,

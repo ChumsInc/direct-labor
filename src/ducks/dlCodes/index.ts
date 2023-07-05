@@ -1,5 +1,5 @@
 import {defaultDLCodeSort} from "./types";
-import {DLCode, DLCodeList, DLCodeStep} from "../types";
+import {DLCode, DLCodeStep, Editable} from "chums-types";
 import {SortProps} from "chums-components";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
 import {createReducer} from "@reduxjs/toolkit";
@@ -20,13 +20,14 @@ import {
     toggleShowInactive
 } from "./actions";
 import {dlCodeStepSorter} from "./utils";
+import {DLCodeList} from "../types";
 
 export interface DLCodesState {
     list: DLCodeList;
     loading: boolean;
     loaded: boolean;
     current: {
-        header: DLCode | null;
+        header: (DLCode & Editable) | null;
         steps: DLCodeStep[];
         loading: boolean;
         saving: boolean;
@@ -112,7 +113,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.current.loading = false;
             state.current.header = action.payload?.dlCode ?? null;
             state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
-            if (action.payload?.dlCode) {
+            if (action.payload?.dlCode?.id) {
                 state.list[action.payload.dlCode.id] = action.payload.dlCode;
             }
         })

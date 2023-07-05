@@ -10,7 +10,7 @@ import {
     selectSortedList
 } from "./selectors";
 import {loadDLCode, loadDLCodes, setPage, setRowsPerPage, setSort} from "./actions";
-import {DLCode} from "../types";
+import {DLCode} from "chums-types";
 import DLCodeList from "./DLCodeList";
 import {useNavigate} from "react-router-dom";
 import {dlCodePath} from "../../routerPaths";

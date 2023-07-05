@@ -1,7 +1,4 @@
-import {combineReducers} from "redux";
-import {DLTiming} from "../types";
-import {stepSelected, stepsLoadStepSucceeded, stepTimingChanged} from "../dlSteps/actionTypes";
-import {newTiming, TimingsAction} from "./types";
+import {stepTimingChanged} from "../dlSteps/actionTypes";
 import {
     changeTiming,
     editTiming,
@@ -11,29 +8,31 @@ import {
     saveTimingEntriesFailed,
     saveTimingEntriesRequested,
     saveTimingEntriesSucceeded,
-    timingsSelectedChanged,
     timingsSelectTiming
 } from "./actionTypes";
-import {SortProps} from "chums-types";
+import {SortProps, StepTiming} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {loadDLStepAction} from "../dlSteps/actions";
+import {loadTimings} from "./actions";
 
 export interface TimingsState {
-    list: DLTiming[];
+    list: StepTiming[];
+    loading: boolean;
     current: {
-        timing: DLTiming|null;
+        timing: StepTiming | null;
         changed: boolean;
         loading: boolean;
         saving: boolean;
     }
     edit: boolean;
-    sort: SortProps<DLTiming>;
+    sort: SortProps<StepTiming>;
 }
 
-export const defaultTimingSort:SortProps<DLTiming> = {field: 'id', ascending: true};
+export const defaultTimingSort: SortProps<StepTiming> = {field: 'id', ascending: true};
 
-export const initialTimingsState:TimingsState = {
+export const initialTimingsState: TimingsState = {
     list: [],
+    loading: false,
     current: {
         timing: null,
         changed: false,
@@ -57,6 +56,16 @@ const timingsReducer = createReducer(initialTimingsState, (builder) => {
                 state.current.changed = false;
             }
         })
+        .addCase(loadTimings.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(loadTimings.fulfilled, (state, action) => {
+            state.loading = false;
+            state.list = action.payload;
+        })
+        .addCase(loadTimings.rejected, (state) => {
+            state.loading = false;
+        })
         .addDefaultCase((state, action) => {
             switch (action.type) {
                 case loadTimingEntriesRequested:
@@ -71,8 +80,8 @@ const timingsReducer = createReducer(initialTimingsState, (builder) => {
                     state.current.loading = false;
                     state.current.saving = false;
                     if (action.payload?.timings) {
-                        state.list =  [...action.payload.timings];
-                        const [timing] = action.payload.timings.filter((t:DLTiming) => t.id === state.current.timing?.id);
+                        state.list = [...action.payload.timings];
+                        const [timing] = action.payload.timings.filter((t: StepTiming) => t.id === state.current.timing?.id);
                         state.current.timing = timing ?? null;
                     }
                     return;
@@ -86,7 +95,7 @@ const timingsReducer = createReducer(initialTimingsState, (builder) => {
                     return;
                 case changeTiming:
                     if (state.current.timing) {
-                        state.current.timing = {...state.current.timing, ...action.payload.change} as DLTiming;
+                        state.current.timing = {...state.current.timing, ...action.payload.change} as StepTiming;
                         state.current.changed = true;
                     }
                     return;

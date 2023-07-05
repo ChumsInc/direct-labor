@@ -8,9 +8,10 @@ import {
 } from "./utils";
 import {RootState} from "../../app/configureStore";
 import {setCurrentRouting} from "../routing";
-import {BillHeader, BillHeaderList, BillOptionHeader, BillOptionHeaderList} from "../types";
+import {BillHeaderList, BillOptionHeaderList} from "../types";
 import {SortProps} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
+import {BillHeader, BillOptionHeader} from "chums-types/src/bill-materials";
 
 export interface BOMState {
     headerList: BillHeaderList;

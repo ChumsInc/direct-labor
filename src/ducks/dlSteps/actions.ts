@@ -1,5 +1,6 @@
 import {DLStepResponse} from "./types";
-import {DLBasicStep, DLStep, DLTiming} from "../types";
+import {DLBasicStep, DLCode, DLStep, SortProps, StepTiming} from "chums-types";
+
 import {
     filterChanged,
     filterInactiveChanged,
@@ -9,19 +10,20 @@ import {
     stepTimingChanged,
     wcFilterChanged
 } from "./actionTypes";
-import {selectStepsLoading, selectCurrentStepLoading} from "./selectors";
+import {selectCurrentStepLoading, selectStepsLoading} from "./selectors";
 import {filterInactiveStepsKey, setPreference, stepsRowsPerPageKey} from "../../utils/preferences";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {getPreference} from "../../api/preferences";
 import {fetchDLStep, fetchDLSteps, postDLStep} from "../../api/dl-steps";
 import {RootState} from "../../app/configureStore";
-import {SortProps} from "chums-types";
 
 const listURL = `/api/operations/production/dl/steps`;
 const stepURL = (step: DLBasicStep) => `/api/operations/production/dl/steps/${encodeURIComponent(step.id)}`;
 
+export const setWhereUsedSort = createAction<SortProps<DLCode>>('steps/whereUsed/setSort');
+
 export const dlStepChangedAction = createAction<Partial<DLStep>>(stepChanged);
-export const dlStepChangeTimingAction = createAction<DLTiming>(stepTimingChanged);
+export const dlStepChangeTimingAction = createAction<StepTiming>(stepTimingChanged);
 
 export const filterInactiveAction = createAction(filterInactiveChanged, (arg: boolean) => {
     setPreference(filterInactiveStepsKey, arg ?? !getPreference(filterInactiveStepsKey, false));
@@ -31,8 +33,8 @@ export const filterInactiveAction = createAction(filterInactiveChanged, (arg: bo
 export const setWCFilterAction = createAction<string>(wcFilterChanged);
 export const setDLStepFilterAction = createAction<string>(filterChanged)
 export const setStepsSort = createAction<SortProps<DLStep>>('steps/setSort');
-export const setStepsPage = createAction<number>('steps/setPage');
-export const setStepsRowsPerPage = createAction('steps/setRowsPerPage', (arg:number) => {
+export const setPage = createAction<number>('steps/setPage');
+export const setRowsPerPage = createAction('steps/setRowsPerPage', (arg: number) => {
     setPreference(stepsRowsPerPageKey, arg);
     return {payload: arg};
 })

@@ -1,5 +1,5 @@
 import {dlCodeSorter} from "./types";
-import {DLCode, DLCodeStep} from "../types";
+import {DLCode, DLCodeStep} from "chums-types";
 import {RootState} from "../../app/configureStore";
 import {createSelector} from "@reduxjs/toolkit";
 

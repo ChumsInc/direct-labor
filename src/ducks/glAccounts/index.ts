@@ -1,7 +1,8 @@
 import {loadOperationCode, loadOperationCodes} from "../operationCodes";
-import {GLAccount, GLAccountList} from "../types";
+import {GLAccountList} from "../types";
 import {RootState} from "../../app/configureStore";
 import {createReducer} from "@reduxjs/toolkit";
+import {GLAccount} from "chums-types/src/general-ledger";
 
 
 export interface GlAccountsState {

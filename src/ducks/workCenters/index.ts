@@ -1,5 +1,5 @@
-import {workCenterSorter, WorkCenterSorterProps} from "./types";
-import {WorkCenter, WorkCenterList} from "../types";
+import {workCenterSorter} from "./types";
+import {WorkCenterList} from "../types";
 import {createReducer, createSelector} from "@reduxjs/toolkit";
 import {
     loadWorkCenters,
@@ -13,6 +13,7 @@ import {
 } from "./actions";
 import {SortProps} from "chums-components";
 import {RootState} from "../../app/configureStore";
+import {WorkCenter} from "chums-types";
 
 export const defaultSort: SortProps<WorkCenter> = {
     field: "WorkCenterCode",
@@ -101,33 +102,25 @@ const workCentersReducer = createReducer(initialWorkCenterState, (builder) => {
 });
 
 
-export const listSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] =>
+export const listSelector = (sort: SortProps<WorkCenter>) => (state: RootState): WorkCenter[] =>
     Object.values(state.workCenters.list).sort(workCenterSorter(sort));
-export const stdListSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] =>
-    Object.values(state.workCenters.list)
-        .filter(wc => wc.isStandardWC)
-        .sort(workCenterSorter(sort));
-
-export const nonStdListSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] => Object.values(state.workCenters.list)
-    .filter(wc => !wc.isStandardWC)
-    .sort(workCenterSorter(sort));
 
 export const selectLoading = (state: RootState): boolean => state.workCenters.loading || state.workCenters.saving;
 export const selectLoaded = (state: RootState): boolean => state.workCenters.loaded;
 export const selectSaving = (state: RootState): boolean => state.workCenters.saving;
 export const selectCurrentWorkCenter = (state: RootState): WorkCenter | null => state.workCenters.selected;
-export const selectWorkCenter = (state: RootState, workCenter?:string) => {
+export const selectWorkCenter = (state: RootState, workCenter?: string) => {
     if (!workCenter) {
         return null;
     }
     return state.workCenters.list[workCenter] || null;
 }
 
-export const selectWorkCenters = (state:RootState) => Object.values(state.workCenters.list);
-export const selectPage = (state:RootState) => state.workCenters.page;
-export const selectRowsPerPage = (state:RootState) => state.workCenters.rowsPerPage;
-export const selectSort = (state:RootState) => state.workCenters.sort;
-export const selectFilterRatedWC = (state:RootState) => state.workCenters.filterRatedWorkCenters;
+export const selectWorkCenters = (state: RootState) => Object.values(state.workCenters.list);
+export const selectPage = (state: RootState) => state.workCenters.page;
+export const selectRowsPerPage = (state: RootState) => state.workCenters.rowsPerPage;
+export const selectSort = (state: RootState) => state.workCenters.sort;
+export const selectFilterRatedWC = (state: RootState) => state.workCenters.filterRatedWorkCenters;
 export const selectSortedWorkCenters = createSelector(
     [selectWorkCenters, selectSort, selectFilterRatedWC],
     (list, sort, filter) => {

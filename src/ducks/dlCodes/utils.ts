@@ -1,5 +1,6 @@
-import {DLCodeStep, DLCodeSteps, DLStepTotal} from "../types";
+import {DLCodeSteps, DLStepTotal} from "../types";
 import {SorterProps} from "chums-ducks";
+import {DLCodeStep} from "chums-types";
 
 export const dlStepList = (list:DLCodeStep[]):DLCodeSteps => {
     const steps: DLCodeSteps = {};

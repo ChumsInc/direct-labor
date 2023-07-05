@@ -14,7 +14,7 @@ import {loadDLCode, rebuildDLCode, saveDLCode} from "./actions";
 import {Helmet} from "react-helmet";
 import {Alert, FormColumn, Input, InputGroup, SpinnerButton} from "chums-components";
 import {Editable} from 'chums-types'
-import {DLCode, DLCodeField, OperationCode, WorkCenter} from "../types";
+import {DLCode, OperationCode, WorkCenter} from "chums-types";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import OperationCodeSelect from "../operationCodes/OperationCodeSelect";
 import SelectedStepsList from "./SelectedStepsList";
@@ -57,7 +57,7 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
             <Alert color="info">Select a D/L Code</Alert>
         )
     }
-    const changeHandler = (field: DLCodeField) => (ev: ChangeEvent<HTMLInputElement>) => {
+    const changeHandler = (field: keyof DLCode) => (ev: ChangeEvent<HTMLInputElement>) => {
         setCurrent({...current, [field]: ev.target.value, changed: true});
     }
     const onChangeWorkCenter = (wc: WorkCenter | null) => {
@@ -99,7 +99,7 @@ const SelectedDLCode: React.FC<SelectedDLCodeProps> = ({id}) => {
                             <Input type="text" value={current.dlCode} onChange={changeHandler('dlCode')}/>
                         </div>
                         <div className="col-md-3">
-                            <FormCheck label="Active" checked={current.active} onChange={onToggleActive} type="checkbox"/>
+                            <FormCheck label="Active" checked={!!current.active} onChange={onToggleActive} type="checkbox"/>
                         </div>
                     </div>
                 </FormColumn>

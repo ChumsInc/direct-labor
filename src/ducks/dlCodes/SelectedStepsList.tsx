@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {DLCodeStep, DLStep, DLStepTotal} from "../types";
+import {DLStepTotal} from "../types";
 import numeral from "numeral";
 import {selectCurrentHeader, selectCurrentSteps} from "./selectors";
 import {useSelector} from "react-redux";
@@ -16,6 +16,7 @@ import StepSelect from "../dlSteps/StepSelect";
 import {newDLStep} from "../dlSteps/types";
 import {useAppDispatch} from "../../app/configureStore";
 import {SortableTableField} from "chums-components";
+import {DLCodeStep, DLStep} from "chums-types";
 
 
 export const stepsListFields: SortableTableField<DLCodeStep>[] = [

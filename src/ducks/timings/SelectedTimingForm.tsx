@@ -2,12 +2,12 @@ import React, {ChangeEvent, FormEvent, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentLoading, selectCurrentSaving, selectCurrentTiming, selectTimingsIsEditing} from "./selectors";
 import {DateInput, FormColumn, Input, InputGroup, SpinnerButton} from "chums-components";
-import {changeTimingAction, editTimingAction, saveTimingAction} from "./actions";
-import {DLTiming} from "../types";
+import {changeTiming, saveTiming, setCurrentTiming} from "./actions";
 import numeral from "numeral";
 import {average, calcStandardAllowedMinutes} from "../../utils/math";
 import "./timingForm.scss";
 import {useAppDispatch} from "../../app/configureStore";
+import {StepTiming} from "chums-types";
 
 const formId = 'selected-timing-edit';
 
@@ -25,17 +25,20 @@ const SelectedTimingForm: React.FC = () => {
         return null;
     }
 
-    const onChangeDate = (date: Date | null) => dispatch(changeTimingAction({timingDate: date || ''}));
+    const onChangeDate = (date: Date | null) => dispatch(changeTiming({timingDate: date?.toISOString() ?? ''}));
     const onChangeEfficiency = (ev: ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeTimingAction({efficiency: Number(ev.target.value || 0) / 100}));
+        dispatch(changeTiming({efficiency: Number(ev.target.value || 0) / 100}));
     }
-    const onChange = (field: keyof DLTiming) =>
-        (ev: ChangeEvent<HTMLInputElement>) => dispatch(changeTimingAction({[field]: ev.target.value}));
+    const onChange = (field: keyof StepTiming) =>
+        (ev: ChangeEvent<HTMLInputElement>) => dispatch(changeTiming({[field]: ev.target.value}));
 
-    const onChangeNumeric = (field: keyof DLTiming) =>
-        (ev: ChangeEvent<HTMLInputElement>) => dispatch(changeTimingAction({[field]: Number(ev.target.value || 0)}));
+    const onChangeNumeric = (field: keyof StepTiming) =>
+        (ev: ChangeEvent<HTMLInputElement>) => dispatch(changeTiming({[field]: Number(ev.target.value || 0)}));
 
     const changeTimingHandler = (time: number, index: number) => {
+        if (!timing) {
+            return;
+        }
         const entries = [...timing.entries];
         if (index < 0) {
             entries.push(time);
@@ -44,7 +47,7 @@ const SelectedTimingForm: React.FC = () => {
         }
         const avgTiming = average(...entries.filter(e => !!e));
         const standardAllowedMinutes = calcStandardAllowedMinutes(entries.filter(e => !!e), timing.quantityPerTiming, timing.efficiency);
-        dispatch(changeTimingAction({entries, avgTiming, standardAllowedMinutes}));
+        dispatch(changeTiming({entries, avgTiming, standardAllowedMinutes}));
     }
 
     const onChangeTiming = (index: number) => (ev: ChangeEvent<HTMLInputElement>) => {
@@ -52,11 +55,14 @@ const SelectedTimingForm: React.FC = () => {
         changeTimingHandler(time, index);
     }
 
-    const onCancel = () => dispatch(editTimingAction());
+    const onCancel = () => dispatch(setCurrentTiming(null));
 
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
-        dispatch(saveTimingAction(timing));
+        if (!timing) {
+            return;
+        }
+        dispatch(saveTiming(timing));
     }
 
     const onChangeNewEntry = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -84,38 +90,38 @@ const SelectedTimingForm: React.FC = () => {
                 <div className="row g-3 mb-1">
                     <div className="col-lg col-md-4 col-sm-6">
                         <label>Date</label>
-                        <DateInput date={timing.timingDate || new Date()} onChangeDate={onChangeDate}/>
+                        <DateInput date={timing?.timingDate || new Date()} onChangeDate={onChangeDate}/>
                     </div>
                     <div className="col-lg col-md-4 col-sm-6">
                         <label>Qty/Timing</label>
-                        <Input type="number" value={timing.quantityPerTiming || ''}
+                        <Input type="number" value={timing?.quantityPerTiming || ''}
                                onChange={onChangeNumeric('quantityPerTiming')}/>
                     </div>
                     <div className="col-lg col-md-4 col-sm-6">
                         <label>Efficiency</label>
                         <InputGroup bsSize="sm">
-                            <Input type="number" value={Math.round((timing.efficiency) * 100) || ''}
+                            <Input type="number" value={Math.round((timing?.efficiency ?? 0) * 100) || ''}
                                    required min={1} onChange={onChangeEfficiency}/>
                             <span className="input-group-text">%</span>
                         </InputGroup>
                     </div>
                     <div className="col-lg col-md-4 col-sm-6">
                         <label>Avg Time</label>
-                        <Input type="number" value={numeral(timing.avgTiming).format('0,0.00')} readOnly/>
+                        <Input type="number" value={numeral(timing?.avgTiming ?? 0).format('0,0.00')} readOnly/>
                     </div>
                     <div className="col-lg col-md-4 col-sm-6">
                         <label>SAM</label>
-                        <Input type="number" value={numeral(timing.standardAllowedMinutes).format('0,0.0000')}
+                        <Input type="number" value={numeral(timing?.standardAllowedMinutes ?? 0).format('0,0.0000')}
                                readOnly/>
                     </div>
                 </div>
                 <div className="mb-1">
-                    <Input value={timing.notes || ''} placeholder="Timing notes" onChange={onChange('notes')}/>
+                    <Input value={timing?.notes ?? ''} placeholder="Timing notes" onChange={onChange('notes')}/>
                 </div>
             </form>
             <FormColumn label="Timing Entries">
                 <div className="row dl-timing--entries">
-                    {timing.entries.map((time, index) => (
+                    {timing?.entries?.map((time, index) => (
                         <div className="col-auto" key={index}>
                             <input type="number" value={time || 0} onChange={onChangeTiming(index)}
                                    className="dl-timing--timing-entry form-control form-control-sm"/>

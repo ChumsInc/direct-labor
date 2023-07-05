@@ -1,6 +1,6 @@
 import React from "react";
 import {SortableTable, SortableTableField, TablePagination} from "chums-components";
-import {OperationCode} from "../types";
+import {OperationCode} from "chums-types";
 import {operationCodeKey} from "./utils";
 import {useSelector} from "react-redux";
 import {

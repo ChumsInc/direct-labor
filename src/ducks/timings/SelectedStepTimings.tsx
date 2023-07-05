@@ -1,19 +1,24 @@
 import React from 'react';
-import {DLTiming} from "../types";
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
 import {FormCheck, SortableTable, SortableTableField} from "chums-components";
 import {selectCurrentStep, selectStepsSort} from "../dlSteps/selectors";
-import {dlStepChangeTimingAction, setStepsSort} from "../dlSteps/actions";
-import {selectCurrentLoading, selectCurrentSaving, selectTimingList, selectTimingsIsEditing} from "./selectors";
-import {applyTimingAction, editTimingAction} from "./actions";
+import {dlStepChangeTimingAction} from "../dlSteps/actions";
+import {
+    selectCurrentLoading,
+    selectCurrentSaving,
+    selectCurrentTiming,
+    selectTimingList,
+    selectTimingsIsEditing
+} from "./selectors";
+import {applyTiming, setCurrentTiming} from "./actions";
 import SelectedTimingForm from "./SelectedTimingForm";
 import {newTiming} from "./types";
 import {useAppDispatch} from "../../app/configureStore";
-import {SortProps} from "chums-types";
+import {StepTiming} from "chums-types";
 
 export interface TimingRadioProps {
-    timing: DLTiming,
+    timing: StepTiming,
 }
 
 const TimingRadio: React.FC<TimingRadioProps> = ({timing}) => {
@@ -30,7 +35,7 @@ const TimingRadio: React.FC<TimingRadioProps> = ({timing}) => {
 const TimingEditButton: React.FC<TimingRadioProps> = ({timing}) => {
     const dispatch = useDispatch();
     const clickHandler = () => {
-        dispatch(editTimingAction(timing));
+        dispatch(setCurrentTiming(timing));
     }
 
     return (
@@ -38,11 +43,11 @@ const TimingEditButton: React.FC<TimingRadioProps> = ({timing}) => {
     )
 }
 
-const fields: SortableTableField<DLTiming>[] = [
-    {field: 'id', title: 'SAM', render: (row: DLTiming) => <TimingRadio timing={row}/>},
-    {field: 'timingDate', title: 'Date', render: (row: DLTiming) => new Date(row.timingDate).toLocaleDateString()},
+const fields: SortableTableField<StepTiming>[] = [
+    {field: 'id', title: 'SAM', render: (row: StepTiming) => <TimingRadio timing={row}/>},
+    {field: 'timingDate', title: 'Date', render: (row: StepTiming) => new Date(row.timingDate).toLocaleDateString()},
     {field: 'notes', title: 'Notes'},
-    {field: 'timestamp', title: 'Edit', render: (row: DLTiming) => <TimingEditButton timing={row}/>}
+    {field: 'timestamp', title: 'Edit', render: (row: StepTiming) => <TimingEditButton timing={row}/>}
 ];
 
 
@@ -51,6 +56,7 @@ const SelectedStepTimings: React.FC = () => {
     const loading = useSelector(selectCurrentLoading);
     const saving = useSelector(selectCurrentSaving);
     const timings = useSelector(selectTimingList);
+    const currentTiming = useSelector(selectCurrentTiming);
     const edit = useSelector(selectTimingsIsEditing);
     const step = useSelector(selectCurrentStep);
     const sort = useSelector(selectStepsSort);
@@ -59,18 +65,17 @@ const SelectedStepTimings: React.FC = () => {
         if (!step?.id) {
             return;
         }
-        dispatch(editTimingAction({...newTiming, timingDate: new Date().toISOString(), idSteps: step.id}));
+        dispatch(setCurrentTiming({...newTiming, timingDate: new Date().toISOString(), idSteps: step.id}));
     }
 
     const onApplyTiming = () => {
-        if (!step?.id) {
+        if (!step?.id || !currentTiming) {
             return;
         }
-        dispatch(applyTimingAction());
+        dispatch(applyTiming(currentTiming));
     }
 
-    const onChangeSort = (sort:SortProps<DLTiming>) => {
-
+    const onChangeSort = () => {
     }
 
     return (

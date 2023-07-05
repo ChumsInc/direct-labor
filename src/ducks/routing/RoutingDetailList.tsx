@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {RoutingDetail} from "../types";
+import {RoutingDetail} from "chums-types";
 import {Link} from 'react-router-dom';
 import {loadRoutings, selectLoaded, selectLoading} from "./index";
 import numeral from "numeral";

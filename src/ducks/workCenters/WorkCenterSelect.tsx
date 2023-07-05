@@ -5,7 +5,7 @@ import {listSelector, selectLoaded} from './index'
 import {BootstrapSize, Select} from "chums-components";
 import {loadWorkCenters} from "./actions";
 import {workCenterIcon} from "../../icons";
-import {WorkCenter} from "../types";
+import {WorkCenter} from "chums-types";
 import {useAppDispatch} from "../../app/configureStore";
 
 export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {

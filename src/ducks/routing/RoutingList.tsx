@@ -15,7 +15,7 @@ import {
     setRowsPerPage,
     setSort
 } from "./index";
-import {RoutingHeader} from "../types";
+import {RoutingHeader} from "chums-types";
 import numeral from "numeral";
 import classNames from "classnames";
 import {useNavigate} from "react-router-dom";

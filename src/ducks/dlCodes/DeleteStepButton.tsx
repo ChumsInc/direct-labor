@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import {removeDLStep} from "./actions";
-import {DLCodeStep} from "../types";
+import {DLCodeStep} from "chums-types";
 import {selectCurrentLoading, selectCurrentSaving} from "./selectors";
 import {useAppDispatch} from "../../app/configureStore";
 

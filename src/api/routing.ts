@@ -1,5 +1,6 @@
-import {RoutingHeader, RoutingResponse} from "../ducks/types";
+import {RoutingResponse} from "../ducks/types";
 import {fetchJSON} from "chums-components";
+import {RoutingHeader} from "chums-types";
 
 export async function fetchRouting(arg:string):Promise<RoutingResponse> {
     try {

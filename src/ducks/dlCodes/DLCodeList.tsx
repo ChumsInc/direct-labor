@@ -2,18 +2,10 @@ import React from "react";
 import {Link} from 'react-router-dom';
 import {dlCodePath, operationCodesOperationPath} from "../../routerPaths";
 import numeral from "numeral";
-import {DLCode} from "../types";
+import {DLCode} from "chums-types";
 import {SortableTable, SortableTableField, SortProps} from "chums-components";
 import classNames from "classnames";
 import NumericTableValue from "../../components/NumericTableValue";
-
-export interface DLCodeListProps {
-    list: DLCode[];
-    selected?: DLCode | null;
-    sort: SortProps<DLCode>;
-    onChangeSort: (props: SortProps<DLCode>) => void;
-    onSelectDLCode?: (code: DLCode) => void,
-}
 
 const fields: SortableTableField<DLCode>[] = [
     {
@@ -35,21 +27,21 @@ const fields: SortableTableField<DLCode>[] = [
         title: 'D/L Labor',
         sortable: true,
         className: 'right',
-        render: (row: DLCode) => <NumericTableValue value={row.laborBudget} format="0,0.000" />
+        render: (row: DLCode) => <NumericTableValue value={row.laborBudget} format="0,0.000"/>
     },
     {
         field: 'fixedCosts',
         title: 'Fixed Costs',
         sortable: true,
         className: 'right',
-        render: (row: DLCode) => <NumericTableValue value={row.fixedCosts} format="0,0.000" />
+        render: (row: DLCode) => <NumericTableValue value={row.fixedCosts} format="0,0.000"/>
     },
     {
         field: 'directLaborCost',
         title: 'D/L Cost',
         sortable: true,
         className: 'right',
-        render: (row: DLCode) => <NumericTableValue value={row.directLaborCost} format="$0,0.000" />
+        render: (row: DLCode) => <NumericTableValue value={row.directLaborCost} format="$0,0.000"/>
     },
     {field: 'workCenter', title: 'Work Center', className: 'center', sortable: true},
     {
@@ -72,7 +64,13 @@ const fields: SortableTableField<DLCode>[] = [
         render: (row: DLCode) => row.operationCode ? numeral(row.StdRatePiece).format('$0,0.000') : null,
     },
 ]
-const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: DLCodeListProps) => {
+const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: {
+    list: DLCode[];
+    selected?: DLCode | null;
+    sort: SortProps<DLCode>;
+    onChangeSort: (props: SortProps<DLCode>) => void;
+    onSelectDLCode?: (code: DLCode) => void,
+}) => {
     return (
         <SortableTable keyField="id" fields={fields} data={list} size="xs"
                        rowClassName={(row: DLCode) => classNames({'table-warning': !row.active})}

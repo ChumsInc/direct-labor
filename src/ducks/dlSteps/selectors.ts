@@ -1,4 +1,4 @@
-import {DLStep} from "../types";
+import {DLStep} from "chums-types";
 import {dlStepSorter, dlStepTimingSorter, newDLStep} from "./types";
 import {dlCodeSorter, DLCodeSorterProps} from "../dlCodes/types";
 import {RootState} from "../../app/configureStore";
@@ -21,11 +21,16 @@ export const selectStepsLoaded = (state: RootState) => state.dlSteps.loaded;
 export const selectStepsFilter = (state: RootState): string => state.dlSteps.filter;
 export const selectStepsWCFilter = (state: RootState): string => state.dlSteps.wcFilter;
 export const selectStepsInactiveFilter = (state: RootState): boolean => state.dlSteps.filterInactive;
-export const whereUsedSelector = (sort: SortProps<DLCode>) => (state: RootState) => state.dlSteps.whereUsed.sort(dlCodeSorter(sort));
+export const selectWhereUsedList = (state:RootState) => state.dlSteps.whereUsed.list;
+export const selectWhereUsedSort = (state:RootState) => state.dlSteps.whereUsed.sort;
+export const selectWhereUsed = createSelector(
+    [selectWhereUsedList, selectWhereUsedSort],
+    (list, sort) => [...list].sort(dlCodeSorter(sort))
+)
 
 
 export const selectStepsPage = (state: RootState) => state.dlSteps.page;
-export const selectStepsRowsPerPage = (state: RootState) => state.dlSteps.rowsPerPage;
+export const selectRowsPerPage = (state: RootState) => state.dlSteps.rowsPerPage;
 export const selectStepsSort = (state: RootState) => state.dlSteps.sort;
 
 export const selectFilteredStepsList = createSelector(

@@ -1,9 +1,9 @@
 import {OperationCodeResponse} from "./types";
 import {routingDetailKey} from "../routing/utils";
-import {OperationCode, OperationCodeList} from "../types";
+import {OperationCodeList} from "../types";
 import {RootState} from "../../app/configureStore";
 import {getPreference, localStorageKeys} from "../../api/preferences";
-import {SortProps} from "chums-types";
+import {OperationCode, SortProps} from "chums-types";
 import {createAction, createAsyncThunk, createReducer, createSelector} from "@reduxjs/toolkit";
 import {fetchOperationCode, fetchOperationCodes} from "../../api/operation-codes";
 import {operationCodeDefaultSort, operationCodeKey, operationCodeSorter} from "./utils";

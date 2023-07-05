@@ -7,7 +7,7 @@ import numeral from "numeral";
 import MultiLineField from "../../components/MultiLineField";
 import {billOptionHeaderKey} from "./types";
 import {billOptionHeaderSelector} from "./index";
-import {BillOptionHeader} from "../types";
+import {BillOptionHeader} from "chums-types";
 import {SortProps} from "chums-types";
 import {billOptionHeaderSorter, defaultBillOptionSort} from "./utils";
 
