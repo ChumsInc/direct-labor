@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
-import {ErrorBoundary, NavItem, PillRouterList, Tab, tabListCreatedAction} from "chums-ducks";
+import {NavItem, NavItemProps, NavList} from "chums-components";
 import {currentMenuCollapseKey, currentTabStorageKey, getPreference, setPreference} from "../utils/preferences";
 import {
     dlCodesNavId,
@@ -17,17 +17,48 @@ import {
 import {dlCodeIcon, dlStepIcon, routingIcon, sageOperationCodeIcon, workCenterIcon} from "../icons";
 import classNames from "classnames";
 import "./mainNav.scss";
+import ErrorBoundary from "./ErrorBoundary";
+import {NavLink, useLocation} from 'react-router-dom';
 
-export interface MainNavProps {
-    tabKey: string,
+export const RoutedLink = ({to, icon, title}: {
+    to: string;
+    icon?: string;
+    title: string;
+}) => {
+    return (
+        <NavLink to={to} className="nav-link">
+            {!!icon && <span className={classNames('nav-item-icon me-1', icon)}/>}
+            <span className="nav-item-text">{title}</span>
+        </NavLink>
+    )
 }
 
-export const mainTabs: Tab[] = [
-    {id: routingNavId, title: 'Routing', to: routingPath, icon: routingIcon},
-    {id: workCentersNavId, title: 'Work Centers', to: workCentersPath, icon: workCenterIcon},
-    {id: operationCodesNavId, title: 'Sage Ops', to: operationCodesPath, icon: sageOperationCodeIcon},
-    {id: dlCodesNavId, title: 'D/L Codes', to: dlCodesPath, icon: dlCodeIcon},
-    {id: dlStepsNavId, title: 'D/L Steps', to: dlStepsPath, icon: dlStepIcon},
+export const mainTabs: NavItemProps[] = [
+    {id: routingNavId, title: 'Routing', element: <RoutedLink to={routingPath} title="Routing" icon={routingIcon}/>},
+    {
+        id: workCentersNavId,
+        title: 'Work Centers',
+        icon: workCenterIcon,
+        element: <RoutedLink to={workCentersPath} title="Work Centers" icon={workCenterIcon}/>
+    },
+    {
+        id: operationCodesNavId,
+        title: 'Sage Ops',
+        icon: sageOperationCodeIcon,
+        element: <RoutedLink to={operationCodesPath} title="W/O Ops" icon={sageOperationCodeIcon}/>
+    },
+    {
+        id: dlCodesNavId,
+        title: 'D/L Codes',
+        icon: dlCodeIcon,
+        element: <RoutedLink to={dlCodesPath} title="D/L Codes" icon={dlCodeIcon}/>
+    },
+    {
+        id: dlStepsNavId,
+        title: 'D/L Steps',
+        icon: dlStepIcon,
+        element: <RoutedLink to={dlStepsPath} title="D/L Steps" icon={dlStepIcon}/>
+    },
 ]
 
 export const getPreferredTab = (defaultValue: string) => {
@@ -38,22 +69,26 @@ export const getPreferredTab = (defaultValue: string) => {
     return tab;
 }
 
-export const setPreferredTab = (tab: string) => setPreference(currentTabStorageKey, tab);
-
-const defaultTab = getPreferredTab('');
-
-const MainNav: React.FC<MainNavProps> = ({tabKey}) => {
-    const dispatch = useDispatch();
+const MainNav = () => {
+    const location = useLocation();
+    const [currentTab, setCurrentTab] = useState<string>('');
     const [collapsed, setCollapsed] = useState(getPreference(currentMenuCollapseKey, false));
+
     useEffect(() => {
-        dispatch(tabListCreatedAction(mainTabs, tabKey, defaultTab));
-    }, []);
+        console.log(location);
+    }, [location]);
+
+    useEffect(() => {
+        console.log(currentTab);
+    }, [currentTab]);
 
     const onCollapse = () => {
         setPreference(currentMenuCollapseKey, !collapsed);
         setCollapsed(!collapsed);
     }
-    const collapseIcon = collapsed ? 'bi-arrow-bar-right' : 'bi-arrow-bar-left'
+
+
+    const collapseIcon = collapsed ? 'bi-arrow-bar-right' : 'bi-arrow-bar-left';
 
     return (
         <ErrorBoundary>
@@ -61,7 +96,7 @@ const MainNav: React.FC<MainNavProps> = ({tabKey}) => {
                 <ul className="nav">
                     <NavItem onSelect={onCollapse} id="toggle-nav" title="Collapse" icon={collapseIcon}/>
                 </ul>
-                <PillRouterList tabKey={tabKey} className="flex-column" />
+                <NavList items={mainTabs} onChange={setCurrentTab} currentTab={currentTab} variant="pills" vertical/>
             </div>
         </ErrorBoundary>
     )

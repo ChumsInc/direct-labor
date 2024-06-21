@@ -1,60 +1,48 @@
 import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentWorkCenter, selectLoading, selectSaving, selectWorkCenter} from "./index";
+import {selectCurrentWorkCenter, selectLoading, selectSaving} from "./selectors";
 import {Alert, FormColumn, SpinnerButton} from "chums-components";
 import {saveWorkCenter, setCurrentWorkCenter} from "./actions";
-import {useHistory} from "react-router-dom";
-import {workCentersPath} from "../../routerPaths";
+import {useMatch, useParams} from "react-router-dom";
 import {Helmet} from 'react-helmet'
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch} from "../../app/configureStore";
 
-export interface SelectedWorkCenterProps {
-    workCenter?: string,
-}
 
-const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => {
+const WorkCenterForm = () => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
-    const selected = useSelector(selectCurrentWorkCenter);
+    const params = useParams<{ workCenter: string }>()
+    const workCenter = useSelector(selectCurrentWorkCenter);
     const saving = useSelector(selectSaving);
     const loading = useSelector(selectLoading);
-    const navWC = useAppSelector((state) => selectWorkCenter(state, workCenter));
-    const [rate, setRate] = useState<number | null>(selected?.AverageHourlyRate ?? null);
+    const [rate, setRate] = useState<number | null>(workCenter?.AverageHourlyRate ?? null);
 
     useEffect(() => {
-        setRate(selected?.AverageHourlyRate ?? null);
-    }, [selected])
+        if (params.workCenter) {
+            dispatch(setCurrentWorkCenter(params.workCenter));
+        }
+    }, [params]);
+
+    useEffect(() => {
+        setRate(workCenter?.AverageHourlyRate ?? null);
+    }, [workCenter])
 
     const onChangeRate = (ev: ChangeEvent<HTMLInputElement>) => {
         setRate(ev.target.valueAsNumber ?? 0);
     }
+
     const onSubmit = (ev: FormEvent) => {
         ev.preventDefault();
-        if (!rate || !selected) {
+        if (!rate || !workCenter) {
             return;
         }
-        dispatch(saveWorkCenter({...selected, AverageHourlyRate: rate}));
+        dispatch(saveWorkCenter({...workCenter, AverageHourlyRate: rate}));
     }
 
-    useEffect(() => {
-        console.log(workCenter, navWC, selected);
-        if (!!workCenter) {
-            if (!navWC) {
-                return history.replace(workCentersPath);
-            } else if (!selected || selected.WorkCenterCode !== workCenter) {
-                dispatch(setCurrentWorkCenter(navWC));
-            }
-        } else {
-            dispatch(setCurrentWorkCenter(null));
-        }
-    }, [workCenter, loading]);
-
-    if (!selected) {
-        return (
-            <Alert color="info">Select a work center</Alert>
-        )
+    if (!workCenter) {
+        return null;
     }
-    const {WorkCenterCode, Description, CommentLine1, CommentLine2} = selected;
+
+    const {WorkCenterCode, Description, CommentLine1, CommentLine2} = workCenter;
     return (
         <form onSubmit={onSubmit}>
             <Helmet>
@@ -80,4 +68,4 @@ const SelectedWorkCenter: React.FC<SelectedWorkCenterProps> = ({workCenter}) => 
         </form>
     )
 }
-export default SelectedWorkCenter;
+export default WorkCenterForm;

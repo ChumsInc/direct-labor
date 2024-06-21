@@ -1,5 +1,5 @@
 import React from "react";
-import {selectGLByAccountKey} from "./index";
+import {selectGLByAccountKey} from "./selectors";
 import {useAppSelector} from "../../app/configureStore";
 
 export interface GLAccountElementProps {

@@ -12,18 +12,17 @@ const localProxy = {
 
 module.exports = merge(common, {
     mode: 'development',
+    devtool: 'eval-source-map',
     devServer: {
         allowedHosts: 'auto',
-        static: [path.join(__dirname, 'public'), __dirname],
+        static: [
+            {directory: path.join(__dirname, 'public'), watch: false},
+            {directory: path.join(__dirname), watch: false}
+        ],
         hot: true,
-        proxy: {
-            '/api': {...localProxy},
-            '/images/': {...localProxy},
-            '/node-dev/': {...localProxy},
-            '/node-sage/': {...localProxy},
-            '/sage/': {...localProxy},
-            '/version': {...localProxy},
-        },
+        proxy: [
+            {context: ['/api', '/node_modules'], ...localProxy}
+        ],
         historyApiFallback: {
             rewrites: [
                 {from: /^apps\/direct-labor/, to: '/'}
@@ -31,8 +30,5 @@ module.exports = merge(common, {
         },
         watchFiles: 'src/**/*',
     },
-    devtool: 'source-map',
-    plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-    ]
+    plugins: []
 });

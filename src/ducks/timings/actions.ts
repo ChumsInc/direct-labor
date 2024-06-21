@@ -1,97 +1,54 @@
-import {DLTiming} from "../types";
-import {TimingsAction, TimingsThunkAction} from "./types";
-import {selectCurrentLoading, selectCurrentSaving, selectCurrentTiming} from "./selectors";
-import {fetchJSON, fetchPOST} from "chums-ducks";
-import {
-    applyTimingFailed,
-    applyTimingRequested, applyTimingSucceeded,
-    changeTiming,
-    editTiming,
-    loadTimingEntriesFailed,
-    loadTimingEntriesRequested,
-    loadTimingEntriesSucceeded,
-    saveTimingEntriesFailed,
-    saveTimingEntriesRequested,
-    saveTimingEntriesSucceeded
-} from "./actionTypes";
+import {SaveTimingResponse, StepTimingId, TimingEntry} from "./types";
+import {selectCurrentTimingStatus} from "./selectors";
+import {setTimingSort} from "./actionTypes";
+import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
+import {DLStep, SortProps, StepTiming} from "chums-types";
+import {fetchTiming, postApplyTiming, postTiming} from "./api";
+import {RootState} from "../../app/configureStore";
 
-const timingsURL = (id: number, idTimings?: number) => `/api/operations/production/dl/steps/${encodeURIComponent(id)}/timings/${encodeURIComponent(idTimings || '')}`;
-const applyTimingsURL = (id: number, idTiming: number) => `/api/operations/production/dl/steps/${encodeURIComponent(id)}/timing/${encodeURIComponent(idTiming)}`;
+export const timingSortChangedAction = createAction<SortProps<StepTiming>>(setTimingSort);
+export const setCurrentTiming = createAction<StepTiming|null>('timings/current/set');
+export const updateCurrentTiming = createAction<Partial<StepTiming>>('timings/current/update');
+export const updateTimingEntry = createAction<TimingEntry>('timings/current/updateEntry');
 
-
-export const editTimingAction = (timing?: DLTiming): TimingsAction => ({
-    type: editTiming,
-    payload: {timing, edit: !!timing}
-});
-
-export const changeTimingAction = (change: object): TimingsAction => ({type: changeTiming, payload: {change}});
-
-export const loadTimingAction = (stepId: number, timingId: number): TimingsThunkAction =>
-    async (dispatch, getState) => {
-        try {
-            const state = getState();
-            const loading = selectCurrentLoading(state);
-            const saving = selectCurrentSaving(state);
-            if (loading || saving) {
-                return;
-            }
-            dispatch({type: loadTimingEntriesRequested});
-            const url = timingsURL(stepId, timingId);
-            const {timings} = await fetchJSON(url, {cache: "no-cache"});
-            dispatch({type: loadTimingEntriesSucceeded, payload: {timings}})
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.log("loadTimingAction()", error.message);
-                return dispatch({type: loadTimingEntriesFailed, payload: {error, context: loadTimingEntriesRequested}});
-            }
-            console.error("loadTimingAction()", error);
+export const loadTiming = createAsyncThunk<StepTiming | null, StepTimingId>(
+    'timings/current/load',
+    async (arg) => {
+        return fetchTiming(arg);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !!arg.idSteps
+                && !!arg.id
+                && selectCurrentTimingStatus(state) === 'idle';
         }
     }
+)
 
-export const saveTimingAction = (timing: DLTiming): TimingsThunkAction =>
-    async (dispatch, getState) => {
-        try {
-            const state = getState();
-            const loading = selectCurrentLoading(state);
-            const saving = selectCurrentSaving(state);
-            if (loading || saving) {
-                return;
-            }
-            dispatch({type: applyTimingRequested})
-            timing.entries = timing.entries.filter(val => !!val);
-            const url = timingsURL(timing.idSteps, timing.id);
-            console.log(url, timing);
-            const {timings, step} = await fetchPOST(url, timing);
-            dispatch({type: saveTimingEntriesSucceeded, payload: {timings, step}})
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                console.log("saveTimingAction()", error.message);
-                return dispatch({type: saveTimingEntriesFailed, payload: {error, context: saveTimingEntriesRequested}})
-            }
-            console.error("saveTimingAction()", error);
+export const saveTiming = createAsyncThunk<SaveTimingResponse | null, StepTiming>(
+    'timings/current/save',
+    async (arg) => {
+        return await postTiming(arg);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState
+            return !!arg.idSteps
+                && selectCurrentTimingStatus(state) === 'idle';
         }
     }
+)
 
-
-export const applyTimingAction = (): TimingsThunkAction =>
-    async (dispatch, getState) => {
-        try {
-            const state = getState();
-            const loading = selectCurrentLoading(state);
-            const saving = selectCurrentSaving(state);
-            const timing = selectCurrentTiming(state);
-            if (loading || saving || !timing.id) {
-                return;
-            }
-            dispatch({type: applyTimingRequested});
-            const url = applyTimingsURL(timing.idSteps, timing.id);
-            const {step} = await fetchJSON(url, {method: 'PUT'});
-            dispatch({type: applyTimingSucceeded, payload: {step}});
-        } catch(error:unknown) {
-            if (error instanceof Error) {
-                console.log("applyTimingAction()", error.message);
-                return dispatch({type:applyTimingFailed, payload: {error, context: applyTimingRequested}})
-            }
-            console.error("applyTimingAction()", error);
+export const applyTiming = createAsyncThunk<DLStep | null, StepTiming>(
+    'timings/apply',
+    async (arg) => {
+        return await postApplyTiming(arg);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !!arg.idSteps && !!arg.id && selectCurrentTimingStatus(state) === 'idle';
         }
     }
+)

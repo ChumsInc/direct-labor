@@ -7,7 +7,7 @@ const NumericTableValue = ({value, format}:{value: string|number|null, format?:s
         return null;
     }
     const className = classNames({
-        'text-muted': !value || value === '0',
+        'text-secondary': !value || value === '0',
     });
     return <span className={className}>{numeral(value).format(format)}</span>
 }

@@ -3,13 +3,12 @@ import {useSelector} from "react-redux";
 
 import classNames from "classnames";
 import MultiLineField from "../../components/MultiLineField";
-import {billHeaderKey} from "./types";
-import {billHeaderSelector} from "./index";
+import {billHeaderKey, billHeaderSorter, defaultBillSort} from "./utils";
+import {billHeaderSelector} from "./selectors";
 import StatusBadge from "../../components/StatusBadge";
-import {BillHeader, BillType, BillTypeDesc} from "../types";
+import {BillHeader, BillType, SortProps} from "chums-types";
 import {SortableTable, SortableTableField, TablePagination} from "chums-components";
-import {billHeaderSorter, defaultBillSort} from "./utils";
-import {SortProps} from "chums-types";
+import {BillTypeDesc} from "../types";
 
 const detailTableFields: SortableTableField<BillHeader>[] = [
     {field: 'BillNo', title: 'Bill No', sortable: true},

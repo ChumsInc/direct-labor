@@ -10,19 +10,17 @@ import {
     selectSortedList
 } from "./selectors";
 import {loadDLCode, loadDLCodes, setPage, setRowsPerPage, setSort} from "./actions";
-import {DLCode} from "../types";
+import {DLCode} from "chums-types";
 import DLCodeList from "./DLCodeList";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {dlCodePath} from "../../routerPaths";
 import {useAppDispatch} from "../../app/configureStore";
 import {TablePagination} from "chums-components";
+import ErrorBoundary from "../../components/ErrorBoundary";
+import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
 
-export interface MainDLCodeListProps {
-    tableKey: string,
-}
-
-const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
-    const history = useHistory();
+const MainDLCodeList = () => {
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const loading = useSelector(selectLoading);
     const loaded = useSelector(selectLoaded);
@@ -39,7 +37,7 @@ const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
     }, [])
 
     const onSelectDLCode = (code: DLCode) => {
-        history.push(dlCodePath(code.id));
+        navigate(dlCodePath(code.id));
         dispatch(loadDLCode(code.id));
     }
 
@@ -47,14 +45,15 @@ const MainDLCodeList: React.FC<MainDLCodeListProps> = ({tableKey}) => {
     const rowsPerPageChangeHandler = (rpp:number) => dispatch(setRowsPerPage(rpp));
 
     return (
-        <div>
+        <ErrorBoundary>
+            <AnimatedLoadingBar loading={loading} />
             <DLCodeList list={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                         sort={sort} onChangeSort={sort => dispatch(setSort(sort))}
                         selected={selected} onSelectDLCode={onSelectDLCode}/>
             <TablePagination  page={page} onChangePage={pageChangeHandler}
                               rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
                               bsSize="sm" count={list.length} showFirst showLast />
-        </div>
+        </ErrorBoundary>
 
     )
 }

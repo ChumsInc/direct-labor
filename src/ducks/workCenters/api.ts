@@ -1,14 +1,15 @@
-import {WorkCenter, WorkCenterList} from "../ducks/types";
+import {WorkCenterList} from "../types";
 import {fetchJSON} from "chums-components";
+import {WorkCenter} from "chums-types";
 
 const workCenterURL = (workCenter:string = '') => '/api/operations/production/wo/chums/work-centers/:workCenter'
     .replace(':workCenter', encodeURIComponent(workCenter));
 
 export async function fetchWorkCenters():Promise<WorkCenterList> {
     try {
-        const {workCenters} = await fetchJSON<{ workCenters: WorkCenter[] }>(workCenterURL(), {cache: 'no-cache'});
+        const res = await fetchJSON<{ workCenters: WorkCenter[] }>(workCenterURL(), {cache: 'no-cache'});
         const list:WorkCenterList = {};
-        workCenters.forEach((wc:WorkCenter) => {
+        res?.workCenters.forEach((wc:WorkCenter) => {
             list[wc.WorkCenterCode] = wc;
         })
         return list;
@@ -26,8 +27,8 @@ export async function postWorkCenterRate(wc:WorkCenter):Promise<WorkCenter|null>
     try {
         const body = JSON.stringify({company: 'chums', workCenter: wc.WorkCenterCode, rate: wc.AverageHourlyRate});
         const url = `/api/operations/production/wo/chums/work-centers/rate/${encodeURIComponent(wc.WorkCenterCode)}`;
-        const {workCenter} = await fetchJSON<{workCenter: WorkCenter}>(url, {method: 'POST', body});
-        return workCenter ?? null;
+        const res = await fetchJSON<{workCenter: WorkCenter}>(url, {method: 'POST', body});
+        return res?.workCenter ?? null;
     } catch(err:unknown) {
         if (err instanceof Error) {
             console.debug("postWorkCenterRate()", err.message);

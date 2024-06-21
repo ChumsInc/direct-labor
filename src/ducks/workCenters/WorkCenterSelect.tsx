@@ -1,12 +1,11 @@
 import React, {ChangeEvent, SelectHTMLAttributes, useEffect} from "react";
-import {defaultWorkCenterSort} from "./types";
 import {useSelector} from "react-redux";
-import {listSelector, selectLoaded} from './index'
-import {BootstrapSize, Select} from "chums-ducks";
+import {BootstrapSize, Select} from "chums-components";
 import {loadWorkCenters} from "./actions";
 import {workCenterIcon} from "../../icons";
-import {WorkCenter} from "../types";
+import {WorkCenter} from "chums-types";
 import {useAppDispatch} from "../../app/configureStore";
+import {selectSortedWorkCenters, selectWorkCentersLoaded} from "./selectors";
 
 export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     value: string,
@@ -15,22 +14,23 @@ export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectEl
     onSelectWorkCenter?: (wc: WorkCenter | null) => void
 }
 
-const WorkCenterSelect: React.FC<WorkCenterSelectProps> = ({
-                                                               value,
-                                                               bsSize,
-                                                               filterRated,
-                                                               onSelectWorkCenter,
-                                                               onChange,
-                                                               ...rest
-                                                           }) => {
+const WorkCenterSelect = ({
+                              value,
+                              bsSize,
+                              filterRated,
+                              onSelectWorkCenter,
+                              onChange,
+                              ...rest
+                          }: WorkCenterSelectProps) => {
     const dispatch = useAppDispatch();
-    const loaded = useSelector(selectLoaded);
+    const loaded = useSelector(selectWorkCentersLoaded);
+    const list = useSelector(selectSortedWorkCenters);
+
     useEffect(() => {
         if (!loaded) {
             dispatch(loadWorkCenters());
         }
     }, [])
-    const list: WorkCenter[] = useSelector(listSelector(defaultWorkCenterSort));
 
     const changeHandler = (ev: ChangeEvent<HTMLSelectElement>) => {
         const [wc] = list.filter(wc => wc.WorkCenterCode === ev.target.value);
@@ -42,7 +42,7 @@ const WorkCenterSelect: React.FC<WorkCenterSelectProps> = ({
     }
 
     return (
-        <div className="input-group input-group-sm">
+        <div className="input-group">
             <div className="input-group-text"><span className={workCenterIcon}/></div>
             <Select value={value} onChange={changeHandler} bsSize={bsSize} {...rest}>
                 <option value="">Select Work Center</option>

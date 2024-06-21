@@ -1,7 +1,8 @@
-import {RoutingHeader, RoutingResponse} from "../ducks/types";
+import {RoutingResponse} from "../types";
 import {fetchJSON} from "chums-components";
+import {RoutingHeader} from "chums-types";
 
-export async function fetchRouting(arg:string):Promise<RoutingResponse> {
+export async function fetchRouting(arg:string):Promise<RoutingResponse|null> {
     try {
         const url = `/api/operations/production/wo/chums/routings/${encodeURIComponent(arg)}`;
         return await fetchJSON<RoutingResponse>(url, {cache: 'no-cache'});
@@ -18,8 +19,8 @@ export async function fetchRouting(arg:string):Promise<RoutingResponse> {
 export async function fetchRoutings():Promise<RoutingHeader[]> {
     try {
         const url = `/api/operations/production/wo/chums/routings`;
-        const {routingHeader} = await fetchJSON<{ routingHeader:RoutingHeader[] }>(url, {cache: 'no-cache'});
-        return routingHeader ?? [];
+        const res = await fetchJSON<{ routingHeader:RoutingHeader[] }>(url, {cache: 'no-cache'});
+        return res?.routingHeader ?? [];
     } catch(err:unknown) {
         if (err instanceof Error) {
             console.debug("fetchRoutings()", err.message);

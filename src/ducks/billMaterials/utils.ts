@@ -1,4 +1,4 @@
-import {BillHeader, BillOptionHeader} from "../types";
+import {BillHeader, BillOptionHeader} from "chums-types";
 import {SortProps} from "chums-types";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";

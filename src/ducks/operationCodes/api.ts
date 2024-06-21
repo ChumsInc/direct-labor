@@ -1,11 +1,16 @@
-import {OperationCode} from "../ducks/types";
+import {OperationCodeKey} from "chums-types";
 import {fetchJSON} from "chums-components";
-import {OperationCodeResponse} from "../ducks/operationCodes/types";
+import {OperationCodeResponse} from "./types";
 
 export async function fetchOperationCodes(): Promise<OperationCodeResponse> {
     try {
         const url = `/api/operations/production/wo/chums/operation-codes`;
-        return await fetchJSON<OperationCodeResponse>(url, {cache: 'no-cache'}) ?? null;
+        const res = await fetchJSON<OperationCodeResponse>(url, {cache: 'no-cache'});
+        return {
+            operationCodes: res?.operationCodes ?? [],
+            accounts: res?.accounts ?? [],
+            whereUsed: res?.whereUsed ?? [],
+        }
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchOperationCodes()", err.message);
@@ -16,12 +21,17 @@ export async function fetchOperationCodes(): Promise<OperationCodeResponse> {
     }
 }
 
-export async function fetchOperationCode(arg: OperationCode): Promise<OperationCodeResponse> {
+export async function fetchOperationCode(arg: OperationCodeKey): Promise<OperationCodeResponse> {
     try {
         const url = `/api/operations/production/wo/chums/operation-codes/:workCenter/:operationCode`
             .replace(':workCenter', encodeURIComponent(arg.WorkCenter))
             .replace(':operationCode', encodeURIComponent(arg.OperationCode));
-        return await fetchJSON(url, {cache: 'no-cache'});
+        const res = await fetchJSON<OperationCodeResponse>(url, {cache: 'no-cache'});
+        return {
+            operationCodes: res?.operationCodes ?? [],
+            accounts: res?.accounts ?? [],
+            whereUsed: res?.whereUsed ?? [],
+        }
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchOperationCode()", err.message);

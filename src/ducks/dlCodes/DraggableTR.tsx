@@ -1,6 +1,6 @@
 import React, {useRef} from "react";
-import {SortableTRProps, SortableTR} from "chums-components";
-import {DLCodeStep} from "../types";
+import {SortableTRProps, DataTableRow} from "chums-components";
+import {DLCodeStep} from "chums-types";
 import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
 import "./DraggableTR.scss";
 import classNames from "classnames";
@@ -75,7 +75,7 @@ const DraggableTR = ({fields, row, className, index, moveItem, onDrop}:Draggable
     drag(drop(ref));
     const opacity = isDragging ? 0.5 : 1;
     return (
-        <SortableTR fields={fields} row={row} trRef={ref} style={{opacity}}
+        <DataTableRow fields={fields} row={row} trRef={ref} style={{opacity}}
                     className={classNames(className, 'draggable-tr', {'is-dragging': isDragging})}/>
     )
 }

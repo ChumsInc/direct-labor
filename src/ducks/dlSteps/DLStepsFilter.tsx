@@ -1,38 +1,47 @@
 import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {filterInactiveSelector, filterSelector, loadingSelector, wcFilterSelector} from "./selectors";
-import {WorkCenter} from "../types";
-import {filterInactiveAction, loadDLStepsAction, setDLStepFilterAction, setWCFilterAction} from "./actions";
+import {filterInactiveSelector, filterSelector, selectStepsLoading, wcFilterSelector} from "./selectors";
+import {WorkCenter} from "chums-types";
+import {loadDLSteps, setStepFilter, setStepWCFilter, toggleShowInactive} from "./actions";
 import SearchInput from "../../components/SearchInput";
-import {FormCheck, SpinnerButton} from "chums-ducks";
+import {FormCheck, SpinnerButton} from "chums-components";
 import {useAppDispatch} from "../../app/configureStore";
+import {useNavigate} from "react-router-dom";
 
 const DLCodeFilter: React.FC = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const filter = useSelector(filterSelector);
     const wcFilter = useSelector(wcFilterSelector);
-    const loading = useSelector(loadingSelector);
+    const loading = useSelector(selectStepsLoading);
     const filterInactive = useSelector(filterInactiveSelector)
 
-    const onSelectWC = (wc: WorkCenter | null) => dispatch(setWCFilterAction(wc?.WorkCenterCode || ''));
-    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setDLStepFilterAction(ev.target.value || ''));
-    const onReloadList = () => dispatch(loadDLStepsAction());
+    const onSelectWC = (wc: WorkCenter | null) => dispatch(setStepWCFilter(wc?.WorkCenterCode ?? ''));
+    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setStepFilter(ev.target.value ?? ''));
+    const onReloadList = () => dispatch(loadDLSteps());
+
+    const newButtonHandler = () => {
+        navigate('/dl-steps/0');
+    }
 
     return (
-        <div className="row g-3">
+        <div className="row g-3 align-items-baseline">
             <div className="col-auto">
                 <WorkCenterSelect value={wcFilter} onSelectWorkCenter={onSelectWC}/>
             </div>
-            <div className="col-auto">
-                <FormCheck label="Hide Inactive" checked={filterInactive}
-                           onClick={() => dispatch(filterInactiveAction(!filterInactive))} type="checkbox"/>
+            <div className="col">
+                <SearchInput onChange={onChangeSearch} value={filter}/>
             </div>
             <div className="col-auto">
-                <SearchInput onChange={onChangeSearch} value={filter} bsSize="sm"/>
+                <FormCheck label="Show Inactive" checked={filterInactive}
+                           onChange={(ev) => dispatch(toggleShowInactive(ev.target.checked))} type="checkbox"/>
             </div>
             <div className="col-auto">
-                <SpinnerButton type="button" spinning={loading} onClick={onReloadList} size="sm">Reload</SpinnerButton>
+                <button type="button" className="btn btn-outline-secondary" onClick={newButtonHandler}>New</button>
+            </div>
+            <div className="col-auto">
+                <SpinnerButton type="button" spinning={loading} onClick={onReloadList}>Reload</SpinnerButton>
             </div>
         </div>
     )

@@ -1,13 +1,14 @@
-import React, {useEffect} from "react";
-import {RoutingDetail} from "../types";
+import React, {useEffect, useState} from "react";
+import {RoutingDetail, SortProps} from "chums-types";
 import {Link} from 'react-router-dom';
-import {loadRoutings, selectLoaded, selectLoading} from "./index";
+import {selectLoaded, selectLoading} from "./selectors";
 import numeral from "numeral";
 import {operationCodesOperationPath, selectedRoutingPath, selectedWorkCenterPath} from "../../routerPaths";
 import {useAppDispatch} from "../../app/configureStore";
 import {useSelector} from "react-redux";
 import {routingDetailKey} from "./utils";
 import {DataTable, SortableTableField} from "chums-components";
+import {loadRoutings} from "./actions";
 
 export interface RoutingDetailListProps {
     list: RoutingDetail[],
@@ -59,7 +60,8 @@ const RoutingDetailList = ({list, tfoot}: RoutingDetailListProps) => {
         if (!loaded && !loading) {
             dispatch(loadRoutings());
         }
-    }, [])
+    }, [loaded, loading])
+
     return (
         <DataTable keyField={routingDetailKey} size="xs" fields={detailTableFields}
                    data={list}

@@ -1,34 +1,36 @@
-import {combineReducers} from "redux";
-import {DLCode, DLStep, DLSteps} from "../types";
-import {defaultState, DLStepsAction} from "./types";
-import {applyTimingSucceeded, saveTimingEntriesSucceeded} from "../timings/actionTypes";
+import {DLSteps} from "../types";
+import {DLCode, DLStep, SortProps} from "chums-types";
+import {createReducer} from "@reduxjs/toolkit";
+import {LocalStore} from "chums-components";
+import {filterInactiveStepsKey} from "../../utils/preferences";
 import {
-    filterChanged,
-    filterInactiveChanged,
-    stepChanged,
-    stepSelected,
-    stepsLoadListFailed,
-    stepsLoadListRequested,
-    stepsLoadListSucceeded,
-    stepsLoadStepFailed,
-    stepsLoadStepRequested,
-    stepsLoadStepSucceeded,
-    stepsSaveFailed,
-    stepsSaveRequested,
-    stepsSaveSucceeded,
-    stepTimingChanged,
-    wcFilterChanged
-} from "./actionTypes";
-import {defaultDLCodeSort, DLCodesAction, dlCodeSorter} from "../dlCodes/types";
+    changeDLStep,
+    loadDLStep,
+    loadDLSteps,
+    loadDLStepWhereUsed,
+    saveDLStep,
+    setCurrentStep,
+    setStepFilter,
+    setStepSort,
+    setStepWCFilter,
+    toggleShowInactive
+} from "./actions";
+import {dismissAlert} from "../alerts";
+import {applyTiming, saveTiming} from "../timings/actions";
+import {dlCodeSorter} from "../dlCodes/utils";
 
 export interface DLStepsState {
-    list: DLSteps|null;
-    whereUsed: DLCode[];
+    list: DLSteps;
+    whereUsed: {
+        id: number;
+        list: DLCode[];
+        status: 'idle' | 'loading' | 'rejected';
+    };
     machines: string[];
     current: {
-        step:DLStep|null;
-        loading: boolean;
-        saving: boolean;
+        id: number;
+        step: DLStep | null;
+        status: 'idle' | 'loading' | 'saving' | 'rejected';
         changed: boolean;
     }
     loading: boolean;
@@ -36,237 +38,144 @@ export interface DLStepsState {
     filter: string;
     wcFilter: string;
     filterInactive: boolean;
+    sort: SortProps<DLStep>;
 }
 
-export const initialStepsState:DLStepsState = {
+export const initialStepsState = (): DLStepsState => ({
     list: {},
-    whereUsed: [],
+    whereUsed: {
+        id: 0,
+        list: [],
+        status: 'idle',
+    },
     machines: [],
     current: {
+        id: 0,
         step: null,
-        loading: false,
-        saving: false,
+        status: 'idle',
         changed: false,
     },
     loading: false,
     loaded: false,
     filter: '',
     wcFilter: '',
-    filterInactive: true,
-}
-
-const listReducer = (state: DLSteps = defaultState.list, action: DLStepsAction): DLSteps => {
-    const {type, payload} = action;
-    switch (type) {
-    case stepsLoadListSucceeded:
-        if (payload?.list) {
-            return payload.list;
-        }
-        return state;
-    case saveTimingEntriesSucceeded:
-    case applyTimingSucceeded:
-        if (payload?.step) {
-            return {
-                ...state,
-                [payload.step.id]: payload.step
-            }
-        }
-        return state;
-    default:
-        return state;
-    }
-}
-
-const whereUsedReducer = (state: DLCode[] = defaultState.whereUsed, action: DLStepsAction): DLCode[] => {
-    const {type, payload} = action;
-    switch (type) {
-    case stepSelected:
-        return [];
-    case stepsLoadStepSucceeded:
-        if (payload?.codes) {
-            return payload.codes.sort(dlCodeSorter(defaultDLCodeSort));
-        }
-        return state;
-    default:
-        return state;
-    }
-}
-
-const machinesReducer = (state: string[] = defaultState.machines, action: DLStepsAction): string[] => {
-    const {type, payload} = action;
-    switch (type) {
-    case stepsLoadListSucceeded:
-        if (payload?.machines) {
-            return payload.machines;
-        }
-        return state;
-    default:
-        return state;
-    }
-}
-
-const selectedStepReducer = (state: DLStep = defaultState.selected.step, action: DLStepsAction): DLStep => {
-    const {type, payload} = action;
-    switch (type) {
-    case stepSelected:
-        if (payload?.basicStep) {
-            return {
-                ...payload.basicStep,
-                instructions: '',
-                notes: '',
-                timestamp: '',
-                idCurrentTiming: null,
-                averageHourlyRate: 0,
-                laborCost: 0,
-                timings: [],
-            }
-        }
-        return state;
-    case stepsLoadStepSucceeded:
-    case applyTimingSucceeded:
-        if (payload?.step) {
-            return {
-                ...payload.step
-            }
-        }
-        return state;
-    case stepChanged:
-        if (payload?.change) {
-            return {
-                ...state,
-                ...payload.change,
-            }
-        }
-        return state;
-    case stepTimingChanged:
-        if (payload?.timing) {
-            const laborCost = state.averageHourlyRate / 60 * payload.timing.standardAllowedMinutes;
-            return {
-                ...state,
-                idCurrentTiming: payload.timing.id,
-                standardAllowedMinutes: payload.timing.standardAllowedMinutes,
-                laborCost: laborCost,
-                stepCost: state.fixedCosts + laborCost,
-            }
-        }
-        return state;
-    case stepsSaveSucceeded:
-    case saveTimingEntriesSucceeded:
-        if (payload?.step) {
-            return {
-                ...payload.step,
-            }
-        }
-        return state;
-    default:
-        return state;
-    }
-}
-
-const selectedLoadingReducer = (state: boolean = defaultState.selected.loading, action: DLStepsAction): boolean => {
-    switch (action.type) {
-    case stepsLoadStepRequested:
-        return true;
-    case stepsLoadStepFailed:
-    case stepsLoadStepSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedSavingReducer = (state: boolean = defaultState.selected.saving, action: DLStepsAction): boolean => {
-    switch (action.type) {
-    case stepsSaveRequested:
-        return true;
-    case stepsSaveFailed:
-    case stepsSaveSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedChangedReducer = (state: boolean = defaultState.selected.changed, action: DLStepsAction): boolean => {
-    switch (action.type) {
-    case stepsSaveSucceeded:
-    case stepSelected:
-    case stepsLoadStepSucceeded:
-        return false;
-    case stepChanged:
-    case stepTimingChanged:
-        return true;
-    default:
-        return state;
-    }
-}
-
-const selectedReducer = combineReducers({
-    step: selectedStepReducer,
-    loading: selectedLoadingReducer,
-    saving: selectedSavingReducer,
-    changed: selectedChangedReducer,
+    filterInactive: LocalStore.getItem<boolean>(filterInactiveStepsKey, true) ?? true,
+    sort: {field: 'id', ascending: true}
 })
 
-const loadingReducer = (state: boolean = defaultState.loading, action: DLStepsAction): boolean => {
-    switch (action.type) {
-    case stepsLoadListRequested:
-        return true;
-    case stepsLoadListSucceeded:
-    case stepsLoadListFailed:
-        return false
-    default:
-        return state;
-    }
-}
 
-const loadedReducer = (state: boolean = defaultState.loaded, action: DLStepsAction): boolean => {
-    switch (action.type) {
-    case stepsLoadListSucceeded:
-        return true;
-    default:
-        return state;
-    }
-}
+const dlStepsReducer = createReducer(initialStepsState, (builder) => {
+    builder
+        .addCase(loadDLSteps.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(loadDLSteps.fulfilled, (state, action) => {
+            state.loading = false;
+            state.list = {};
+            action.payload.steps.forEach(step => {
+                state.list[step.id] = step;
+            })
+            state.machines = action.payload.machines.sort();
+            state.loaded = true;
+        })
+        .addCase(loadDLSteps.rejected, (state) => {
+            state.loading = false;
+        })
+        .addCase(setCurrentStep, (state, action) => {
+            state.current.id = action.payload.id;
+            state.current.step = action.payload;
+            state.current.changed = false;
+            state.whereUsed.id = action.payload.id;
+            state.whereUsed.list = [];
+        })
+        .addCase(changeDLStep, (state, action) => {
+            if (state.current.step) {
+                state.current.step = {...state.current.step, ...action.payload};
+                state.current.changed = true;
+            }
+        })
+        .addCase(loadDLStep.pending, (state, action) => {
+            state.current.status = 'loading';
+            state.current.id = +action.meta.arg;
+            if (state.whereUsed.id !== action.meta.arg) {
+                state.whereUsed.id = +action.meta.arg;
+                state.whereUsed.list = [];
+            }
+        })
+        .addCase(loadDLStep.fulfilled, (state, action) => {
+            state.current.status = 'idle';
+            state.current.step = action.payload;
+            state.current.changed = false;
+        })
+        .addCase(loadDLStep.rejected, (state) => {
+            state.current.status = 'rejected';
+        })
+        .addCase(loadDLStepWhereUsed.pending, (state, action) => {
+            state.whereUsed.status = 'loading';
+            if (state.whereUsed.id !== action.meta.arg) {
+                state.whereUsed.id = +action.meta.arg;
+                state.whereUsed.list = [];
+            }
+        })
+        .addCase(loadDLStepWhereUsed.fulfilled, (state, action) => {
+            state.whereUsed.status = 'idle';
+            state.whereUsed.list = action.payload.sort(dlCodeSorter({field: 'id', ascending: true}));
+        })
+        .addCase(loadDLStepWhereUsed.rejected, (state) => {
+            state.whereUsed.status = 'idle';
+        })
+        .addCase(saveDLStep.pending, (state) => {
+            state.current.status = 'saving';
+        })
+        .addCase(saveDLStep.fulfilled, (state, action) => {
+            state.current.id = action.payload?.id ?? 0;
+            state.current.status = 'idle';
+            state.current.step = action.payload;
+            state.current.changed = false;
+            // state.whereUsed = action.payload?.whereUsed?.sort(dlCodeSorter({field: 'id', ascending: true}));
+        })
+        .addCase(saveDLStep.rejected, (state) => {
+            state.current.status = 'idle';
+        })
+        .addCase(setStepSort, (state, action) => {
+            state.sort = action.payload;
+        })
+        .addCase(setStepFilter, (state, action) => {
+            state.filter = action.payload;
+        })
+        .addCase(setStepWCFilter, (state, action) => {
+            state.wcFilter = action.payload;
+        })
+        .addCase(toggleShowInactive, (state, action) => {
+            state.filterInactive = action.payload ?? !state.filterInactive;
+        })
+        .addCase(dismissAlert, (state, action) => {
+            switch (action.payload.context) {
+                case loadDLStep.typePrefix:
+                    state.current.status = 'idle';
+                    return;
+                case loadDLStepWhereUsed.typePrefix:
+                    state.whereUsed.status = 'idle';
+                    return;
+            }
+        })
+        .addCase(saveTiming.fulfilled, (state, action) => {
+            if (action.payload?.step) {
+                state.current.step = action.payload.step;
+                state.list[action.payload.step.id] = action.payload.step;
+            }
+        })
+        .addCase(applyTiming.pending, (state) => {
+            state.current.status = 'saving';
+        })
+        .addCase(applyTiming.fulfilled, (state, action) => {
+            state.current.status = 'idle';
+            state.current.step = action.payload;
+        })
+        .addCase(applyTiming.rejected, (state) => {
+            state.current.status = 'idle';
+        })
 
-const filterReducer = (state: string = defaultState.filter, action: DLCodesAction): string => {
-    const {type, payload} = action;
-    switch (type) {
-    case filterChanged:
-        return payload?.filter || '';
-    default:
-        return state;
-    }
-}
-
-const workCenterFilterReducer = (state: string = defaultState.filter, action: DLCodesAction): string => {
-    const {type, payload} = action;
-    switch (type) {
-    case wcFilterChanged:
-        return payload?.filter || '';
-    default:
-        return state;
-    }
-}
-
-const filterInactiveReducer = (state: boolean = defaultState.filterInactive, action: DLStepsAction): boolean => {
-    switch (action.type) {
-    case filterInactiveChanged:
-        return !state;
-    default:
-        return state;
-    }
-}
-
-
-export default combineReducers({
-    list: listReducer,
-    whereUsed: whereUsedReducer,
-    machines: machinesReducer,
-    selected: selectedReducer,
-    loading: loadingReducer,
-    loaded: loadedReducer,
-    filter: filterReducer,
-    wcFilter: workCenterFilterReducer,
-    filterInactive: filterInactiveReducer,
 })
+
+export default dlStepsReducer;

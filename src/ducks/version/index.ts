@@ -1,31 +1,16 @@
-import {createAsyncThunk, createReducer} from "@reduxjs/toolkit";
-import {fetchVersion} from "../../api/version";
-import {RootState} from "../../app/configureStore";
+import {createReducer} from "@reduxjs/toolkit";
+import {loadVersion} from "./actions";
 
 export interface VersionState {
-    version: string|null;
+    version: string | null;
     loading: boolean;
 }
 
-export const initialState:VersionState = {
+export const initialState: VersionState = {
     version: null,
     loading: false,
 }
 
-export const selectVersion = (state:RootState) => state.version.version;
-
-export const loadVersion = createAsyncThunk<string|null>(
-    'version/load',
-    async () => {
-        return await fetchVersion();
-    },
-    {
-        condition: (arg, {getState}) => {
-            const state = getState() as RootState;
-            return !state.version.loading;
-        }
-    }
-)
 const versionReducer = createReducer(initialState, (builder) => {
     builder
         .addCase(loadVersion.pending, (state) => {

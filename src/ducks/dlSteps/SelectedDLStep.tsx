@@ -1,21 +1,16 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {loadedSelector, selectedStepSelector, selectStepSelector} from "./selectors";
-import {loadDLStepAction} from "./actions";
+import {selectCurrentStep, selectCurrentStepStatus} from "./selectors";
+import {loadDLStep, loadDLStepWhereUsed, setCurrentStep} from "./actions";
 import {Helmet} from "react-helmet";
-import {selectedTabSelector, Tab, TabList, tabListCreatedAction} from "chums-ducks";
+import {LoadingProgressBar, Tab, TabList} from "chums-components";
 import SelectedStepTimings from "../timings/SelectedStepTimings";
 import {dlCodeIcon, dlTextIcon, dlTimingIcon} from "../../icons";
 import DLStepForm from "./DLStepForm";
 import SelectedWhereUsedList from "./SelectedWhereUsedList";
 import {useAppDispatch} from "../../app/configureStore";
-
-export interface SelectedDLStepProps {
-    id?: number,
-}
-
-
-const tabsKey = 'dl-steps-tabs';
+import {useParams} from "react-router-dom";
+import {newDLStep} from "./utils";
 
 const tabID = {
     settings: 'settings',
@@ -28,35 +23,37 @@ const tabs: Tab[] = [
     {id: tabID.whereUsed, title: 'Where Used', icon: dlCodeIcon},
 ]
 
-const SelectedDLStep: React.FC<SelectedDLStepProps> = ({id}) => {
+const SelectedDLStep = () => {
     const dispatch = useAppDispatch();
-    const step = useSelector(selectedStepSelector);
-    const loaded = useSelector(loadedSelector);
-    const navStep = useSelector(selectStepSelector(id || 0));
-    const tab = useSelector(selectedTabSelector(tabsKey));
+    const params = useParams<{ id: string }>()
+    const step = useSelector(selectCurrentStep);
+    const status = useSelector(selectCurrentStepStatus);
+    const [tab, setTab] = useState<string>(tabID.settings);
 
     useEffect(() => {
-        dispatch(tabListCreatedAction(tabs, tabsKey, tabID.settings));
-    }, []);
-    useEffect(() => {
-        if (id !== step.id) {
-            dispatch(loadDLStepAction(navStep))
+        if (!params.id) {
+            return;
         }
-    }, [id, loaded]);
+        if (params.id === '0') {
+            dispatch(setCurrentStep(newDLStep));
+            return;
+        }
+        dispatch(loadDLStep(params.id))
+        dispatch(loadDLStepWhereUsed(params.id));
+    }, [params]);
 
-    const {
-        stepCode,
-        description,
-    } = step;
     return (
         <div>
             <Helmet>
-                <title>D/L Step: {stepCode}</title>
+                <title>D/L Step: {step?.stepCode ?? '-'}</title>
             </Helmet>
-            <h2>Step Editor: <strong>{stepCode}</strong></h2>
-            <h3>{description}</h3>
+            <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
+            <h3>{step?.description}</h3>
 
-            <TabList tabKey={tabsKey} className="mt-3 mb-1"/>
+            <TabList tabs={tabs} className="mt-1 mb-1" currentTabId={tab} onSelectTab={(tab) => setTab(tab.id)}/>
+            <div style={{height: '5px'}}>
+                {status !== 'idle' && <LoadingProgressBar striped style={{height: '100%'}}/>}
+            </div>
             {tab === tabID.settings && (
                 <DLStepForm/>
             )}

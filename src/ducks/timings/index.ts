@@ -1,150 +1,105 @@
-import {combineReducers} from "redux";
-import {DLTiming} from "../types";
-import {stepSelected, stepsLoadStepSucceeded, stepTimingChanged} from "../dlSteps/actionTypes";
-import {newTiming, TimingsAction} from "./types";
-import {
-    changeTiming,
-    editTiming,
-    loadTimingEntriesFailed,
-    loadTimingEntriesRequested,
-    loadTimingEntriesSucceeded,
-    saveTimingEntriesFailed,
-    saveTimingEntriesRequested,
-    saveTimingEntriesSucceeded,
-    timingsSelectedChanged,
-    timingsSelectTiming
-} from "./actionTypes";
+import {Editable, SortProps, StepTiming} from "chums-types";
+import {loadDLStep} from "../dlSteps/actions";
+import {createReducer} from "@reduxjs/toolkit";
+import {loadTiming, saveTiming, setCurrentTiming, updateCurrentTiming, updateTimingEntry} from "./actions";
+import {timingsSorter} from "./utils";
+import {averageMinutes, calcStandardAllowedMinutes} from "../../utils/math";
 
-
-const listReducer = (state: DLTiming[] = [], action: TimingsAction): DLTiming[] => {
-    const {type, payload} = action;
-    switch (type) {
-    case stepSelected:
-        return [];
-    case stepsLoadStepSucceeded:
-        if (payload?.step && payload.step?.timings) {
-            return [...payload.step.timings];
-        }
-        return state;
-    case loadTimingEntriesSucceeded:
-    case saveTimingEntriesSucceeded:
-        if (payload?.timings) {
-            return [...payload.timings];
-        }
-        return state;
-    default:
-        return state;
-    }
+export interface TimingsState {
+    stepId: number;
+    list: StepTiming[];
+    current: {
+        stepTiming: StepTiming | null;
+        changed: boolean;
+        actionStatus: 'idle' | 'pending' | 'loading' | 'saving';
+    };
+    edit: boolean;
+    sort: SortProps<StepTiming>;
 }
 
-const selectedTimingReducer = (state: DLTiming = newTiming, action: TimingsAction): DLTiming => {
-    const {type, payload} = action;
-    switch (type) {
-    case timingsSelectTiming:
-        if (payload?.timing) {
-            return {...payload.timing};
-        }
-        return state;
-    case loadTimingEntriesSucceeded:
-        if (payload?.timings) {
-            const [timing] = payload.timings.filter(t => t.id === state.id);
-            if (timing) {
-                return {...timing};
+const defaultTimingSort: SortProps<StepTiming> = {
+    field: 'id',
+    ascending: true,
+}
+
+const initialTimingsState: TimingsState = {
+    stepId: 0,
+    list: [],
+    current: {
+        stepTiming: null,
+        changed: false,
+        actionStatus: 'idle',
+    },
+    edit: false,
+    sort: {...defaultTimingSort}
+}
+
+const timingsReducer = createReducer(initialTimingsState, builder => {
+    builder
+        .addCase(loadDLStep.pending, (state, action) => {
+            if (state.stepId !== +action.meta.arg) {
+                state.current.stepTiming = null;
+                state.list = [];
             }
-        }
-        return state;
-    case editTiming:
-        if (payload?.timing) {
-            return {...payload.timing};
-        }
-        return {...newTiming};
-    case changeTiming:
-        if (payload?.change) {
-            return {
-                ...state,
-                ...payload.change,
-            };
-        }
-        return state;
-    case stepTimingChanged:
-        if (payload?.timing) {
-            return payload.timing;
-        }
-        return state;
-    case stepSelected:
-    case saveTimingEntriesSucceeded:
-        return {...newTiming};
-    default:
-        return state;
-    }
-}
+        })
+        .addCase(loadDLStep.fulfilled, (state, action) => {
+            state.list = action.payload?.timings ?? [];
+        })
+        .addCase(setCurrentTiming, (state, action) => {
+            state.current.stepTiming = action.payload;
+            state.current.changed = false;
 
-const selectedChangedReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case timingsSelectedChanged:
-        return true;
-    case editTiming:
-        if (action.payload?.change) {
-            return true;
-        }
-        return state;
-    case stepSelected:
-    case stepsLoadStepSucceeded:
-    case loadTimingEntriesSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
+        })
+        .addCase(updateCurrentTiming, (state, action) => {
+            if (state.current.stepTiming) {
+                state.current.stepTiming = {...state.current.stepTiming, ...action.payload};
+                state.current.stepTiming.avgTiming = averageMinutes(state.current.stepTiming.entries);
+                state.current.stepTiming.standardAllowedMinutes = calcStandardAllowedMinutes(state.current.stepTiming.entries, state.current.stepTiming.quantityPerTiming, state.current.stepTiming.efficiency);
+                state.current.changed = true;
+            }
+        })
+        .addCase(loadTiming.pending, (state) => {
+            state.current.actionStatus === 'loading';
+        })
+        .addCase(loadTiming.fulfilled, (state, action) => {
+            state.current.actionStatus === 'idle';
+            if (action.payload) {
+                state.current.stepTiming = action.payload;
+            } else {
+                state.current.stepTiming = null;
+            }
+        })
+        .addCase(loadTiming.rejected, (state) => {
+            state.current.actionStatus = 'idle';
+        })
+        .addCase(saveTiming.pending, (state) => {
+            state.current.actionStatus = 'saving';
+        })
+        .addCase(saveTiming.fulfilled, (state, action) => {
+            state.current.actionStatus = 'idle';
+            if (action.payload?.timing) {
+                state.current.stepTiming = action.payload.timing;
+            }
+            state.list = (action.payload?.timings ?? []).sort(timingsSorter(defaultTimingSort))
+        })
+        .addCase(saveTiming.rejected, (state) => {
+            state.current.actionStatus = 'idle';
+        })
+        .addCase(updateTimingEntry, (state, action) => {
+            if (state.current.stepTiming) {
+                if (action.payload.index === null) {
+                    state.current.stepTiming.entries.push(action.payload.value ?? 0);
+                } else if (typeof state.current.stepTiming.entries[action.payload.index] !== undefined) {
+                    if (action.payload.value === null) {
+                        state.current.stepTiming.entries.splice(action.payload.index, 1);
+                    } else {
+                        state.current.stepTiming.entries[action.payload.index] = action.payload.value;
+                    }
+                }
+                state.current.stepTiming.avgTiming = averageMinutes(state.current.stepTiming.entries);
+                state.current.stepTiming.standardAllowedMinutes = calcStandardAllowedMinutes(state.current.stepTiming.entries, state.current.stepTiming.quantityPerTiming, state.current.stepTiming.efficiency);
+            }
+        })
+})
 
-const selectedLoadingReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case loadTimingEntriesRequested:
-        return true;
-    case loadTimingEntriesFailed:
-    case loadTimingEntriesSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedSavingReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case saveTimingEntriesRequested:
-        return true;
-    case saveTimingEntriesFailed:
-    case saveTimingEntriesSucceeded:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const editReducer = (state: boolean = false, action: TimingsAction): boolean => {
-    switch (action.type) {
-    case editTiming:
-        return action.payload?.edit || false;
-    case saveTimingEntriesSucceeded:
-    case stepSelected:
-        return false;
-    default:
-        return state;
-    }
-}
-
-const selectedReducer = combineReducers({
-    timing: selectedTimingReducer,
-    changed: selectedChangedReducer,
-    saving: selectedSavingReducer,
-    loading: selectedLoadingReducer,
-});
-
-export default combineReducers({
-    list: listReducer,
-    selected: selectedReducer,
-    edit: editReducer,
-});
-
-
-
+export default timingsReducer;

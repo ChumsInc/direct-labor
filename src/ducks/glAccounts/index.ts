@@ -1,7 +1,8 @@
-import {loadOperationCode, loadOperationCodes} from "../operationCodes";
-import {GLAccount, GLAccountList} from "../types";
+import {loadOperationCode, loadOperationCodes} from "../operationCodes/actions";
+import {GLAccountList} from "../types";
 import {RootState} from "../../app/configureStore";
 import {createReducer} from "@reduxjs/toolkit";
+import {GLAccount} from "chums-types";
 
 
 export interface GlAccountsState {
@@ -12,12 +13,6 @@ export const defaultState: GlAccountsState = {
     accounts: {}
 };
 
-export const accountListSelector = (keys: string[]) => (state: RootState): GLAccount[] => {
-    const {accounts} = state.glAccounts;
-    return Object.keys(accounts).filter(key => keys.includes(key)).map(key => accounts[key]);
-}
-
-export const selectGLByAccountKey = (state: RootState, accountKey: string): GLAccount | null => state.glAccounts.accounts[accountKey] ?? null;
 
 export const glAccountReducer = createReducer(defaultState, (builder) => {
     builder

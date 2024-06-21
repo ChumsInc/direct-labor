@@ -1,6 +1,5 @@
-import {workCenterSorter, WorkCenterSorterProps} from "./types";
-import {WorkCenter, WorkCenterList} from "../types";
-import {createReducer, createSelector} from "@reduxjs/toolkit";
+import {WorkCenterList} from "../types";
+import {createReducer} from "@reduxjs/toolkit";
 import {
     loadWorkCenters,
     saveWorkCenter,
@@ -12,7 +11,7 @@ import {
     toggleFilterRatedWC
 } from "./actions";
 import {SortProps} from "chums-components";
-import {RootState} from "../../app/configureStore";
+import {WorkCenter} from "chums-types";
 
 export const defaultSort: SortProps<WorkCenter> = {
     field: "WorkCenterCode",
@@ -20,120 +19,96 @@ export const defaultSort: SortProps<WorkCenter> = {
 }
 
 export interface WorkCentersState {
-    list: WorkCenterList,
-    selected: WorkCenter | null;
-    loading: boolean;
-    loaded: boolean;
-    saving: boolean;
-    page: number;
-    rowsPerPage: number;
-    filterRatedWorkCenters: boolean;
-    sort: SortProps<WorkCenter>;
+    list: {
+        workCenters: WorkCenterList,
+        loading: 'idle'|'pending';
+        loaded: boolean;
+        page: number;
+        rowsPerPage: number;
+        filterRatedWorkCenters: boolean;
+        sort: SortProps<WorkCenter>;
+    }
+    current: {
+        code: string|null;
+        workCenter: WorkCenter|null;
+        actionStatus: 'idle'|'loading'|'saving';
+    }
 }
 
 
 export const initialWorkCenterState: WorkCentersState = {
-    list: {},
-    selected: null,
-    loading: false,
-    loaded: false,
-    saving: false,
-    page: 0,
-    rowsPerPage: 25,
-    filterRatedWorkCenters: true,
-    sort: {...defaultSort},
+    list: {
+        workCenters: {},
+        loading: 'idle',
+        loaded: false,
+        page: 0,
+        rowsPerPage: 25,
+        filterRatedWorkCenters: true,
+        sort: {...defaultSort},
+    },
+    current: {
+        code: null,
+        workCenter: null,
+        actionStatus: 'idle'
+    }
 }
 
 const workCentersReducer = createReducer(initialWorkCenterState, (builder) => {
     builder
         .addCase(setCurrentWorkCenter, (state, action) => {
-            state.selected = action.payload;
+            state.current.code = action.payload;
+            state.current.workCenter = state.list.workCenters[action.payload] ?? null;
         })
         .addCase(setWorkCenterRate, (state, action) => {
-            if (state.selected) {
-                state.selected.AverageHourlyRate = action.payload;
+            if (state.current.workCenter) {
+                state.current.workCenter.AverageHourlyRate = action.payload;
             }
         })
         .addCase(loadWorkCenters.pending, (state) => {
-            state.loading = true;
+            state.list.loading = 'pending';
         })
         .addCase(loadWorkCenters.fulfilled, (state, action) => {
-            state.loading = false;
-            state.loaded = true;
-            state.list = {...action.payload};
-            if (state.selected) {
-                state.selected = action.payload[state.selected.WorkCenterCode] ?? null;
+            state.list.loading = 'idle';
+            state.list.loaded = true;
+            state.list.workCenters = {...action.payload};
+            if (state.current.code) {
+                state.current.workCenter = action.payload[state.current.code] ?? null
             }
         })
         .addCase(loadWorkCenters.rejected, (state) => {
-            state.loading = false;
+            state.list.loading = 'idle';
         })
         .addCase(saveWorkCenter.pending, (state) => {
-            state.saving = true;
+            state.current.actionStatus = 'saving'
         })
         .addCase(saveWorkCenter.fulfilled, (state, action) => {
-            state.saving = false;
-            if (!action.payload && state.selected) {
-                delete state.list[state.selected.WorkCenterCode];
+            state.current.actionStatus = 'idle';
+            if (!action.payload && state.current.code) {
+                delete state.list.workCenters[state.current.code];
             }
-            state.selected = action.payload;
+            state.current.workCenter = action.payload;
             if (action.payload) {
-                state.list[action.payload.WorkCenterCode] = action.payload;
+                state.list.workCenters[action.payload.WorkCenterCode] = action.payload;
             }
         })
         .addCase(saveWorkCenter.rejected, (state) => {
-            state.saving = false;
+            state.current.actionStatus = 'idle';
         })
         .addCase(setPage, (state, action) => {
-            state.page = action.payload;
+            state.list.page = action.payload;
         })
         .addCase(setRowsPerPage, (state, action) => {
-            state.rowsPerPage = action.payload;
-            state.page = 0;
+            state.list.rowsPerPage = action.payload;
+            state.list.page = 0;
         })
         .addCase(setSort, (state, action) => {
-            state.sort = action.payload;
-            state.page = 0;
+            state.list.sort = action.payload;
+            state.list.page = 0;
         })
         .addCase(toggleFilterRatedWC, (state, action) => {
-            state.filterRatedWorkCenters = action.payload ?? !state.filterRatedWorkCenters;
+            state.list.filterRatedWorkCenters = action.payload ?? !state.list.filterRatedWorkCenters;
         });
 });
 
-
-export const listSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] =>
-    Object.values(state.workCenters.list).sort(workCenterSorter(sort));
-export const stdListSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] =>
-    Object.values(state.workCenters.list)
-        .filter(wc => wc.isStandardWC)
-        .sort(workCenterSorter(sort));
-
-export const nonStdListSelector = (sort: WorkCenterSorterProps) => (state: RootState): WorkCenter[] => Object.values(state.workCenters.list)
-    .filter(wc => !wc.isStandardWC)
-    .sort(workCenterSorter(sort));
-
-export const selectLoading = (state: RootState): boolean => state.workCenters.loading || state.workCenters.saving;
-export const selectLoaded = (state: RootState): boolean => state.workCenters.loaded;
-export const selectSaving = (state: RootState): boolean => state.workCenters.saving;
-export const selectCurrentWorkCenter = (state: RootState): WorkCenter | null => state.workCenters.selected;
-export const selectWorkCenter = (state: RootState, workCenter?:string) => {
-    if (!workCenter) {
-        return null;
-    }
-    return state.workCenters.list[workCenter] || null;
-}
-
-export const selectWorkCenters = (state:RootState) => Object.values(state.workCenters.list);
-export const selectPage = (state:RootState) => state.workCenters.page;
-export const selectRowsPerPage = (state:RootState) => state.workCenters.rowsPerPage;
-export const selectSort = (state:RootState) => state.workCenters.sort;
-export const selectFilterRatedWC = (state:RootState) => state.workCenters.filterRatedWorkCenters;
-export const selectSortedWorkCenters = createSelector(
-    [selectWorkCenters, selectSort, selectFilterRatedWC],
-    (list, sort, filter) => {
-        return list.filter(wc => !filter || wc.isStandardWC)
-            .sort(workCenterSorter(sort));
-    }
-)
 
 export default workCentersReducer;

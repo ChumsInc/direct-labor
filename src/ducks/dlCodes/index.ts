@@ -1,5 +1,5 @@
-import {defaultDLCodeSort} from "./types";
-import {DLCode, DLCodeList, DLCodeStep} from "../types";
+import {defaultDLCodeSort, dlCodeStepSorter} from "./utils";
+import {DLCodeList} from "../types";
 import {SortProps} from "chums-components";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
 import {createReducer} from "@reduxjs/toolkit";
@@ -19,7 +19,7 @@ import {
     setWorkCenterFilter,
     toggleShowInactive
 } from "./actions";
-import {dlCodeStepSorter} from "./utils";
+import {DLCode, DLCodeStep} from "chums-types";
 
 export interface DLCodesState {
     list: DLCodeList;
@@ -102,11 +102,12 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.loading = false;
         })
         .addCase(loadDLCode.pending, (state, action) => {
+            const id = +action.meta.arg;
             state.current.loading = true;
-            if (!action.meta.arg || state.current.header?.id !== action.meta.arg) {
+            if (!id || state.current.header?.id !== id) {
                 state.current.steps = [];
             }
-            state.current.header = state.list[action.meta.arg] ?? null;
+            state.current.header = state.list[id] ?? null;
         })
         .addCase(loadDLCode.fulfilled, (state, action) => {
             state.current.loading = false;

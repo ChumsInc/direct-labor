@@ -1,16 +1,17 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {useSelector} from "react-redux";
-import {loadOperationCodes, selectLoading, selectSearch, selectWorkCenter, setSearch, setWorkCenter} from "./index";
+import {loadOperationCodes, setSearch, setWorkCenter} from "./actions";
+import {selectLoading, selectSearch, selectWorkCenter} from "./selectors";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {WorkCenter} from "../types";
-import {SpinnerButton} from "chums-ducks";
+import {WorkCenter} from "chums-types";
 import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
 import SearchInput from "../../components/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
 
 
-const OperationCodeFilter: React.FC = () => {
+const OperationCodeFilter = () => {
     const dispatch = useAppDispatch();
+
     useEffect(() => {
         const defaultWorkCenter = getPreference(currentOCWorkCenterKey, '');
         dispatch(setWorkCenter(defaultWorkCenter));
@@ -31,15 +32,15 @@ const OperationCodeFilter: React.FC = () => {
 
 
     return (
-        <div className="row g-3">
+        <div className="row g-3 mb-3">
             <div className="col-auto">
-                <WorkCenterSelect value={workCenterFilter} onSelectWorkCenter={onSelectWorkCenter} bsSize="sm"/>
+                <WorkCenterSelect value={workCenterFilter} onSelectWorkCenter={onSelectWorkCenter}/>
+            </div>
+            <div className="col">
+                <SearchInput value={search} onChange={onChangeSearch}/>
             </div>
             <div className="col-auto">
-                <SearchInput value={search} onChange={onChangeSearch} bsSize="sm"/>
-            </div>
-            <div className="col-auto">
-                <SpinnerButton size="sm" spinning={loading} onClick={onReload}>Reload</SpinnerButton>
+                <button type="button" className="btn btn-primary" onClick={onReload}>Reload</button>
             </div>
         </div>
     )

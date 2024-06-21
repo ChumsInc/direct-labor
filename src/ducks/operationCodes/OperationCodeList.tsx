@@ -1,24 +1,24 @@
 import React from "react";
 import {SortableTable, SortableTableField, TablePagination} from "chums-components";
-import {OperationCode} from "../types";
+import {OperationCode} from "chums-types";
 import {operationCodeKey} from "./utils";
 import {useSelector} from "react-redux";
+import numeral from "numeral";
+import {useNavigate} from "react-router-dom";
+import {operationCodesOperationPath} from "../../routerPaths";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {SortProps} from "chums-types";
 import {
-    loadOperationCode,
     selectCurrentOperationCode,
     selectPage,
     selectRowsPerPage,
     selectSort,
-    selectSortedList,
-    setPage,
-    setRowsPerPage,
-    setSort
-} from './index'
-import numeral from "numeral";
-import {useHistory} from "react-router-dom";
-import {operationCodesOperationPath} from "../../routerPaths";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
-import {SortProps} from "chums-types";
+    selectFilteredOpCodeList,
+    selectLoading
+} from "./selectors";
+import {loadOperationCode, setPage, setRowsPerPage, setSort} from "./actions";
+import ErrorBoundary from "../../components/ErrorBoundary";
+import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
 
 export interface OperationCodeListProps {
     tableKey: string,
@@ -39,16 +39,17 @@ const fields: SortableTableField<OperationCode>[] = [
 ]
 const OperationCodeList: React.FC<OperationCodeListProps> = ({tableKey}) => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
-    const list = useSelector(selectSortedList);
+    const navigate = useNavigate();
+    const list = useSelector(selectFilteredOpCodeList);
     const page = useSelector(selectPage);
     const rowsPerPage = useSelector(selectRowsPerPage);
     const sort = useAppSelector(selectSort);
     const selected = useSelector(selectCurrentOperationCode);
+    const loading = useSelector(selectLoading)
 
     const onSelectOperationCode = (oc: OperationCode) => {
         dispatch(loadOperationCode(oc));
-        history.push(operationCodesOperationPath(oc.WorkCenter, oc.OperationCode));
+        navigate(operationCodesOperationPath(oc.WorkCenter, oc.OperationCode));
     }
 
     const sortChangeHandler = (sort: SortProps) => dispatch(setSort(sort));
@@ -56,7 +57,8 @@ const OperationCodeList: React.FC<OperationCodeListProps> = ({tableKey}) => {
     const rowsPerPageChangeHandler = (rpp: number) => dispatch(setRowsPerPage(rpp));
 
     return (
-        <>
+        <ErrorBoundary>
+            <AnimatedLoadingBar loading={loading} />
             <SortableTable keyField={operationCodeKey} fields={fields}
                            data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                            size="xs" currentSort={sort} onChangeSort={sortChangeHandler}
@@ -65,7 +67,7 @@ const OperationCodeList: React.FC<OperationCodeListProps> = ({tableKey}) => {
                              rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
                              bsSize="sm"
                              showFirst showLast count={list.length}/>
-        </>
+        </ErrorBoundary>
     )
 }
 export default OperationCodeList;

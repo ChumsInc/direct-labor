@@ -1,35 +1,22 @@
-import {ActionInterfacePayload, DLStep, DLTiming} from "../types";
-import {ActionInterface} from "chums-ducks";
-import {ThunkAction} from "redux-thunk";
-import {RootState} from "../../app/configureStore";
+import {DLStep, StepTiming} from "chums-types";
 
-export interface TimingsActionPayload extends ActionInterfacePayload {
-    timings?: DLTiming[],
-    timing?: DLTiming,
-    step?: DLStep,
-    change?: object,
-    edit?: boolean,
+
+export interface SaveTimingResponse {
+    timing: StepTiming | null;
+    timings: StepTiming[];
+    step: DLStep;
 }
 
-export interface TimingsAction extends ActionInterface {
-    payload?: TimingsActionPayload,
+export type StepTimingId = Pick<StepTiming, 'id' | 'idSteps'>
+
+
+export interface TimingEntry {
+    index: number | null;
+    value: string | number | null;
 }
-export interface TimingsThunkAction extends ThunkAction<any, RootState, unknown, ActionInterface> {}
 
-export const newTiming:DLTiming = {
-    id: 0,
-    idSteps: 0,
-    timingDate: '',
-    standardAllowedMinutes: 0,
-    avgTiming: 0,
-    quantityPerTiming: 1,
-    efficiency: 1,
-    notes: '',
-    entries: [],
-    timestamp: '',
-};
-
-
-export const dlStepTimingSorter = (a: DLTiming, b: DLTiming): number => {
-    return (new Date(a.timingDate).valueOf() - new Date(b.timingDate).valueOf() || (a.id > b.id ? 1 : -1)) * -1;
-};
+export interface TimeValue {
+    value: number;
+    minutes: number;
+    seconds: number;
+}

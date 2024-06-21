@@ -9,6 +9,8 @@ export const sessionStorageKeys = {
 };
 
 export const localStorageKeys = {
+    dlStepsRowsPerPage: `${localStoragePrefix}/dlSteps/rowsPerPage`,
+    dlStepsTimingInputMode: `${localStoragePrefix}/dlSteps/timingInputMode`,
     dlCodesRowsPerPage: `${localStoragePrefix}/dlCodes/rowsPerPage`,
     dlCodesShowInactive: `${localStoragePrefix}/dlCodes/showInactive`,
     dlCodesWorkCenter: `${localStoragePrefix}/dlCodes/workCenter`,
@@ -21,7 +23,7 @@ function getStorage(key:string):Storage {
     return reLocal.test(key) ? window.localStorage : window.sessionStorage;
 }
 
-export const setPreference = (key:string, value:any) => {
+export const setPreference = <T=any>(key:string, value:T) => {
     try {
         if (!global.window) {
             return;
@@ -39,7 +41,7 @@ export const clearPreference = (key:string) => {
     getStorage(key).removeItem(key);
 }
 
-export const getPreference = (key:string, defaultValue: any) => {
+export const getPreference = <T = any>(key:string, defaultValue: T):T => {
     try {
         if (!global.window) {
             return defaultValue;
@@ -48,7 +50,7 @@ export const getPreference = (key:string, defaultValue: any) => {
         if (value === null) {
             return defaultValue;
         }
-        return JSON.parse(value);
+        return JSON.parse(value) ?? defaultValue;
     } catch(err:any) {
         console.log("getPreference()", err.message);
         return defaultValue;

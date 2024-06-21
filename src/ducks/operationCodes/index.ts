@@ -1,13 +1,18 @@
-import {OperationCodeResponse} from "./types";
 import {routingDetailKey} from "../routing/utils";
-import {OperationCode, OperationCodeList} from "../types";
-import {RootState} from "../../app/configureStore";
+import {OperationCodeList} from "../types";
 import {getPreference, localStorageKeys} from "../../api/preferences";
-import {SortProps} from "chums-types";
-import {createAction, createAsyncThunk, createReducer, createSelector} from "@reduxjs/toolkit";
-import {fetchOperationCode, fetchOperationCodes} from "../../api/operation-codes";
-import {operationCodeDefaultSort, operationCodeKey, operationCodeSorter} from "./utils";
-import {selectRoutingDetailList, selectRoutings} from "../routing";
+import {OperationCode, SortProps,} from "chums-types";
+import {createReducer} from "@reduxjs/toolkit";
+import {operationCodeDefaultSort, operationCodeKey} from "./utils";
+import {
+    loadOperationCode,
+    loadOperationCodes,
+    setPage,
+    setRowsPerPage,
+    setSearch,
+    setSort,
+    setWorkCenter
+} from "./actions";
 
 export interface OperationCodesState {
     list: OperationCodeList;
@@ -41,41 +46,6 @@ export const initialState = (): OperationCodesState => ({
     sort: {...operationCodeDefaultSort},
 })
 
-export const setSearch = createAction<string>('operationCodes/filter/setSearch')
-export const setWorkCenter = createAction<string>('operationCodes/filter/setWorkCenter');
-export const setPage = createAction<number>('operationCodes/setPage');
-export const setRowsPerPage = createAction<number>('operationCodes/setRowsPerPage');
-export const setSort = createAction<SortProps<OperationCode>>('operationCodes/setSort');
-export const loadOperationCodes = createAsyncThunk<OperationCodeResponse | null>(
-    'operationCodes/load',
-    async () => {
-        //@TODO: implement on glAccounts reducer
-        return await fetchOperationCodes();
-    },
-    {
-        condition: (arg, {getState}) => {
-            const state = getState() as RootState;
-            return !selectLoading(state);
-        }
-    }
-)
-
-export const loadOperationCode = createAsyncThunk<OperationCodeResponse | null, OperationCode|undefined>(
-    'operationCodes/current/load',
-    async (arg) => {
-        if (!arg) {
-            return null;
-        }
-        //@TODO: implement on glAccounts.list reducer, routing.detail reducer
-        return await fetchOperationCode(arg);
-    }, {
-        condition: (arg, {getState}) => {
-            const state = getState() as RootState;
-            return !selectCurrentLoading(state);
-        }
-    }
-)
-
 const operationCodesReducer = createReducer(initialState, (builder) => {
     builder
         .addCase(loadOperationCodes.pending, (state) => {
@@ -99,7 +69,7 @@ const operationCodesReducer = createReducer(initialState, (builder) => {
             if (state.current.value && operationCodeKey(state.current.value) !== operationCodeKey(action.meta.arg)) {
                 state.current.whereUsed = [];
             }
-            state.current.value = action.meta.arg ?? null;
+            state.current.value = state.list[operationCodeKey(action.meta.arg)] ?? null;
             state.current.loading = true;
         })
         .addCase(loadOperationCode.fulfilled, (state, action) => {
@@ -129,50 +99,5 @@ const operationCodesReducer = createReducer(initialState, (builder) => {
             state.page = 0;
         })
 })
-
-export const loadOCSucceeded = 'operationCodes/loadCodeSucceeded';
-
-export const selectOperationCodesList = (state: RootState) => state.operationCodes.list;
-
-export const listSelector = (state: RootState): OperationCode[] => Object.values(state.operationCodes.list)
-    .sort(operationCodeSorter(operationCodeDefaultSort));
-
-
-export const selectWorkCenter = (state: RootState): string => state.operationCodes.workCenter;
-export const selectSearch = (state: RootState): string => state.operationCodes.search;
-export const selectSearchRegex = (state: RootState): RegExp => {
-    try {
-        return new RegExp(state.operationCodes.search, 'i');
-    } catch (err) {
-        return /^/;
-    }
-}
-export const selectPage = (state: RootState): number => state.operationCodes.page;
-export const selectRowsPerPage = (state: RootState) => state.operationCodes.rowsPerPage;
-export const selectSort = (state: RootState) => state.operationCodes.sort;
-
-export const selectSortedList = createSelector(
-    [selectOperationCodesList, selectWorkCenter, selectSearchRegex, selectSort],
-    (list, workCenter, search, sort) => {
-        return Object.values(list)
-            .filter(row => !workCenter || row.WorkCenter === workCenter)
-            .filter(row => search.test(row.OperationCode) || search.test(row.OperationDescription))
-            .sort(operationCodeSorter(sort));
-    }
-)
-
-export const selectCurrentOperationCode = (state: RootState): OperationCode | null => state.operationCodes.current.value;
-export const selectLoading = (state: RootState): boolean => state.operationCodes.loading;
-export const selectLoaded = (state: RootState): boolean => state.operationCodes.loaded;
-export const selectCurrentLoading = (state: RootState) => state.operationCodes.current.loading;
-export const selectWhereUsed = (state: RootState): string[] => state.operationCodes.current.whereUsed;
-
-export const selectOperationCodeByCode = (state: RootState, workCenter: string, operationCode: string) => {
-    if (!workCenter || !operationCode) {
-        return null;
-    }
-    const key = operationCodeKey({WorkCenter: workCenter, OperationCode: operationCode});
-    return state.operationCodes.list[key] || null;
-}
 
 export default operationCodesReducer;

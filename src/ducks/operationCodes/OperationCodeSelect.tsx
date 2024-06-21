@@ -1,8 +1,9 @@
-import React, {ChangeEvent, useEffect} from 'react';
+import React, {ChangeEvent, useEffect, useId} from 'react';
 import {useSelector} from "react-redux";
-import {OperationCode} from "../types";
+import {OperationCode} from "chums-types";
 import {InputGroup, Select} from "chums-components";
-import {listSelector, loadOperationCodes, selectLoaded} from "./index";
+import {loadOperationCodes} from "./actions";
+import {selectLoaded, selectOperationCodeList} from "./selectors";
 import {operationCodeKey} from "./utils";
 import {sageOperationCodeIcon} from "../../icons";
 import classNames from "classnames";
@@ -14,11 +15,12 @@ export interface OperationCodeSelectProps {
     onChange: (opCode: OperationCode | null) => void,
 }
 
-const OperationCodeSelect: React.FC<OperationCodeSelectProps> = ({operationCode, workCenter, onChange}) => {
+const OperationCodeSelect = ({operationCode, workCenter, onChange}: OperationCodeSelectProps) => {
     const dispatch = useAppDispatch();
     const loaded = useSelector(selectLoaded)
-    const operationCodes = useSelector(listSelector);
+    const operationCodes = useSelector(selectOperationCodeList);
     const options = Object.values(operationCodes).filter(oc => !workCenter || oc.WorkCenter === workCenter);
+    const id = useId();
 
     useEffect(() => {
         if (!loaded) {
@@ -33,9 +35,9 @@ const OperationCodeSelect: React.FC<OperationCodeSelectProps> = ({operationCode,
 
     const value = operationCodeKey({OperationCode: operationCode, WorkCenter: workCenter});
     return (
-        <InputGroup bsSize="sm">
-            <div className={classNames("input-group-text", sageOperationCodeIcon)}/>
-            <Select value={value} onChange={changeHandler}>
+        <InputGroup>
+            <label className={classNames("input-group-text", sageOperationCodeIcon)} htmlFor={id}/>
+            <Select value={value} onChange={changeHandler} id={id}>
                 <option value="">Select OperationCode</option>
                 {options.map(oc => (
                     <option key={operationCodeKey(oc)} value={operationCodeKey(oc)}>

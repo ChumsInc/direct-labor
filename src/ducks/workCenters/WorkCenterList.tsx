@@ -1,23 +1,21 @@
 import React, {useEffect} from "react";
-import {FormCheck, SpinnerButton} from "chums-ducks";
+import {FormCheck, SpinnerButton} from "chums-components";
 import {useSelector} from "react-redux";
 import {loadWorkCenters, setPage, setRowsPerPage, setSort, toggleFilterRatedWC} from "./actions";
 import {
     selectCurrentWorkCenter,
     selectFilterRatedWC,
-    selectLoaded,
     selectLoading,
     selectPage,
     selectRowsPerPage,
-    selectSort,
-    selectSortedWorkCenters
-} from "./index";
+    selectSortedWorkCenters, selectWorkCentersLoaded, selectWorkCenterSort
+} from "./selectors";
 import {workCenterKey} from "./types";
 import MultiLineField from "../../components/MultiLineField";
 import numeral from "numeral";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {selectedWorkCenterPath} from "../../routerPaths";
-import {WorkCenter} from "../types";
+import {WorkCenter} from "chums-types";
 import {SortableTable, SortableTableField, SortProps, TablePagination} from "chums-components";
 import {useAppDispatch} from "../../app/configureStore";
 
@@ -54,22 +52,24 @@ const fields: SortableTableField<WorkCenter>[] = [
 
 const WorkCenterList: React.FC = () => {
     const dispatch = useAppDispatch();
-    const history = useHistory();
+    const navigate = useNavigate();
     const loading = useSelector(selectLoading);
-    const loaded = useSelector(selectLoaded);
+    const loaded = useSelector(selectWorkCentersLoaded);
     const filter = useSelector(selectFilterRatedWC);
     const list = useSelector(selectSortedWorkCenters);
     const page = useSelector(selectPage);
     const rowsPerPage = useSelector(selectRowsPerPage);
+    const sort = useSelector(selectWorkCenterSort);
+    const selected = useSelector(selectCurrentWorkCenter);
+
     useEffect(() => {
         if (!loaded && !loading) {
             dispatch(loadWorkCenters());
         }
     }, [])
+
     const onReload = () => dispatch(loadWorkCenters());
-    const sort = useSelector(selectSort);
-    const onSelectWorkCenter = (row: WorkCenter) => history.push(selectedWorkCenterPath(row.WorkCenterCode));
-    const selected = useSelector(selectCurrentWorkCenter);
+    const onSelectWorkCenter = (row: WorkCenter) => navigate(selectedWorkCenterPath(row.WorkCenterCode));
 
     const onChangeFilter = () => dispatch(toggleFilterRatedWC());
     const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
@@ -87,7 +87,7 @@ const WorkCenterList: React.FC = () => {
                 </div>
                 <div className="col-auto">
                     <FormCheck label={"Show Only Rated W/C"} checked={filter}
-                               onClick={onChangeFilter} type="checkbox"/>
+                               onChange={onChangeFilter} type="checkbox"/>
                 </div>
             </div>
             <SortableTable keyField={workCenterKey} fields={fields}

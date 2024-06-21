@@ -1,68 +1,75 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {
-    filteredListSelector,
-    listLengthSelector,
-    loadedSelector,
-    loadingSelector,
-    selectedStepSelector
-} from "./selectors";
-import {loadDLStepsAction} from "./actions";
-import {
-    addPageSetAction,
-    pagedDataSelector,
-    PagerDuck,
-    SortableTable,
-    sortableTableSelector,
-    tableAddedAction
-} from "chums-ducks";
-import {DLStep, DLStepSorterProps} from "../types";
-import {dlStepKey} from "./types";
+import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort} from "./selectors";
+import {loadDLSteps, setStepSort} from "./actions";
+import {DLBasicStep, DLStep, SortProps} from "chums-types";
+import {dlStepKey} from "./utils";
 import {stepsListFields} from "./StepsListFields";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
 import DLStepsFilter from "./DLStepsFilter";
 import {useAppDispatch} from "../../app/configureStore";
+import {LocalStore, SortableTable, TablePagination} from "chums-components";
+import classNames from "classnames";
+import {localStorageKeys} from "../../api/preferences";
+import ErrorBoundary from '../../components/ErrorBoundary';
 
 const tableKey = 'steps-list';
-const defaultSort: DLStepSorterProps = {
+const defaultSort: SortProps<DLStep> = {
     field: 'stepCode',
     ascending: true,
 }
 
-const StepsList: React.FC = () => {
-    const history = useHistory();
+const StepsList = () => {
+    // const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const sort = useSelector(sortableTableSelector(tableKey))
-    const loading = useSelector(loadingSelector);
-    const loaded = useSelector(loadedSelector);
-    const list = useSelector(filteredListSelector(sort as DLStepSorterProps));
-    const stepsCount = useSelector(listLengthSelector)
-    const pagedList = useSelector(pagedDataSelector(tableKey, list));
-    const selected = useSelector(selectedStepSelector);
+    const sort = useSelector(selectStepsSort);
+    const loaded = useSelector(selectStepsLoaded);
+    const list = useSelector(selectFilteredList);
+    const selected = useSelector(selectCurrentStep);
+    const [page, setPage] = useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(LocalStore.getItem<number>(localStorageKeys.dlStepsRowsPerPage, 25) ?? 25);
 
     useEffect(() => {
-        dispatch(tableAddedAction({key: tableKey, ...defaultSort}))
-        dispatch(addPageSetAction({key: tableKey}))
-    }, []);
-    useEffect(() => {
-        if (!loading && !loaded) {
-            dispatch(loadDLStepsAction());
+        if (!loaded) {
+            dispatch(loadDLSteps());
         }
-    }, [loading, loaded]);
+    }, []);
 
-    const onSelectRow = (row: DLStep) => {
-        history.push(dlStepPath(row.id));
+    useEffect(() => {
+        setPage(0);
+    }, [list, sort, rowsPerPage])
+
+    const onSelectRow = (row: DLBasicStep) => {
+        navigate(dlStepPath(row.id));
+   }
+
+    const sortChangeHandler = (sort: SortProps) => {
+        dispatch(setStepSort(sort));
     }
 
+    const rowsPerPageChangeHandler = (rpp: number) => {
+        LocalStore.setItem<number>(localStorageKeys.dlStepsRowsPerPage, rpp);
+        setRowsPerPage(rpp);
+    }
+
+    const pagedList = list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
     return (
-        <div>
-            <DLStepsFilter/>
-            <SortableTable tableKey={tableKey} keyField={dlStepKey} fields={stepsListFields} data={pagedList} size="xs"
-                           rowClassName={(row: DLStep) => ({'table-warning': !row.active})}
-                           selected={selected.id} onSelectRow={onSelectRow}/>
-            <PagerDuck pageKey={tableKey} dataLength={list.length} filtered={list.length !== stepsCount}/>
-        </div>
+        <ErrorBoundary>
+            <div>
+                <DLStepsFilter/>
+                <SortableTable keyField={dlStepKey} fields={stepsListFields}
+                               currentSort={sort} onChangeSort={sortChangeHandler}
+                               data={pagedList} size="xs"
+                               rowClassName={(row: DLBasicStep) => classNames({'table-warning': !row.active})}
+                               selected={selected?.id} onSelectRow={onSelectRow}/>
+                <TablePagination page={page} onChangePage={setPage}
+                                 rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
+                                 count={list.length} showFirst showLast/>
+            </div>
+        </ErrorBoundary>
     )
 }
 

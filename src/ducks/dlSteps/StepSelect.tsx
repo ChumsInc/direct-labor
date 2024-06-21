@@ -1,10 +1,10 @@
 import React, {ChangeEvent, useEffect} from "react";
-import {DLStep} from "../types";
+import {DLStep} from "chums-types";
 import {useSelector} from "react-redux";
-import {listSelector, loadedSelector, loadingSelector} from "./selectors";
-import {newDLStep} from "./types";
-import {Select} from "chums-ducks";
-import {loadDLStepsAction} from "./actions";
+import {selectStepsLoaded, selectStepsLoading, selectSortedStepsList} from "./selectors";
+import {newDLStep} from "./utils";
+import {Select} from "chums-components";
+import {loadDLSteps} from "./actions";
 import {useAppDispatch} from "../../app/configureStore";
 
 export interface StepSelectProps {
@@ -15,13 +15,13 @@ export interface StepSelectProps {
 
 const StepSelect: React.FC<StepSelectProps> = ({id, onChange}) => {
     const dispatch = useAppDispatch();
-    const loaded = useSelector(loadedSelector);
-    const loading = useSelector(loadingSelector);
-    const steps = useSelector(listSelector({field: 'stepCode', ascending: true}));
+    const loaded = useSelector(selectStepsLoaded);
+    const loading = useSelector(selectStepsLoading);
+    const steps = useSelector(selectSortedStepsList);
 
     useEffect(() => {
         if (!loaded && !loading) {
-            dispatch(loadDLStepsAction());
+            dispatch(loadDLSteps());
         }
     }, []);
 

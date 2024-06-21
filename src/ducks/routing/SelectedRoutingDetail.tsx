@@ -1,5 +1,5 @@
 import React from "react";
-import {selectCurrentDetail} from "./index";
+import {selectCurrentDetail} from "./selectors";
 import classNames from "classnames";
 import numeral from "numeral";
 import RoutingDetailList from "./RoutingDetailList";
@@ -20,14 +20,14 @@ const SelectedRoutingTotal = ({total}:SelectedRoutingTotalProps) => {
         <tr>
             <th colSpan={7}>Total</th>
             <th className="text-end">$ {numeral(total).format('0,0.0000')}</th>
-            <th/>
+            <td/>
         </tr>
         </tfoot>
     )
 }
 
 const SelectedRoutingDetail = ({className}: SelectedRoutingDetailProps) => {
-    const list = useAppSelector((state) => selectCurrentDetail(state, {field: 'StepNo', ascending: true}));
+    const list = useAppSelector(selectCurrentDetail);
     const total = list.reduce((value, row) => value.add(new Decimal(row.StdRatePiece).times(row.ParentQtyFactor).div(row.PlannedPieceCostDivisor ?? 1)), new Decimal(0)).toString();
     const tfoot = (<SelectedRoutingTotal total={total}/>);
 

@@ -18,7 +18,7 @@ export const applyTimingFailed = 'timings/applyTimingFailed';
 
 export const editTiming = 'timings/editTiming';
 export const changeTiming = 'timings/changeSelectedTiming';
-
+export const setTimingSort = 'timings/setSort';
 
 //workCenters
 export const loadWorkCentersRequested = 'workCenters/loadRequested';

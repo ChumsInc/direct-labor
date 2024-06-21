@@ -1,5 +1,5 @@
 import React from "react";
-import {Badge, BootstrapBGColor} from "chums-ducks";
+import {Badge, BootstrapBGColor} from "chums-components";
 
 interface StatusBadgeProps {
     status: boolean,
@@ -10,13 +10,14 @@ interface StatusBadgeProps {
     falseValue?: string,
 }
 
-const StatusBadge:React.FC<StatusBadgeProps> = ({
-                                                    status,
-    className,
-                                                    trueColor= 'success',
-                                                    falseColor= 'danger',
-                                                    trueValue= 'Y',
-                                                    falseValue = 'N'}) => {
+const StatusBadge = ({
+                         status,
+                         className,
+                         trueColor = 'success',
+                         falseColor = 'danger',
+                         trueValue = 'Y',
+                         falseValue = 'N'
+                     }: StatusBadgeProps) => {
     const color = status ? trueColor : falseColor;
     return (<Badge color={color} className={className}>{status ? trueValue : falseValue}</Badge>)
 }

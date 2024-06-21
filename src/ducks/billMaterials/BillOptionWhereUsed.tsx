@@ -5,16 +5,9 @@ import {useSelector} from "react-redux";
 import classNames from "classnames";
 import numeral from "numeral";
 import MultiLineField from "../../components/MultiLineField";
-import {billOptionHeaderKey} from "./types";
-import {billOptionHeaderSelector} from "./index";
-import {BillOptionHeader} from "../types";
-import {SortProps} from "chums-types";
-import {billOptionHeaderSorter, defaultBillOptionSort} from "./utils";
-
-export interface BillWhereUsedInOptionProps {
-    tableKey: string,
-    className?: string,
-}
+import {billOptionHeaderKey, billOptionHeaderSorter, defaultBillOptionSort} from "./utils";
+import {billOptionHeaderSelector} from "./selectors";
+import {BillOptionHeader, SortProps} from "chums-types";
 
 const detailTableFields: SortableTableField<BillOptionHeader>[] = [
     {field: 'BillNo', title: 'Bill No', sortable: true},
@@ -44,7 +37,7 @@ const detailTableFields: SortableTableField<BillOptionHeader>[] = [
     {field: 'updatedByUser', title: 'Updated By'},
 ];
 
-const BillOptionWhereUsed = ({className}:{className?:string}) => {
+const BillOptionWhereUsed = ({className}: { className?: string }) => {
     const list = useSelector(billOptionHeaderSelector);
     const [sort, setSort] = useState<SortProps<BillOptionHeader>>({...defaultBillOptionSort});
     if (!list.length) {

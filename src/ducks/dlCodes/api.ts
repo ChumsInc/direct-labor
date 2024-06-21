@@ -1,9 +1,10 @@
-import {DLCode, DLCodeList, DLCodeStep} from "../ducks/types";
-import {AddDLStepArg, dlCodeKey, DLCodeResponse} from "../ducks/dlCodes/types";
+import {DLCodeList} from "../types";
+import {AddDLStepArg, DLCodeResponse} from "./types";
 import {fetchJSON} from "chums-components";
-import {dlCodeStepSorter} from "../ducks/dlCodes/utils";
+import {dlCodeKey, dlCodeStepSorter} from "./utils";
+import {DLCode, DLCodeStep} from "chums-types";
 
-export async function deleteStep(arg:DLCodeStep):Promise<DLCodeResponse> {
+export async function deleteStep(arg:DLCodeStep):Promise<DLCodeResponse|null> {
     try {
         const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg.dlCodeId)}/step/${encodeURIComponent(arg.stepId)}`;
         return await fetchJSON<DLCodeResponse>(url, {method: 'DELETE'});
@@ -17,7 +18,7 @@ export async function deleteStep(arg:DLCodeStep):Promise<DLCodeResponse> {
     }
 }
 
-export async function postStepSort(id: number, steps:DLCodeStep[]):Promise<DLCodeResponse> {
+export async function postStepSort(id: number, steps:DLCodeStep[]):Promise<DLCodeResponse|null> {
     try {
         const url = `/api/operations/production/dl/codes/${encodeURIComponent(id)}/steps`;
         const body = JSON.stringify({
@@ -34,7 +35,7 @@ export async function postStepSort(id: number, steps:DLCodeStep[]):Promise<DLCod
     }
 }
 
-export async function postAddStep(arg:AddDLStepArg):Promise<DLCodeResponse> {
+export async function postAddStep(arg:AddDLStepArg):Promise<DLCodeResponse|null> {
     try {
         const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg.id)}/step/${encodeURIComponent(arg.stepId)}`;
         return await fetchJSON<DLCodeResponse>(url, {method: 'POST'});
@@ -48,7 +49,7 @@ export async function postAddStep(arg:AddDLStepArg):Promise<DLCodeResponse> {
     }
 }
 
-export async function postDLCode(arg:DLCode):Promise<DLCodeResponse> {
+export async function postDLCode(arg:DLCode):Promise<DLCodeResponse|null> {
     try {
         const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg.id)}`;
         const body = JSON.stringify(arg);
@@ -63,9 +64,9 @@ export async function postDLCode(arg:DLCode):Promise<DLCodeResponse> {
     }
 }
 
-export async function fetchDLCode(arg:number):Promise<DLCodeResponse|null> {
+export async function fetchDLCode(arg:number|string):Promise<DLCodeResponse|null> {
     try {
-        const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg)}`;
+        const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg)}.json`;
         return await fetchJSON<DLCodeResponse>(url, {cache: 'no-cache'})
     } catch(err:unknown) {
         if (err instanceof Error) {
@@ -79,10 +80,10 @@ export async function fetchDLCode(arg:number):Promise<DLCodeResponse|null> {
 
 export async function fetchDLCodeList():Promise<DLCodeList> {
     try {
-        const url = `/api/operations/production/dl/codes/list`;
-        const {dlCodes} = await fetchJSON<{dlCodes: DLCode[]}>(url, {cache: 'no-cache'})
+        const url = `/api/operations/production/dl/codes.json`;
+        const res = await fetchJSON<{dlCodes: DLCode[]}>(url, {cache: 'no-cache'})
         const list: DLCodeList = {};
-        dlCodes.forEach((row: DLCode) => list[dlCodeKey(row)] = row);
+        res?.dlCodes.forEach((row: DLCode) => list[dlCodeKey(row)] = row);
         return list;
     } catch(err:unknown) {
         if (err instanceof Error) {
@@ -114,9 +115,9 @@ export async function postRecalculateDLCode(arg:number):Promise<DLCodeResponse|n
 export async function postRecalculateDLCodes():Promise<DLCodeList> {
     try {
         const url = `/api/operations/production/dl/codes/recalc/`;
-        const {dlCodes} = await fetchJSON<{dlCodes: DLCode[]}>(url, {method: 'POST'});
+        const res = await fetchJSON<{dlCodes: DLCode[]}>(url, {method: 'POST'});
         const list: DLCodeList = {};
-        dlCodes.forEach((row: DLCode) => list[dlCodeKey(row)] = row);
+        res?.dlCodes.forEach((row: DLCode) => list[dlCodeKey(row)] = row);
         return list;
     } catch(err:unknown) {
         if (err instanceof Error) {

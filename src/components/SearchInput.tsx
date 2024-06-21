@@ -1,13 +1,13 @@
-import React, {ChangeEvent, useState} from "react";
-import {Input} from "chums-ducks";
-import {InputProps} from "chums-ducks/dist/components/Input";
+import React, {ChangeEvent, useId, useState} from "react";
+import {Input} from "chums-components";
+import {InputProps} from "chums-components";
 import classNames from "classnames";
 
 export interface SearchInputProps extends InputProps {
     icon?: string,
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({
+const SearchInput = ({
                                                      value,
                                                      icon,
                                                      bsSize,
@@ -15,9 +15,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
                                                      placeholder,
                                                      className,
                                                      onChange,
+    id,
                                                      ...rest
-                                                 }) => {
+                                                 }:SearchInputProps) => {
     const [valid, setValid] = useState(true);
+    const _id = id ?? useId();
 
     const groupClassName = {
         'input-group': true,
@@ -43,8 +45,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
     return (
         <div className={classNames(groupClassName)}>
-            <div className="input-group-text"><span className={icon || 'bi-search'}/></div>
+            <label className="input-group-text" htmlFor={_id}  aria-label="Search">
+                <span className={icon || 'bi-search'}/>
+            </label>
             <Input type={type} className={classNames(inputClassName, className)}
+                   id={_id}
                    placeholder={placeholder || "Search"}
                    value={value} onChange={changeHandler} {...rest}/>
         </div>

@@ -1,38 +1,45 @@
 import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
-import {loadRoutings, selectLoading, selectSearch, selectShowInactive, setSearch, toggleShowInactive} from "./index";
-import {FormCheck, SpinnerButton} from "chums-components";
+import {loadRoutings, setSearch, toggleShowInactive} from "./actions";
+import {selectSearch, selectShowInactive,} from './selectors';
+import {FormCheck} from "chums-components";
 import SearchInput from "../../components/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
+import ErrorBoundary from "../../components/ErrorBoundary";
+
 
 const RoutingFilter: React.FC = () => {
     const dispatch = useAppDispatch();
     const filter = useSelector(selectSearch);
-    const filterActive = useSelector(selectShowInactive);
-    const loading = useSelector(selectLoading);
+    const showInactive = useSelector(selectShowInactive);
 
     const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
         dispatch(setSearch(ev.target.value));
     }
 
-    const onToggleFilterActive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
+    const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
+
+    const onLoad = () => {
+        dispatch(loadRoutings());
+    }
 
     return (
-        <div className="row g-3">
-            <div className="col-auto">
-                <SearchInput value={filter} onChange={onChange} placeholder="Filter Routings" bsSize="sm"/>
+        <ErrorBoundary>
+            <div className="row g-3 align-items-baseline mb-3">
+                <div className="col">
+                    <SearchInput value={filter} onChange={onChange} placeholder="Filter Routings"/>
+                </div>
+                <div className="col-auto">
+                    <FormCheck label={"Show Inactive"} checked={showInactive} onChange={onToggleShowInactive}
+                               type="checkbox"/>
+                </div>
+                <div className="col-auto">
+                    <button type="button" onClick={onLoad} className="btn btn-primary" >
+                        Load Routings
+                    </button>
+                </div>
             </div>
-            <div className="col-auto">
-                <FormCheck label={"Hide Inactive"} checked={filterActive} onChange={onToggleFilterActive}
-                           type="checkbox"/>
-            </div>
-            <div className="col-auto">
-                <SpinnerButton type="button" spinning={loading} size="sm"
-                               onClick={() => dispatch(loadRoutings())}>
-                    Load Routings
-                </SpinnerButton>
-            </div>
-        </div>
+        </ErrorBoundary>
     )
 }
 

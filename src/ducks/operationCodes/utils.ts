@@ -1,4 +1,4 @@
-import {OperationCode, OperationCodeKey} from "../types";
+import {OperationCode, OperationCodeKey} from "chums-types";
 import {SortProps} from "chums-types";
 
 export const operationCodeKey = (oc?: OperationCodeKey | null) => !!oc ? [oc.WorkCenter, oc.OperationCode].join(':') : '';
