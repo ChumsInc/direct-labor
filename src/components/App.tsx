@@ -16,7 +16,6 @@ import SelectedOperationCode from "../ducks/operationCodes/SelectedOperationCode
 const App: React.FC = () => {
     return (
         <HashRouter>
-            <AlertList/>
             <Routes>
                 <Route path="/" element={<MainOutlet/>}>
                     <Route path="dl-codes" element={<DirectLaborCodesPage/>}>
