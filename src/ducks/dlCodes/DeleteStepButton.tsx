@@ -1,9 +1,8 @@
 import React from "react";
-import {useSelector} from "react-redux";
 import {removeDLStep} from "./actions";
 import {DLCodeStep} from "chums-types";
-import {selectCurrentLoading, selectCurrentSaving} from "./selectors";
-import {useAppDispatch} from "../../app/configureStore";
+import {selectCurrentDLCodeStatus} from "./selectors";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 
 export interface DeleteStepButtonProps {
     step: DLCodeStep,
@@ -11,8 +10,7 @@ export interface DeleteStepButtonProps {
 
 const DeleteStepButton: React.FC<DeleteStepButtonProps> = ({step}) => {
     const dispatch = useAppDispatch();
-    const saving = useSelector(selectCurrentSaving);
-    const loading = useSelector(selectCurrentLoading);
+    const status = useAppSelector(selectCurrentDLCodeStatus)
 
     const clickHandler = () => {
         if (window.confirm(`Are you sure you want to delete step #${step.stepOrder + 1} '${step.stepCode}'`)) {
@@ -21,7 +19,7 @@ const DeleteStepButton: React.FC<DeleteStepButtonProps> = ({step}) => {
     }
 
     return (
-        <button className="btn btn-xs btn-danger" type="button" onClick={clickHandler} disabled={saving || loading}>
+        <button className="btn btn-xs btn-danger" type="button" onClick={clickHandler} disabled={status !== 'idle'}>
             <span className="bi-x-lg"/>
         </button>
     )

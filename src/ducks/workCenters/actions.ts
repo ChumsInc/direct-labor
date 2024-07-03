@@ -12,6 +12,7 @@ export const setPage = createAction<number>('workCenters/setPage');
 export const setRowsPerPage = createAction<number>('workCenters/setRowsPerPage');
 export const toggleFilterRatedWC = createAction<boolean | undefined>('workCenters/toggleFilterRatedWC');
 export const setSort = createAction<SortProps<WorkCenter>>('workCenters/setSort');
+export const setWCSearch = createAction<string>('workCenters/setSearch');
 
 export const loadWorkCenters = createAsyncThunk<WorkCenterList>(
     'workCenters/load',

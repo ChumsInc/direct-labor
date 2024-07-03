@@ -4,9 +4,7 @@ import {
     loadWorkCenters,
     saveWorkCenter,
     setCurrentWorkCenter,
-    setPage,
-    setRowsPerPage,
-    setSort,
+    setSort, setWCSearch,
     setWorkCenterRate,
     toggleFilterRatedWC
 } from "./actions";
@@ -14,24 +12,23 @@ import {SortProps} from "chums-components";
 import {WorkCenter} from "chums-types";
 
 export const defaultSort: SortProps<WorkCenter> = {
-    field: "WorkCenterCode",
+    field: "workCenter",
     ascending: true,
 }
 
 export interface WorkCentersState {
     list: {
         workCenters: WorkCenterList,
-        loading: 'idle'|'pending';
+        loading: 'idle' | 'pending';
         loaded: boolean;
-        page: number;
-        rowsPerPage: number;
         filterRatedWorkCenters: boolean;
+        search: string;
         sort: SortProps<WorkCenter>;
     }
     current: {
-        code: string|null;
-        workCenter: WorkCenter|null;
-        actionStatus: 'idle'|'loading'|'saving';
+        code: string | null;
+        workCenter: WorkCenter | null;
+        actionStatus: 'idle' | 'loading' | 'saving';
     }
 }
 
@@ -41,9 +38,8 @@ export const initialWorkCenterState: WorkCentersState = {
         workCenters: {},
         loading: 'idle',
         loaded: false,
-        page: 0,
-        rowsPerPage: 25,
         filterRatedWorkCenters: true,
+        search: '',
         sort: {...defaultSort},
     },
     current: {
@@ -61,7 +57,7 @@ const workCentersReducer = createReducer(initialWorkCenterState, (builder) => {
         })
         .addCase(setWorkCenterRate, (state, action) => {
             if (state.current.workCenter) {
-                state.current.workCenter.AverageHourlyRate = action.payload;
+                state.current.workCenter.averageHourlyRate = action.payload;
             }
         })
         .addCase(loadWorkCenters.pending, (state) => {
@@ -88,26 +84,22 @@ const workCentersReducer = createReducer(initialWorkCenterState, (builder) => {
             }
             state.current.workCenter = action.payload;
             if (action.payload) {
-                state.list.workCenters[action.payload.WorkCenterCode] = action.payload;
+                state.list.workCenters[action.payload.workCenter] = action.payload;
             }
         })
         .addCase(saveWorkCenter.rejected, (state) => {
             state.current.actionStatus = 'idle';
         })
-        .addCase(setPage, (state, action) => {
-            state.list.page = action.payload;
-        })
-        .addCase(setRowsPerPage, (state, action) => {
-            state.list.rowsPerPage = action.payload;
-            state.list.page = 0;
-        })
         .addCase(setSort, (state, action) => {
             state.list.sort = action.payload;
-            state.list.page = 0;
         })
         .addCase(toggleFilterRatedWC, (state, action) => {
             state.list.filterRatedWorkCenters = action.payload ?? !state.list.filterRatedWorkCenters;
-        });
+        })
+        .addCase(setWCSearch, (state, action) => {
+            state.list.search = action.payload;
+        } )
+    ;
 });
 
 

@@ -14,7 +14,15 @@ import {
     workCentersNavId,
     workCentersPath
 } from "../routerPaths";
-import {dlCodeIcon, dlStepIcon, routingIcon, sageOperationCodeIcon, workCenterIcon} from "../icons";
+import {
+    activityCodeIcon,
+    dlCodeIcon,
+    dlStepIcon,
+    routingIcon,
+    sageOperationCodeIcon,
+    templatesIcon,
+    workCenterIcon
+} from "../icons";
 import classNames from "classnames";
 import "./mainNav.scss";
 import ErrorBoundary from "./ErrorBoundary";
@@ -34,18 +42,11 @@ export const RoutedLink = ({to, icon, title}: {
 }
 
 export const mainTabs: NavItemProps[] = [
-    {id: routingNavId, title: 'Routing', element: <RoutedLink to={routingPath} title="Routing" icon={routingIcon}/>},
     {
-        id: workCentersNavId,
-        title: 'Work Centers',
-        icon: workCenterIcon,
-        element: <RoutedLink to={workCentersPath} title="Work Centers" icon={workCenterIcon}/>
-    },
-    {
-        id: operationCodesNavId,
-        title: 'Sage Ops',
-        icon: sageOperationCodeIcon,
-        element: <RoutedLink to={operationCodesPath} title="W/O Ops" icon={sageOperationCodeIcon}/>
+        id: dlStepsNavId,
+        title: 'D/L Steps',
+        icon: dlStepIcon,
+        element: <RoutedLink to={dlStepsPath} title="D/L Steps" icon={dlStepIcon}/>
     },
     {
         id: dlCodesNavId,
@@ -54,10 +55,29 @@ export const mainTabs: NavItemProps[] = [
         element: <RoutedLink to={dlCodesPath} title="D/L Codes" icon={dlCodeIcon}/>
     },
     {
-        id: dlStepsNavId,
-        title: 'D/L Steps',
-        icon: dlStepIcon,
-        element: <RoutedLink to={dlStepsPath} title="D/L Steps" icon={dlStepIcon}/>
+        id: workCentersNavId,
+        title: 'Work Centers',
+        icon: workCenterIcon,
+        element: <RoutedLink to={workCentersPath} title="Work Centers" icon={workCenterIcon}/>
+    },
+    {
+        id: 'activity-codes',
+        title: 'Activity Codes',
+        icon: activityCodeIcon,
+        element: <RoutedLink to="/activity-codes" title="Activity Codes" icon="bi-activity" />
+    },
+    {
+        id: 'templates',
+        title: 'W/T Templates',
+        icon: templatesIcon,
+        element: <RoutedLink to="/templates" title="W/T Templates" icon={templatesIcon}/>
+    },
+    {id: routingNavId, title: 'Routing', element: <RoutedLink to={routingPath} title="Routing" icon={routingIcon}/>},
+    {
+        id: operationCodesNavId,
+        title: 'Sage Ops',
+        icon: sageOperationCodeIcon,
+        element: <RoutedLink to={operationCodesPath} title="W/O Ops" icon={sageOperationCodeIcon}/>
     },
 ]
 
@@ -74,14 +94,6 @@ const MainNav = () => {
     const [currentTab, setCurrentTab] = useState<string>('');
     const [collapsed, setCollapsed] = useState(getPreference(currentMenuCollapseKey, false));
 
-    useEffect(() => {
-        console.log(location);
-    }, [location]);
-
-    useEffect(() => {
-        console.log(currentTab);
-    }, [currentTab]);
-
     const onCollapse = () => {
         setPreference(currentMenuCollapseKey, !collapsed);
         setCollapsed(!collapsed);
@@ -96,7 +108,7 @@ const MainNav = () => {
                 <ul className="nav">
                     <NavItem onSelect={onCollapse} id="toggle-nav" title="Collapse" icon={collapseIcon}/>
                 </ul>
-                <NavList items={mainTabs} onChange={setCurrentTab} currentTab={currentTab} variant="pills" vertical/>
+                <NavList items={mainTabs} onChange={setCurrentTab} currentTab={currentTab} variant="pills" vertical />
             </div>
         </ErrorBoundary>
     )

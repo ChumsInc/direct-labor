@@ -1,7 +1,17 @@
 import {OperationCode, OperationCodeKey} from "chums-types";
 import {SortProps} from "chums-types";
 
-export const operationCodeKey = (oc?: OperationCodeKey | null) => !!oc ? [oc.WorkCenter, oc.OperationCode].join(':') : '';
+
+export const isOperationCodeKey = (arg:OperationCodeKey|null|undefined): arg is OperationCodeKey => {
+    return !!arg && arg.OperationCode !== undefined;
+}
+
+export const operationCodeKey = (arg?: OperationCodeKey | null) => {
+    if (isOperationCodeKey(arg)) {
+        return [arg.WorkCenter, arg.OperationCode].join(':');
+    }
+    return '';
+}
 export const operationCodeSearchKey = ({
                                            workCenter,
                                            operationCode

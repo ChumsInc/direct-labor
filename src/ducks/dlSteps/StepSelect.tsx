@@ -13,7 +13,7 @@ export interface StepSelectProps {
     onChange: (step?: DLStep) => void,
 }
 
-const StepSelect: React.FC<StepSelectProps> = ({id, onChange}) => {
+const StepSelect = ({id, onChange}:StepSelectProps) => {
     const dispatch = useAppDispatch();
     const loaded = useSelector(selectStepsLoaded);
     const loading = useSelector(selectStepsLoading);

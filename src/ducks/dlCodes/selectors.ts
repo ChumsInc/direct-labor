@@ -1,27 +1,23 @@
 import {dlCodeSorter} from "./utils";
-import {DLCode, DLCodeStep} from "chums-types";
+import {DLCodeStep} from "chums-types";
 import {RootState} from "../../app/configureStore";
 import {createSelector} from "@reduxjs/toolkit";
 
 
-export const listLengthSelector = (state: RootState): number => Object.keys(state.dlCodes.list).length;
-export const selectDLCodeByID = (state: RootState, id:number): DLCode | null => state.dlCodes.list[id] || null;
-export const selectLoading = (state: RootState): boolean => state.dlCodes.loading;
-export const selectLoaded = (state: RootState): boolean => state.dlCodes.loaded;
+export const selectDLCodesStatus = (state: RootState) => state.dlCodes.list.status;
+export const selectLoaded = (state: RootState): boolean => state.dlCodes.list.loaded;
 export const selectCurrentHeader = (state: RootState) => state.dlCodes.current.header;
 export const selectCurrentSteps = (state: RootState): DLCodeStep[] => state.dlCodes.current.steps;
-export const selectCurrentLoading = (state: RootState): boolean => state.dlCodes.current.loading;
-export const selectCurrentSaving = (state: RootState): boolean => state.dlCodes.current.saving;
+export const selectCurrentDLCodeStatus = (state: RootState) => state.dlCodes.current.status;
 export const selectCurrentChanged = (state: RootState): boolean => state.dlCodes.current.changed;
-export const selectFilter = (state: RootState): string => state.dlCodes.search;
-export const selectWorkCenterFilter = (state: RootState): string => state.dlCodes.workCenter;
-export const selectShowInactive = (state: RootState): boolean => state.dlCodes.showInactive;
-export const selectPage = (state: RootState) => state.dlCodes.page;
-export const selectRowsPerPage = (state: RootState) => state.dlCodes.rowsPerPage;
-export const selectSort = (state: RootState) => state.dlCodes.sort;
-export const selectList = (state: RootState) => Object.values(state.dlCodes.list) as DLCode[];
+export const selectFilter = (state: RootState): string => state.dlCodes.list.filters.search;
+export const selectWorkCenterFilter = (state: RootState): string => state.dlCodes.list.filters.workCenter;
+export const selectShowInactive = (state: RootState): boolean => state.dlCodes.list.filters.showInactive;
+export const selectSort = (state: RootState) => state.dlCodes.list.sort;
+export const selectDLCodesList = (state: RootState) => state.dlCodes.list.values;
+
 export const selectSortedList = createSelector(
-    [selectList, selectFilter, selectWorkCenterFilter, selectShowInactive, selectSort],
+    [selectDLCodesList, selectFilter, selectWorkCenterFilter, selectShowInactive, selectSort],
     (list, search, wcFilter, showInactive, sort) => {
         let re = /^/;
         try {

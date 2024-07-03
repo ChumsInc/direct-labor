@@ -12,9 +12,10 @@ const WorkCenterForm = () => {
     const dispatch = useAppDispatch();
     const params = useParams<{ workCenter: string }>()
     const workCenter = useSelector(selectCurrentWorkCenter);
+
     const saving = useSelector(selectSaving);
     const loading = useSelector(selectLoading);
-    const [rate, setRate] = useState<number | null>(workCenter?.AverageHourlyRate ?? null);
+    const [rate, setRate] = useState<number|string | null>(workCenter?.averageHourlyRate ?? null);
 
     useEffect(() => {
         if (params.workCenter) {
@@ -23,7 +24,7 @@ const WorkCenterForm = () => {
     }, [params]);
 
     useEffect(() => {
-        setRate(workCenter?.AverageHourlyRate ?? null);
+        setRate(workCenter?.averageHourlyRate ?? null);
     }, [workCenter])
 
     const onChangeRate = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -35,27 +36,22 @@ const WorkCenterForm = () => {
         if (!rate || !workCenter) {
             return;
         }
-        dispatch(saveWorkCenter({...workCenter, AverageHourlyRate: rate}));
+        dispatch(saveWorkCenter({...workCenter, averageHourlyRate: rate}));
     }
 
     if (!workCenter) {
         return null;
     }
 
-    const {WorkCenterCode, Description, CommentLine1, CommentLine2} = workCenter;
     return (
         <form onSubmit={onSubmit}>
             <Helmet>
-                <title>D/L WC: {WorkCenterCode}</title>
+                <title>D/L WC: {workCenter.workCenter}</title>
             </Helmet>
             <div className="row g-3 align-items-baseline">
-                <h3 className="col-auto">{WorkCenterCode}</h3>
-                <div className="col-auto">{Description}</div>
+                <h3 className="col-auto">{workCenter.workCenter}</h3>
+                <div className="col-auto">{workCenter.workCenterDesc}</div>
             </div>
-            <FormColumn label="Notes">
-                <div>{CommentLine1 || 'N/A'}</div>
-                <div>{CommentLine2}</div>
-            </FormColumn>
             <FormColumn label="Average Hourly Rate">
                 <input type="number" className="form-control form-control-sm"
                        onChange={onChangeRate}

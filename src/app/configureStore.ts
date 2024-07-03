@@ -11,8 +11,11 @@ import {default as timingsReducer} from '../ducks/timings';
 import {configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import versionReducer from "../ducks/version";
+import activityCodesReducer from "../ducks/activity-codes";
+import templatesReducer from "../ducks/templates";
 
 export const rootReducer = combineReducers({
+    activityCodes: activityCodesReducer,
     alerts: alertsReducer,
     billMaterials: billMaterialsReducer,
     dlCodes: dlCodesReducer,
@@ -20,6 +23,7 @@ export const rootReducer = combineReducers({
     glAccounts: glAccountsReducer,
     operationCodes: operationCodesReducer,
     routing: routingReducer,
+    templates: templatesReducer,
     timings: timingsReducer,
     workCenters: workCentersReducer,
     version: versionReducer

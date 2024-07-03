@@ -78,13 +78,11 @@ export async function fetchDLCode(arg:number|string):Promise<DLCodeResponse|null
     }
 }
 
-export async function fetchDLCodeList():Promise<DLCodeList> {
+export async function fetchDLCodeList():Promise<DLCode[]> {
     try {
         const url = `/api/operations/production/dl/codes.json`;
         const res = await fetchJSON<{dlCodes: DLCode[]}>(url, {cache: 'no-cache'})
-        const list: DLCodeList = {};
-        res?.dlCodes.forEach((row: DLCode) => list[dlCodeKey(row)] = row);
-        return list;
+        return res?.dlCodes ?? [];
     } catch(err:unknown) {
         if (err instanceof Error) {
             console.debug("fetchDLCodeList()", err.message);
@@ -112,13 +110,11 @@ export async function postRecalculateDLCode(arg:number):Promise<DLCodeResponse|n
     }
 }
 
-export async function postRecalculateDLCodes():Promise<DLCodeList> {
+export async function postRecalculateDLCodes():Promise<DLCode[]> {
     try {
         const url = `/api/operations/production/dl/codes/recalc/`;
         const res = await fetchJSON<{dlCodes: DLCode[]}>(url, {method: 'POST'});
-        const list: DLCodeList = {};
-        res?.dlCodes.forEach((row: DLCode) => list[dlCodeKey(row)] = row);
-        return list;
+        return res?.dlCodes ?? [];
     } catch(err:unknown) {
         if (err instanceof Error) {
             console.debug("postRecalculateDLCodes()", err.message);

@@ -17,7 +17,7 @@ const DLCodeFilter: React.FC = () => {
     const loading = useSelector(selectStepsLoading);
     const filterInactive = useSelector(filterInactiveSelector)
 
-    const onSelectWC = (wc: WorkCenter | null) => dispatch(setStepWCFilter(wc?.WorkCenterCode ?? ''));
+    const onSelectWC = (wc: WorkCenter | null) => dispatch(setStepWCFilter(wc?.workCenter ?? ''));
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setStepFilter(ev.target.value ?? ''));
     const onReloadList = () => dispatch(loadDLSteps());
 

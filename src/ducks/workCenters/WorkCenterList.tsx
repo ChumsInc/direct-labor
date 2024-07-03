@@ -1,52 +1,46 @@
-import React, {useEffect} from "react";
-import {FormCheck, SpinnerButton} from "chums-components";
+import React, {ChangeEvent, useEffect, useId, useState} from "react";
+import {
+    FormCheck,
+    SortableTable,
+    SortableTableField,
+    SortProps,
+    SpinnerButton,
+    TablePagination
+} from "chums-components";
 import {useSelector} from "react-redux";
-import {loadWorkCenters, setPage, setRowsPerPage, setSort, toggleFilterRatedWC} from "./actions";
+import {loadWorkCenters, setSort, setWCSearch, toggleFilterRatedWC} from "./actions";
 import {
     selectCurrentWorkCenter,
     selectFilterRatedWC,
     selectLoading,
-    selectPage,
-    selectRowsPerPage,
-    selectSortedWorkCenters, selectWorkCentersLoaded, selectWorkCenterSort
+    selectSortedWorkCenters, selectWorkCenterSearch,
+    selectWorkCentersLoaded,
+    selectWorkCenterSort
 } from "./selectors";
-import {workCenterKey} from "./types";
-import MultiLineField from "../../components/MultiLineField";
+import {workCenterKey} from "./utils";
 import numeral from "numeral";
 import {useNavigate} from "react-router-dom";
 import {selectedWorkCenterPath} from "../../routerPaths";
 import {WorkCenter} from "chums-types";
-import {SortableTable, SortableTableField, SortProps, TablePagination} from "chums-components";
-import {useAppDispatch} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import Decimal from "decimal.js";
 
 const fields: SortableTableField<WorkCenter>[] = [
-    {field: 'WorkCenterCode', title: 'W/C Code', sortable: true},
-    {field: 'Description', title: 'Description', sortable: true},
+    {field: 'workCenter', title: 'W/C Code', sortable: true},
+    {field: 'workCenterDesc', title: 'Description', sortable: true},
     {
-        field: 'CommentLine1',
-        title: 'Comment',
+        field: 'efficiencyPercent',
+        title: 'Efficiency',
         sortable: true,
-        render: ({CommentLine1, CommentLine2}: WorkCenter) => (
-            <MultiLineField line1={CommentLine1} line2={CommentLine2}/>
-        )
+        align: 'end',
+        render: ({efficiencyPercent}: WorkCenter) => numeral(new Decimal(efficiencyPercent).div(100)).format('0,0%')
     },
     {
-        field: 'ChrgAtEmpRate',
-        title: 'Employee Rate',
-        sortable: true,
-        render: ({ChrgAtEmpRate}: WorkCenter) => ChrgAtEmpRate ? 'Y' : 'N'
-    },
-    {
-        field: 'OutsideProcessing',
-        title: 'Outside Processing',
-        sortable: true,
-        render: ({OutsideProcessing}: WorkCenter) => OutsideProcessing ? 'Y' : 'N'
-    },
-    {
-        field: 'AverageHourlyRate',
+        field: 'averageHourlyRate',
         title: 'Avg Rate',
         sortable: true,
-        render: ({AverageHourlyRate}: WorkCenter) => !!AverageHourlyRate ? numeral(AverageHourlyRate).format('$0.0000') : ''
+        align: 'end',
+        render: ({averageHourlyRate}: WorkCenter) => !averageHourlyRate ? '' : numeral(averageHourlyRate).format('$0.0000')
     },
 ];
 
@@ -57,10 +51,13 @@ const WorkCenterList: React.FC = () => {
     const loaded = useSelector(selectWorkCentersLoaded);
     const filter = useSelector(selectFilterRatedWC);
     const list = useSelector(selectSortedWorkCenters);
-    const page = useSelector(selectPage);
-    const rowsPerPage = useSelector(selectRowsPerPage);
     const sort = useSelector(selectWorkCenterSort);
     const selected = useSelector(selectCurrentWorkCenter);
+    const search = useAppSelector(selectWorkCenterSearch);
+    const searchId = useId();
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
 
     useEffect(() => {
         if (!loaded && !loading) {
@@ -68,36 +65,54 @@ const WorkCenterList: React.FC = () => {
         }
     }, [])
 
+    useEffect(() => {
+        setPage(0);
+    }, [list, sort]);
+
     const onReload = () => dispatch(loadWorkCenters());
-    const onSelectWorkCenter = (row: WorkCenter) => navigate(selectedWorkCenterPath(row.WorkCenterCode));
+    const onSelectWorkCenter = (row: WorkCenter) => navigate(selectedWorkCenterPath(row.workCenter));
 
     const onChangeFilter = () => dispatch(toggleFilterRatedWC());
     const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
-    const onChangePage = (page: number) => dispatch(setPage(page));
-    const onChangeRowsPerPage = (rpp: number) => dispatch(setRowsPerPage(rpp));
+    const onChangePage = (page: number) => setPage(page);
+    const onChangeRowsPerPage = (rpp: number) => {
+        setPage(0)
+        setRowsPerPage(rpp);
+    }
+
+    const searchChangeHandler = (ev:ChangeEvent<HTMLInputElement>) => {
+        dispatch(setWCSearch(ev.target.value));
+    }
 
     return (
         <div>
-            <div className="row g-3">
-                <div className="col-auto">
-                    <SpinnerButton type="button" color="primary"
-                                   size="sm" spinning={loading} onClick={onReload}>
-                        Reload
-                    </SpinnerButton>
+            <div className="row g-3 align-items-baseline">
+                <div className="col">
+                    <div className="input-group">
+                        <label className="input-group-text" htmlFor={searchId}>Search</label>
+                        <input type="search" value={search} onChange={searchChangeHandler} id={searchId}
+                               className="form-control"/>
+                    </div>
+
                 </div>
                 <div className="col-auto">
                     <FormCheck label={"Show Only Rated W/C"} checked={filter}
                                onChange={onChangeFilter} type="checkbox"/>
                 </div>
+                <div className="col-auto">
+                    <SpinnerButton type="button" color="primary" spinning={loading} onClick={onReload}>
+                        Reload
+                    </SpinnerButton>
+                </div>
             </div>
             <SortableTable keyField={workCenterKey} fields={fields}
                            data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                            currentSort={sort} onChangeSort={onChangeSort}
-                           size="xs"
-                           selected={selected?.WorkCenterCode}
+                           size="sm"
+                           selected={selected?.workCenter}
                            onSelectRow={onSelectWorkCenter}/>
             <TablePagination page={page} onChangePage={onChangePage} rowsPerPage={rowsPerPage}
-                             onChangeRowsPerPage={onChangeRowsPerPage}
+                             onChangeRowsPerPage={onChangeRowsPerPage} showFirst showLast
                              count={list.length}/>
         </div>
     )

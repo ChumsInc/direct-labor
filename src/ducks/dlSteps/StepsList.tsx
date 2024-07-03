@@ -58,11 +58,10 @@ const StepsList = () => {
 
     return (
         <ErrorBoundary>
-            <div>
-                <DLStepsFilter/>
+            <div className="mt-3">
                 <SortableTable keyField={dlStepKey} fields={stepsListFields}
                                currentSort={sort} onChangeSort={sortChangeHandler}
-                               data={pagedList} size="xs"
+                               data={pagedList} size="sm"
                                rowClassName={(row: DLBasicStep) => classNames({'table-warning': !row.active})}
                                selected={selected?.id} onSelectRow={onSelectRow}/>
                 <TablePagination page={page} onChangePage={setPage}

@@ -1,4 +1,4 @@
-import {defaultDLCodeSort, dlCodeStepSorter} from "./utils";
+import {defaultDLCodeSort, dlCodeSorter, dlCodeStepSorter} from "./utils";
 import {DLCodeList} from "../types";
 import {SortProps} from "chums-components";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
@@ -22,186 +22,199 @@ import {
 import {DLCode, DLCodeStep} from "chums-types";
 
 export interface DLCodesState {
-    list: DLCodeList;
-    loading: boolean;
-    loaded: boolean;
+    list: { 
+        values: DLCode[];
+        status: 'idle'|'loading'|'calculating';
+        loaded: boolean;
+        sort: SortProps<DLCode>,
+        filters: {
+            showInactive: boolean;
+            search: string;
+            workCenter: string;
+        }
+    }
     current: {
+        id: number;
         header: DLCode | null;
         steps: DLCodeStep[];
-        loading: boolean;
-        saving: boolean;
+        status: 'idle'|'loading'|'saving';
         changed: boolean;
     },
-    showInactive: boolean;
-    search: string;
-    workCenter: string;
-    page: number;
-    rowsPerPage: number;
-    sort: SortProps<DLCode>,
 }
 
 const initialState = (): DLCodesState => ({
-    list: {},
-    loading: false,
-    loaded: false,
+    list: {
+        values: [],
+        status: 'idle',
+        loaded: false,
+        sort: {...defaultDLCodeSort},
+        filters: {
+            showInactive: getPreference(localStorageKeys.dlCodesShowInactive, false),
+            search: '',
+            workCenter: getPreference(localStorageKeys.dlCodesWorkCenter, ''),
+        }
+    },
     current: {
+        id: 0,
         header: null,
         steps: [],
-        loading: false,
-        saving: false,
+        status: 'idle',
         changed: false,
     },
-    showInactive: getPreference(localStorageKeys.dlCodesShowInactive, false),
-    search: '',
-    workCenter: getPreference(localStorageKeys.dlCodesWorkCenter, ''),
-    page: 0,
-    rowsPerPage: getPreference(localStorageKeys.dlCodesRowsPerPage, 25),
-    sort: {...defaultDLCodeSort},
 })
 
 const dlCodesReducer = createReducer(initialState, (builder) => {
     builder
         .addCase(setWorkCenterFilter, (state, action) => {
-            state.workCenter = action.payload;
+            state.list.filters.workCenter = action.payload;
             setPreference(localStorageKeys.dlCodesWorkCenter, action.payload);
         })
         .addCase(toggleShowInactive, (state, action) => {
-            state.showInactive = action.payload ?? !state.showInactive;
-            setPreference(localStorageKeys.dlCodesShowInactive, state.showInactive);
+            state.list.filters.showInactive = action.payload ?? !state.list.filters.showInactive;
+            setPreference(localStorageKeys.dlCodesShowInactive, state.list.filters.showInactive);
         })
         .addCase(setSearch, (state, action) => {
-            state.search = action.payload;
-        })
-        .addCase(setPage, (state, action) => {
-            state.page = action.payload;
-        })
-        .addCase(setRowsPerPage, (state, action) => {
-            state.page = 0;
-            state.rowsPerPage = action.payload;
-            setPreference(localStorageKeys.dlCodesRowsPerPage, action.payload);
+            state.list.filters.search = action.payload;
         })
         .addCase(setSort, (state, action) => {
-            state.sort = action.payload;
-            state.page = 0;
+            state.list.sort = action.payload;
         })
         .addCase(loadDLCodes.pending, (state) => {
-            state.loading = true;
+            state.list.status = 'loading';
         })
         .addCase(loadDLCodes.fulfilled, (state, action) => {
-            state.loading = false;
-            state.loaded = true;
-            state.list = action.payload ?? {};
+            state.list.status = 'idle';
+            state.list.loaded = true;
+            state.list.values = [...action.payload].sort(dlCodeSorter(defaultDLCodeSort));
             if (state.current.header) {
-                state.current.header = state.list[state.current.header.id] ?? null;
+                const [header] = state.list.values.filter(row => row.id === state.current.header?.id);
+                state.current.header = header ?? null;
                 if (!state.current.header) {
                     state.current.steps = [];
                 }
             }
         })
         .addCase(loadDLCodes.rejected, (state) => {
-            state.loading = false;
+            state.list.status = 'idle';
         })
         .addCase(loadDLCode.pending, (state, action) => {
-            const id = +action.meta.arg;
-            state.current.loading = true;
-            if (!id || state.current.header?.id !== id) {
+            state.current.id = +action.meta.arg;
+            state.current.status = 'loading';
+            if (!state.current.id || state.current.header?.id !== state.current.id) {
                 state.current.steps = [];
             }
-            state.current.header = state.list[id] ?? null;
+            const [header] = state.list.values.filter(row => row.id === state.current.id);
+            state.current.header = header ?? null;
         })
         .addCase(loadDLCode.fulfilled, (state, action) => {
-            state.current.loading = false;
+            state.current.status = 'idle';
+            state.current.id = action.payload?.dlCode?.id ?? 0;
             state.current.header = action.payload?.dlCode ?? null;
             state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
             if (action.payload?.dlCode) {
-                state.list[action.payload.dlCode.id] = action.payload.dlCode;
             }
         })
         .addCase(loadDLCode.rejected, (state) => {
-            state.current.loading = false;
+            state.current.status = 'idle';
         })
         .addCase(saveDLCode.pending, (state, action) => {
-            state.current.saving = true;
+            state.current.status = 'saving';
         })
         .addCase(saveDLCode.fulfilled, (state, action) => {
-            state.current.saving = false;
-            state.current.header = action.payload?.dlCode ?? null;
-            state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
-            if (action.payload?.dlCode) {
-                state.list[action.payload.dlCode.id] = action.payload.dlCode;
+            state.current.status = 'idle';
+            if (action.payload) {
+                state.current.header = action.payload.dlCode ?? null;
+                state.current.steps = action.payload.steps.sort(dlCodeStepSorter) ?? [];
+                state.list.values = [
+                    ...state.list.values.filter(row => row.id != state.current.id),
+                    action.payload.dlCode,
+                ].sort(dlCodeSorter(defaultDLCodeSort));
             }
         })
         .addCase(saveDLCode.rejected, (state) => {
-            state.current.saving = false;
+            state.current.status = 'idle';
         })
         .addCase(addDLStep.pending, (state, action) => {
-            state.current.saving = true;
+            state.current.status = 'saving';
         })
         .addCase(addDLStep.fulfilled, (state, action) => {
-            state.current.saving = false;
-            state.current.header = action.payload?.dlCode ?? null;
-            state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
-            if (action.payload?.dlCode) {
-                state.list[action.payload.dlCode.id] = action.payload.dlCode;
+            state.current.status = 'idle';
+            if (action.payload) {
+                state.current.header = action.payload?.dlCode ?? null;
+                state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
+                state.list.values = [
+                    ...state.list.values.filter(row => row.id != state.current.id),
+                    action.payload.dlCode,
+                ].sort(dlCodeSorter(defaultDLCodeSort));
             }
         })
         .addCase(addDLStep.rejected, (state) => {
-            state.current.saving = false;
+            state.current.status = 'idle';
         })
         .addCase(rebuildDLCode.pending, (state, action) => {
-            state.current.loading = true;
+            state.current.status = 'loading';
         })
         .addCase(rebuildDLCode.fulfilled, (state, action) => {
-            state.current.loading = false;
-            state.current.header = action.payload?.dlCode ?? null;
-            state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
-            if (action.payload?.dlCode) {
-                state.list[action.payload.dlCode.id] = action.payload.dlCode;
+            state.current.status = 'idle';
+            if (action.payload) {
+                state.current.header = action.payload.dlCode ?? null;
+                state.current.steps = action.payload.steps.sort(dlCodeStepSorter) ?? [];
+                state.list.values = [
+                    ...state.list.values.filter(row => row.id != state.current.id),
+                    action.payload.dlCode,
+                ].sort(dlCodeSorter(defaultDLCodeSort));
             }
         })
         .addCase(rebuildDLCode.rejected, (state) => {
-            state.current.loading = false;
+            state.current.status = 'idle';
         })
         .addCase(saveDLStepSort.pending, (state, action) => {
-            state.current.saving = true;
+            state.current.status = 'saving';
         })
         .addCase(saveDLStepSort.fulfilled, (state, action) => {
-            state.current.saving = false;
-            state.current.header = action.payload?.dlCode ?? null;
-            state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
-            if (action.payload?.dlCode) {
-                state.list[action.payload.dlCode.id] = action.payload.dlCode;
+            state.current.status = 'idle';
+            if (action.payload) {
+                state.current.header = action.payload?.dlCode ?? null;
+                state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
+                state.list.values = [
+                    ...state.list.values.filter(row => row.id != state.current.id),
+                    action.payload.dlCode,
+                ].sort(dlCodeSorter(defaultDLCodeSort));
             }
         })
         .addCase(saveDLStepSort.rejected, (state) => {
-            state.current.saving = false;
+            state.current.status = 'idle';
         })
         .addCase(removeDLStep.pending, (state, action) => {
-            state.current.saving = true;
+            state.current.status = 'saving';
         })
         .addCase(removeDLStep.fulfilled, (state, action) => {
-            state.current.saving = false;
-            state.current.header = action.payload?.dlCode ?? null;
-            state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
-            if (action.payload?.dlCode) {
-                state.list[action.payload.dlCode.id] = action.payload.dlCode;
+            state.current.status = 'idle';
+            if (action.payload) {
+                state.current.header = action.payload?.dlCode ?? null;
+                state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
+                state.list.values = [
+                    ...state.list.values.filter(row => row.id != state.current.id),
+                    action.payload.dlCode,
+                ].sort(dlCodeSorter(defaultDLCodeSort));
             }
         })
         .addCase(removeDLStep.rejected, (state) => {
-            state.current.saving = false;
+            state.current.status = 'idle';
         })
         .addCase(recalcDLCodes.pending, (state) => {
-            state.loading = true;
+            state.list.status = 'calculating';
         })
         .addCase(recalcDLCodes.fulfilled, (state, action) => {
-            state.loading = false;
-            state.list = action.payload;
+            state.list.status = 'idle';
+            state.list.values = action.payload.sort(dlCodeSorter(defaultDLCodeSort));
             if (state.current.header) {
-                state.current.header = action.payload[state.current.header.id] ?? null;
+                const [current] = state.list.values.filter(row => row.id === state.current.id);
+                state.current.header = current ?? null;
             }
         })
         .addCase(recalcDLCodes.rejected, (state) => {
-            state.loading = false;
+            state.list.status = 'idle';
         })
 
 });

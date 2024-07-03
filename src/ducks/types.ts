@@ -1,4 +1,5 @@
 import {
+    ActivityCode,
     BillHeader,
     BillOptionHeader,
     BillType,
@@ -6,11 +7,13 @@ import {
     DLCode,
     DLCodeStep,
     GLAccount,
-    OperationCode, RoutingDetail, RoutingHeader,
-    WorkCenter
+    OperationCode,
+    RoutingDetail,
+    RoutingHeader,
+    WorkCenter,
+    WorkTemplateStep
 } from "chums-types";
-import {Tab} from "chums-components";
-import {NavItemElement, NavItemProps} from "chums-components/src/NavList/NavList.types";
+import {NavItemProps} from "chums-components/src/NavList/NavList.types";
 
 export interface ListState {
     list: any[] | object,
@@ -115,4 +118,9 @@ export interface WorkCenterList {
 
 export interface RoutedTab extends NavItemProps {
     to: string;
+}
+
+export interface LoadActivityCodeResponse {
+    activityCode: ActivityCode;
+    steps: WorkTemplateStep[];
 }

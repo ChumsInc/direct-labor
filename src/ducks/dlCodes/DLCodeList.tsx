@@ -8,6 +8,7 @@ import classNames from "classnames";
 import NumericTableValue from "../../components/NumericTableValue";
 import Decimal from "decimal.js";
 import {DLCodeWorkTemplate} from "chums-types/src/direct-labor";
+import {activityCodePath} from "../activity-codes/utils";
 
 export interface DLCodeListProps {
     list: DLCode[];
@@ -33,27 +34,27 @@ const fields: SortableTableField<DLCode>[] = [
         render: (row: DLCode) => <Link to={dlCodePath(row.id)}>{row.dlCode}</Link>
     },
     {field: 'description', title: 'Description', sortable: true},
-    {
-        field: 'standardAllowedMinutes',
-        title: 'SAM',
-        className: 'right',
-        sortable: true,
-        render: (row: DLCode) => <NumericTableValue value={row.standardAllowedMinutes} format="0,0.0000"/>
-    },
-    {
-        field: 'laborBudget',
-        title: 'D/L Labor',
-        sortable: true,
-        className: 'right',
-        render: (row: DLCode) => <NumericTableValue value={row.laborBudget} format="0,0.000" />
-    },
-    {
-        field: 'fixedCosts',
-        title: 'Fixed Costs',
-        sortable: true,
-        className: 'right',
-        render: (row: DLCode) => <NumericTableValue value={row.fixedCosts} format="0,0.000" />
-    },
+    // {
+    //     field: 'standardAllowedMinutes',
+    //     title: 'SAM',
+    //     className: 'right',
+    //     sortable: true,
+    //     render: (row: DLCode) => <NumericTableValue value={row.standardAllowedMinutes} format="0,0.0000"/>
+    // },
+    // {
+    //     field: 'laborBudget',
+    //     title: 'D/L Labor',
+    //     sortable: true,
+    //     className: 'right',
+    //     render: (row: DLCode) => <NumericTableValue value={row.laborBudget} format="0,0.000" />
+    // },
+    // {
+    //     field: 'fixedCosts',
+    //     title: 'Fixed Costs',
+    //     sortable: true,
+    //     className: 'right',
+    //     render: (row: DLCode) => <NumericTableValue value={row.fixedCosts} format="0,0.000" />
+    // },
     {
         field: 'directLaborCost',
         title: 'D/L Cost',
@@ -67,7 +68,7 @@ const fields: SortableTableField<DLCode>[] = [
         title: 'Act. Code',
         sortable: true,
         render: (row: DLCode) => (
-            <Link to={operationCodesOperationPath(row.workCenter, row.activityCode)}
+            <Link to={activityCodePath({WorkCenter: row.workCenter, ActivityCode: row.activityCode})}
                   onClick={(ev) => ev.stopPropagation()}>{row.activityCode ?? row.operationCode}</Link>
         )
     },
@@ -83,7 +84,7 @@ const fields: SortableTableField<DLCode>[] = [
         title: 'Sage Cost',
         align: 'end',
         className: (row: DLCode) => classNames({
-            'text-danger': !new Decimal(row.directLaborCost ?? 0).toDecimalPlaces(3).eq(new Decimal(row.StdRatePiece ?? 0).toDecimalPlaces(4))
+            'text-danger': !new Decimal(row.directLaborCost ?? 0).toDecimalPlaces(3).eq(new Decimal(row.StdRatePiece ?? 0).toDecimalPlaces(3))
         }),
         sortable: true,
         render: (row: DLCode) => row.operationCode ? numeral(row.StdRatePiece).format('$0,0.000') : null,
@@ -91,7 +92,7 @@ const fields: SortableTableField<DLCode>[] = [
 ]
 const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: DLCodeListProps) => {
     return (
-        <SortableTable keyField="id" fields={fields} data={list} size="xs"
+        <SortableTable keyField="id" fields={fields} data={list} size="sm"
                        rowClassName={(row: DLCode) => classNames({'table-warning': !row.active})}
                        currentSort={sort} onChangeSort={onChangeSort}
                        selected={selected?.id}

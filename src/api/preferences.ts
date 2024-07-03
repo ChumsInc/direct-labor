@@ -18,6 +18,7 @@ export const localStorageKeys = {
     opCodesWorkCenter: `${localStoragePrefix}/opCodes/workCenter`,
     routingRowsPerPage: `${localStoragePrefix}/opCodes/rowsPerPage`,
     routingShowInactive: `${localStoragePrefix}/dlCodes/showInactive`,
+    ratedWorkCenters: `${localStoragePrefix}/workCenters/ratedWorkCenters`,
 }
 function getStorage(key:string):Storage {
     return reLocal.test(key) ? window.localStorage : window.sessionStorage;

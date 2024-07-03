@@ -1,102 +1,90 @@
 import {routingDetailKey} from "../routing/utils";
-import {OperationCodeList} from "../types";
-import {getPreference, localStorageKeys} from "../../api/preferences";
 import {OperationCode, SortProps,} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {operationCodeDefaultSort, operationCodeKey} from "./utils";
-import {
-    loadOperationCode,
-    loadOperationCodes,
-    setPage,
-    setRowsPerPage,
-    setSearch,
-    setSort,
-    setWorkCenter
-} from "./actions";
+import {loadOperationCode, loadOperationCodes, setSearch, setSort, setWorkCenter} from "./actions";
 
 export interface OperationCodesState {
-    list: OperationCodeList;
+    list: {
+        values: OperationCode[];
+        status: 'idle' | 'loading';
+        sort: SortProps<OperationCode>
+        loaded: boolean;
+        filters: {
+            search: string;
+            workCenter: string;
+        }
+    }
     current: {
+        key: string;
         value: OperationCode | null;
-        loading: boolean;
+        status: 'idle' | 'loading';
         whereUsed: string[];
-    };
-    workCenter: string;
-    search: string;
-    loading: boolean;
-    loaded: boolean;
-    page: number;
-    rowsPerPage: number;
-    sort: SortProps<OperationCode>
+    }
 }
 
 export const initialState = (): OperationCodesState => ({
-    list: {},
+    list: {
+        values: [],
+        status: 'idle',
+        sort: {...operationCodeDefaultSort},
+        loaded: false,
+        filters: {
+            search: '',
+            workCenter: '',
+        }
+    },
     current: {
+        key: '',
         value: null,
-        loading: false,
+        status: 'idle',
         whereUsed: [],
     },
-    workCenter: '',
-    search: '',
-    loading: false,
-    loaded: false,
-    page: 0,
-    rowsPerPage: getPreference(localStorageKeys.opCodesRowsPerPage, 25),
-    sort: {...operationCodeDefaultSort},
 })
 
 const operationCodesReducer = createReducer(initialState, (builder) => {
     builder
         .addCase(loadOperationCodes.pending, (state) => {
-            state.loading = true;
+            state.list.status = 'loading';
         })
         .addCase(loadOperationCodes.fulfilled, (state, action) => {
-            state.list = {};
-            action.payload?.operationCodes?.forEach(row => {
-                state.list[operationCodeKey(row)] = row;
-            });
-            state.loading = false;
-            state.loaded = true;
-            if (state.current.value) {
-                state.current.value = state.list[operationCodeKey(state.current.value)] ?? null;
+            state.list.status = 'idle';
+            state.list.values = action.payload?.operationCodes ?? [];
+            if (state.current.key) {
+                const [current] = state.list.values.filter(row => operationCodeKey(row) === state.current.key);
+                if (!current) {
+                    state.current.key = '';
+                }
+                state.current.value = current ?? null;
             }
         })
         .addCase(loadOperationCodes.rejected, (state) => {
-            state.loading = false;
+            state.list.status = 'idle';
         })
         .addCase(loadOperationCode.pending, (state, action) => {
-            if (state.current.value && operationCodeKey(state.current.value) !== operationCodeKey(action.meta.arg)) {
+            if (state.current.key !== operationCodeKey(action.meta.arg)) {
                 state.current.whereUsed = [];
             }
-            state.current.value = state.list[operationCodeKey(action.meta.arg)] ?? null;
-            state.current.loading = true;
+            state.current.key = operationCodeKey(action.meta.arg);
+            const [current] = state.list.values.filter(row => operationCodeKey(row) === state.current.key);
+            state.current.value = current ?? null;
+            state.current.status = 'loading';
         })
         .addCase(loadOperationCode.fulfilled, (state, action) => {
-            state.current.loading = false;
+            state.current.status = 'idle';
             if (action.payload) {
                 state.current.value = action.payload.operationCodes[0] ?? null;
                 state.current.whereUsed = action.payload.whereUsed.map(rd => routingDetailKey(rd)).sort();
             }
         })
         .addCase(setSearch, (state, action) => {
-            state.search = action.payload;
-            state.page = 0;
+            state.list.filters.search = action.payload;
         })
         .addCase(setWorkCenter, (state, action) => {
-            state.workCenter = action.payload;
-            state.page = 0;
-        })
-        .addCase(setPage, (state, action) => {
-            state.page = action.payload;
-        })
-        .addCase(setRowsPerPage, (state, action) => {
-            state.rowsPerPage = action.payload;
-            state.page = 0;
+            state.list.filters.workCenter = action.payload;
         })
         .addCase(setSort, (state, action) => {
-            state.sort = action.payload;
-            state.page = 0;
+            state.list.sort = action.payload;
         })
 })
 

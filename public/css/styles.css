@@ -1,0 +1,7 @@
+.dl-nav {
+    &.collapsed {
+        .me-1 {
+            margin-right: 0;
+        }
+    }
+}

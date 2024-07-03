@@ -16,7 +16,7 @@ const DLCodeFilter: React.FC = () => {
     const navigate = useNavigate();
     const showInactive = useSelector(selectShowInactive);
 
-    const onSelectWC = (wc: WorkCenter | null) => dispatch(setWorkCenterFilter(wc?.WorkCenterCode || ''));
+    const onSelectWC = (wc: WorkCenter | null) => dispatch(setWorkCenterFilter(wc?.workCenter || ''));
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearch(ev.target.value || ''));
     const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
     const onReloadList = () => dispatch(loadDLCodes());

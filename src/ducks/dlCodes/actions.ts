@@ -1,5 +1,4 @@
-import {DLCodeList} from "../types";
-import {selectCurrentHeader, selectCurrentLoading, selectCurrentSaving, selectLoading,} from "./selectors";
+import {selectCurrentDLCodeStatus, selectCurrentHeader, selectDLCodesStatus,} from "./selectors";
 import {AddDLStepArg, DLCodeResponse} from "./types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {SortProps} from "chums-components";
@@ -23,7 +22,7 @@ export const setSearch = createAction<string>('dlCodes/filter/setSearch');
 export const setPage = createAction<number>('dlCodes/setPage');
 export const setRowsPerPage = createAction<number>('dlCodes/setRowsPerPage');
 export const setSort = createAction<SortProps<DLCode>>('dlCodes/setSort');
-export const loadDLCodes = createAsyncThunk<DLCodeList>(
+export const loadDLCodes = createAsyncThunk<DLCode[]>(
     'dlCodes/list/load',
     async () => {
         return await fetchDLCodeList() ?? {};
@@ -31,12 +30,12 @@ export const loadDLCodes = createAsyncThunk<DLCodeList>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !selectLoading(state);
+            return selectDLCodesStatus(state) === 'idle';
         }
     }
 )
 
-export const loadDLCode = createAsyncThunk<DLCodeResponse | null, number|string>(
+export const loadDLCode = createAsyncThunk<DLCodeResponse | null, number | string>(
     'dlCodes/selected/load',
     async (arg) => {
         if (!arg || arg === '0') {
@@ -50,7 +49,7 @@ export const loadDLCode = createAsyncThunk<DLCodeResponse | null, number|string>
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !(selectCurrentLoading(state) || selectCurrentSaving(state));
+            return selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )
@@ -63,7 +62,7 @@ export const saveDLCode = createAsyncThunk<DLCodeResponse | null, DLCode>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !(selectCurrentLoading(state) || selectCurrentSaving(state));
+            return selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )
@@ -79,7 +78,7 @@ export const addDLStep = createAsyncThunk<DLCodeResponse | null, AddDLStepArg>(
             if (!arg.id || !arg.stepId) {
                 return false;
             }
-            return !(selectCurrentLoading(state) || selectCurrentSaving(state));
+            return selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )
@@ -95,7 +94,7 @@ export const saveDLStepSort = createAsyncThunk<DLCodeResponse | null, DLCodeStep
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
             const header = selectCurrentHeader(state);
-            return !!header && !!header.id && !!arg.length && !(selectCurrentLoading(state) || selectCurrentSaving(state));
+            return !!header && !!header.id && !!arg.length && selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )
@@ -108,12 +107,12 @@ export const removeDLStep = createAsyncThunk<DLCodeResponse | null, DLCodeStep>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !!arg.id && !!arg.stepId && !(selectCurrentLoading(state) || selectCurrentSaving(state));
+            return !!arg.id && !!arg.stepId && selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )
 
-export const recalcDLCodes = createAsyncThunk<DLCodeList>(
+export const recalcDLCodes = createAsyncThunk<DLCode[]>(
     'dlCodes/recalculate',
     async () => {
         return await postRecalculateDLCodes();
@@ -121,7 +120,7 @@ export const recalcDLCodes = createAsyncThunk<DLCodeList>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !selectLoading(state);
+            return selectDLCodesStatus(state) === 'idle';
         }
     }
 )
@@ -134,7 +133,7 @@ export const rebuildDLCode = createAsyncThunk<DLCodeResponse | null, number>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !!arg && !(selectCurrentLoading(state) || selectCurrentSaving(state));
+            return !!arg && selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )

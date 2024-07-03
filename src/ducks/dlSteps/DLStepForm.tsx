@@ -39,7 +39,7 @@ const DLStepForm = () => {
     }
 
     const onChangeWorkCenter = (wc: WorkCenter | null) => {
-        dispatch(changeDLStep({workCenter: wc?.WorkCenterCode || ''}));
+        dispatch(changeDLStep({workCenter: wc?.workCenter ?? ''}));
     }
 
     const onChangeActive = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +121,7 @@ const DLStepForm = () => {
                 </datalist>
             </FormColumn>
             <FormColumn label="Work Center">
-                <WorkCenterSelect value={step.workCenter} onSelectWorkCenter={onChangeWorkCenter}/>
+                <WorkCenterSelect value={step.workCenter} onSelectWorkCenter={onChangeWorkCenter} required/>
             </FormColumn>
             <FormColumn label="Instructions">
                 <TextareaAutosize value={step.instructions ?? ''} placeholder="Instructions"

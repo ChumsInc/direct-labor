@@ -23,8 +23,8 @@ const OperationCodeFilter = () => {
     const loading = useSelector(selectLoading);
 
     const onSelectWorkCenter = (wc: WorkCenter | null) => {
-        dispatch(setWorkCenter(wc?.WorkCenterCode || ''));
-        setPreference(currentOCWorkCenterKey, wc?.WorkCenterCode || '');
+        dispatch(setWorkCenter(wc?.workCenter ?? ''));
+        setPreference(currentOCWorkCenterKey, wc?.workCenter ?? '');
     }
 
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearch(ev.target.value || ''));

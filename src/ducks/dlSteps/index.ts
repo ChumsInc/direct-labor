@@ -132,7 +132,7 @@ const dlStepsReducer = createReducer(initialStepsState, (builder) => {
             state.current.status = 'idle';
             state.current.step = action.payload;
             state.current.changed = false;
-            // state.whereUsed = action.payload?.whereUsed?.sort(dlCodeSorter({field: 'id', ascending: true}));
+            // state.whereUsed = status.payload?.whereUsed?.sort(dlCodeSorter({field: 'id', ascending: true}));
         })
         .addCase(saveDLStep.rejected, (state) => {
             state.current.status = 'idle';
