@@ -4,7 +4,6 @@ import {OperationCodeResponse} from "./types";
 import {fetchOperationCode, fetchOperationCodes} from "./api";
 import {RootState} from "../../app/configureStore";
 import {selectCurrentLoading, selectLoading} from "./selectors";
-import {operationCodeKey} from "./utils";
 
 export const setSearch = createAction<string>('operationCodes/filter/setSearch')
 export const setWorkCenter = createAction<string>('operationCodes/filter/setWorkCenter');

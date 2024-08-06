@@ -112,7 +112,7 @@ export const removeDLStep = createAsyncThunk<DLCodeResponse | null, DLCodeStep>(
     }
 )
 
-export const recalcDLCodes = createAsyncThunk<DLCode[]>(
+export const recalculateDLCodes = createAsyncThunk<DLCode[]>(
     'dlCodes/recalculate',
     async () => {
         return await postRecalculateDLCodes();

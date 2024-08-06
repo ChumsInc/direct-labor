@@ -12,6 +12,8 @@ import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./utils";
 import numeral from "numeral";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import DLCodeSageRate from "./DLCodeSageRate";
+import CurrentDLCodeTemplates from "./CurrentDLCodeTemplates";
 
 
 const CurrentDLCode = () => {
@@ -143,6 +145,9 @@ const CurrentDLCode = () => {
                                 <input type="text" className="form-control form-control-plaintext"
                                        defaultValue={new Date(current.timestamp).toLocaleString()}/>}
                         </FormColumn>
+                        <FormColumn label="Sage Template Data" width={9}>
+                            <DLCodeSageRate/>
+                        </FormColumn>
 
 
                         <div className="row g-3 mt-3">
@@ -173,11 +178,20 @@ const CurrentDLCode = () => {
                                 </SpinnerButton>
                             </div>
                         </div>
+                        {changed && <Alert color="warning">Don't forget to save your changes.</Alert>}
                     </form>
                 </div>
+                <hr/>
+                <div className="card-body">
+                    <h3>Steps</h3>
+                    {!!selected?.id && <SelectedStepsList/>}
+                </div>
+                <hr/>
+                <div className="card-body">
+                    <h3>Where Used in Templates</h3>
+                    <CurrentDLCodeTemplates/>
+                </div>
             </div>
-            {changed && <Alert color="warning">Don't forget to save your changes.</Alert>}
-            {!!selected?.id && <SelectedStepsList/>}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {selectDLCodesStatus} from "./selectors";
-import {recalcDLCodes} from "./actions";
+import {recalculateDLCodes} from "./actions";
 import {Alert, SpinnerButton} from "chums-components";
 
 const DirectLaborRecalc = () => {
@@ -9,7 +9,7 @@ const DirectLaborRecalc = () => {
     const status = useAppSelector(selectDLCodesStatus);
 
     const clickHandler = () => {
-        dispatch(recalcDLCodes());
+        dispatch(recalculateDLCodes());
     }
 
     return (

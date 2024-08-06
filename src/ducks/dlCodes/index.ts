@@ -1,5 +1,4 @@
 import {defaultDLCodeSort, dlCodeSorter, dlCodeStepSorter} from "./utils";
-import {DLCodeList} from "../types";
 import {SortProps} from "chums-components";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
 import {createReducer} from "@reduxjs/toolkit";
@@ -8,23 +7,21 @@ import {
     loadDLCode,
     loadDLCodes,
     rebuildDLCode,
-    recalcDLCodes,
+    recalculateDLCodes,
     removeDLStep,
     saveDLCode,
     saveDLStepSort,
-    setPage,
-    setRowsPerPage,
     setSearch,
     setSort,
     setWorkCenterFilter,
     toggleShowInactive
 } from "./actions";
-import {DLCode, DLCodeStep} from "chums-types";
+import {DLCode, DLCodeStep, DLCodeWorkTemplate} from "chums-types";
 
 export interface DLCodesState {
-    list: { 
+    list: {
         values: DLCode[];
-        status: 'idle'|'loading'|'calculating';
+        status: 'idle' | 'loading' | 'calculating';
         loaded: boolean;
         sort: SortProps<DLCode>,
         filters: {
@@ -37,7 +34,8 @@ export interface DLCodesState {
         id: number;
         header: DLCode | null;
         steps: DLCodeStep[];
-        status: 'idle'|'loading'|'saving';
+        templates: DLCodeWorkTemplate[];
+        status: 'idle' | 'loading' | 'saving';
         changed: boolean;
     },
 }
@@ -58,6 +56,7 @@ const initialState = (): DLCodesState => ({
         id: 0,
         header: null,
         steps: [],
+        templates: [],
         status: 'idle',
         changed: false,
     },
@@ -89,6 +88,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             if (state.current.header) {
                 const [header] = state.list.values.filter(row => row.id === state.current.header?.id);
                 state.current.header = header ?? null;
+                state.current.templates = header?.templates ?? [];
                 if (!state.current.header) {
                     state.current.steps = [];
                 }
@@ -105,11 +105,13 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             }
             const [header] = state.list.values.filter(row => row.id === state.current.id);
             state.current.header = header ?? null;
+            state.current.templates = header?.templates ?? []
         })
         .addCase(loadDLCode.fulfilled, (state, action) => {
             state.current.status = 'idle';
             state.current.id = action.payload?.dlCode?.id ?? 0;
             state.current.header = action.payload?.dlCode ?? null;
+            state.current.templates = action.payload?.dlCode?.templates ?? [];
             state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
             if (action.payload?.dlCode) {
             }
@@ -124,6 +126,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.current.status = 'idle';
             if (action.payload) {
                 state.current.header = action.payload.dlCode ?? null;
+                state.current.templates = action.payload?.dlCode?.templates ?? [];
                 state.current.steps = action.payload.steps.sort(dlCodeStepSorter) ?? [];
                 state.list.values = [
                     ...state.list.values.filter(row => row.id != state.current.id),
@@ -141,6 +144,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.current.status = 'idle';
             if (action.payload) {
                 state.current.header = action.payload?.dlCode ?? null;
+                state.current.templates = action.payload?.dlCode?.templates ?? [];
                 state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
                 state.list.values = [
                     ...state.list.values.filter(row => row.id != state.current.id),
@@ -158,6 +162,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.current.status = 'idle';
             if (action.payload) {
                 state.current.header = action.payload.dlCode ?? null;
+                state.current.templates = action.payload?.dlCode?.templates ?? [];
                 state.current.steps = action.payload.steps.sort(dlCodeStepSorter) ?? [];
                 state.list.values = [
                     ...state.list.values.filter(row => row.id != state.current.id),
@@ -175,6 +180,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.current.status = 'idle';
             if (action.payload) {
                 state.current.header = action.payload?.dlCode ?? null;
+                state.current.templates = action.payload?.dlCode?.templates ?? [];
                 state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
                 state.list.values = [
                     ...state.list.values.filter(row => row.id != state.current.id),
@@ -192,6 +198,7 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
             state.current.status = 'idle';
             if (action.payload) {
                 state.current.header = action.payload?.dlCode ?? null;
+                state.current.templates = action.payload?.dlCode?.templates ?? [];
                 state.current.steps = action.payload?.steps.sort(dlCodeStepSorter) ?? [];
                 state.list.values = [
                     ...state.list.values.filter(row => row.id != state.current.id),
@@ -202,18 +209,19 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
         .addCase(removeDLStep.rejected, (state) => {
             state.current.status = 'idle';
         })
-        .addCase(recalcDLCodes.pending, (state) => {
+        .addCase(recalculateDLCodes.pending, (state) => {
             state.list.status = 'calculating';
         })
-        .addCase(recalcDLCodes.fulfilled, (state, action) => {
+        .addCase(recalculateDLCodes.fulfilled, (state, action) => {
             state.list.status = 'idle';
             state.list.values = action.payload.sort(dlCodeSorter(defaultDLCodeSort));
             if (state.current.header) {
                 const [current] = state.list.values.filter(row => row.id === state.current.id);
                 state.current.header = current ?? null;
+                state.current.templates = current?.templates ?? [];
             }
         })
-        .addCase(recalcDLCodes.rejected, (state) => {
+        .addCase(recalculateDLCodes.rejected, (state) => {
             state.list.status = 'idle';
         })
 
