@@ -30,7 +30,7 @@ const fields: SortableTableField<DLCode>[] = [
         title: 'D/L Cost',
         sortable: true,
         className: 'right',
-        render: (row: DLCode) => <NumericTableValue value={row.directLaborCost} format="$0,0.000"/>
+        render: (row: DLCode) => <NumericTableValue value={row.directLaborCost} format="$0,0.0000"/>
     },
     {
         field: 'workCenter',
@@ -63,7 +63,7 @@ const fields: SortableTableField<DLCode>[] = [
             'text-danger': new Decimal(row.directLaborCost ?? 0).sub(row.StdRatePiece ?? 0).abs().gte(0.001),
         }),
         sortable: true,
-        render: (row: DLCode) => row.operationCode ? numeral(row.StdRatePiece).format('$0,0.000') : null,
+        render: (row: DLCode) => row.operationCode ? numeral(row.StdRatePiece).format('$0,0.0000') : null,
     },
 ]
 const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: DLCodeListProps) => {
