@@ -25,6 +25,7 @@ export const selectSortedList = createSelector(
         let re = /^/;
         try {
             re = new RegExp(search, 'i');
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
         }
 
