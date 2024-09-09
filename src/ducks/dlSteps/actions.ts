@@ -1,5 +1,5 @@
 import {LoadDLStepsResponse} from "./types";
-import {DLCode, DLStep, SortProps, StepTiming} from "chums-types";
+import {DLBasicStep, DLCode, DLStep, SortProps, StepTiming} from "chums-types";
 import {stepTimingChanged} from "./actionTypes";
 import {selectCurrentStepId, selectCurrentStepStatus, selectStepsLoading} from "./selectors";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
@@ -7,7 +7,7 @@ import {RootState} from "../../app/configureStore";
 import {fetchDLStep, fetchDLSteps, fetchDLStepWhereUsed, postDLStep} from "./api";
 
 export const changeDLStep = createAction<Partial<DLStep>>('steps/current/change');
-export const setStepSort = createAction<SortProps<DLStep>>('steps/setSort');
+export const setStepSort = createAction<SortProps<DLStep | DLBasicStep>>('steps/setSort');
 export const setStepWCFilter = createAction<string>('steps/setWCFilter');
 export const setStepFilter = createAction<string>('steps/setFilter');
 export const toggleShowInactive = createAction<boolean | undefined>('steps/showInactive');

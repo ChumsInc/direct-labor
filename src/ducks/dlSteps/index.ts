@@ -1,5 +1,5 @@
 import {DLSteps} from "../types";
-import {DLCode, DLStep, SortProps} from "chums-types";
+import {DLBasicStep, DLCode, DLStep, SortProps} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {LocalStore} from "chums-components";
 import {filterInactiveStepsKey} from "../../utils/preferences";
@@ -38,7 +38,7 @@ export interface DLStepsState {
     filter: string;
     wcFilter: string;
     filterInactive: boolean;
-    sort: SortProps<DLStep>;
+    sort: SortProps<DLStep | DLBasicStep>;
 }
 
 export const initialStepsState = (): DLStepsState => ({

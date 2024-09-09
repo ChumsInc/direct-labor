@@ -35,7 +35,7 @@ const DLCodeFilter: React.FC = () => {
             </div>
             <div className="col-auto">
                 <FormCheck label="Show Inactive" checked={filterInactive}
-                           onChange={(ev) => dispatch(toggleShowInactive(ev.target.checked))} type="checkbox"/>
+                           onChange={(ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked))} type="checkbox"/>
             </div>
             <div className="col-auto">
                 <button type="button" className="btn btn-outline-secondary" onClick={newButtonHandler}>New</button>

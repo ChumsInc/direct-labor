@@ -16,7 +16,7 @@ export const selectSortedTemplateList = createSelector(
     [selectTemplateList, selectTemplateListSort, selectTemplateListSearch],
     (list, sort, search) => {
         return [...list]
-            .filter(t => t.TemplateNo.includes(search.toUpperCase()) || t.TemplateDesc.toLowerCase().includes(search.toLowerCase()))
+            .filter(t => t.TemplateNo.includes(search.toUpperCase()) || t.TemplateDesc?.toLowerCase().includes(search.toLowerCase()))
             .sort(templateSorter(sort))
     }
 )

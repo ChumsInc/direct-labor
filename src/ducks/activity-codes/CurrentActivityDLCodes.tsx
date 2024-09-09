@@ -1,20 +1,18 @@
 import React from 'react';
-import {Link, useNavigate} from "react-router-dom";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {Link} from "react-router-dom";
+import {useAppSelector} from "../../app/configureStore";
 import {
-    selectCurrentActivityCodeSteps,
-    selectCurrentActivityCodeStepSort,
     selectCurrentActivityDLCodes
 } from "./selectors";
-import {DataTable, SortableTable, SortableTableField} from "chums-components";
-import {DLCode, SortProps, WorkTemplateStep} from "chums-types";
-import {setACTemplateStepsSort} from "./actions";
-import {calculateStepLaborCost, templateStepKey} from "../templates/utils";
+import {DataTable, SortableTableField} from "chums-components";
+import {DLCode} from "chums-types";
+import {templateStepKey} from "../templates/utils";
 import numeral from "numeral";
 import NumericTableValue from "../../components/NumericTableValue";
 import classNames from "classnames";
 import Decimal from "decimal.js";
 import {dlCodePath} from "../../routerPaths";
+import {dlCodeKey} from "../dlCodes/utils";
 
 const fields: SortableTableField<DLCode>[] = [
     {field: 'dlCode', title: 'D/L Code', sortable: true, render: (row) => <Link to={dlCodePath(row.id)}>{row.dlCode}</Link>},
@@ -48,8 +46,6 @@ const fields: SortableTableField<DLCode>[] = [
     },
 ]
 const CurrentActivityDLCodes = () => {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const dlCodes = useAppSelector(selectCurrentActivityDLCodes);
 
     const rowClassName = (row:DLCode) => {
@@ -61,7 +57,7 @@ const CurrentActivityDLCodes = () => {
     return (
         <div>
             <h3>DL Codes</h3>
-            <DataTable size="xs" fields={fields} data={dlCodes} keyField={templateStepKey} rowClassName={rowClassName}/>
+            <DataTable size="xs" fields={fields} data={dlCodes} keyField={dlCodeKey} rowClassName={rowClassName}/>
         </div>
     )
 }

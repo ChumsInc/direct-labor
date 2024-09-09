@@ -1,13 +1,13 @@
 import React, {useRef} from "react";
-import {SortableTRProps, DataTableRow} from "chums-components";
+import {DataTableRowProps, DataTableRow} from "chums-components";
 import {DLCodeStep} from "chums-types";
 import {DropTargetMonitor, useDrag, useDrop, XYCoord} from "react-dnd";
 import "./DraggableTR.scss";
 import classNames from "classnames";
 import {Identifier} from "dnd-core";
 
-export interface DraggableTRProps extends SortableTRProps {
-    row: DLCodeStep,
+export interface DraggableTRProps<T = DLCodeStep> extends DataTableRowProps<T> {
+    row: T,
     index: number,
     moveItem: (dragIndex: number, hoverIndex: number) => void,
     onDrop?: () => void,
@@ -19,7 +19,7 @@ interface DragItem {
     type: string,
 }
 
-const DraggableTR = ({fields, row, className, index, moveItem, onDrop}:DraggableTRProps) => {
+export default function DraggableTR<T=DLCodeStep>({fields, row, className, index, moveItem, onDrop}:DraggableTRProps<T>) {
     const ref = useRef<HTMLTableRowElement>(null);
 
     const [{handlerId}, drop] = useDrop<DragItem, void, {handlerId: Identifier|null}>({
@@ -79,5 +79,3 @@ const DraggableTR = ({fields, row, className, index, moveItem, onDrop}:Draggable
                     className={classNames(className, 'draggable-tr', {'is-dragging': isDragging})}/>
     )
 }
-
-export default DraggableTR;

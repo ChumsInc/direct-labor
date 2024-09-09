@@ -58,12 +58,17 @@ export const templateSorter = ({field, ascending}: SortProps<WorkTemplate>) => (
     const sortMod = ascending ? 1 : -1;
     switch (field) {
         case 'TemplateNo':
-        case 'TemplateDesc':
         case 'RevisionNo':
             return (
                 a[field].toUpperCase() === b[field].toUpperCase()
                     ? templateKeyComparator(a, b)
                     : (a[field].toUpperCase() > b[field].toUpperCase() ? 1 : -1)
+            ) * sortMod;
+        case 'TemplateDesc':
+            return (
+                (a[field] ?? '').toUpperCase() === (b[field] ?? '').toUpperCase()
+                    ? templateKeyComparator(a, b)
+                    : ((a[field] ?? '').toUpperCase() > (b[field] ?? '').toUpperCase() ? 1 : -1)
             ) * sortMod;
         case 'Steps':
             return (

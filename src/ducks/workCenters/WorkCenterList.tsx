@@ -73,7 +73,7 @@ const WorkCenterList: React.FC = () => {
     const onSelectWorkCenter = (row: WorkCenter) => navigate(selectedWorkCenterPath(row.workCenter));
 
     const onChangeFilter = () => dispatch(toggleFilterRatedWC());
-    const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
+    const onChangeSort = (sort: SortProps<WorkCenter>) => dispatch(setSort(sort));
     const onChangePage = (page: number) => setPage(page);
     const onChangeRowsPerPage = (rpp: number) => {
         setPage(0)
