@@ -19,13 +19,13 @@ const TimeInput = forwardRef(function TimeInputElement({
                                                        }: TimeInputProps,
                                                        ref: React.Ref<HTMLInputElement>) {
     const changeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
-        if (!isNaN(ev.target.valueAsNumber) || ev.target.value === '' || regexpMinSec.test(ev.target.value)) {
+        if (ev.target.validity.valid) {
             onChange(ev.target.value);
         }
     }
     return (
         <input type="text" className="form-control dl-timing--timing-entry" required={required}
-               value={value} onChange={changeHandler}
+               value={value} onChange={changeHandler} pattern="^\d+\.*\d*"
                {...inputProps}
                ref={ref}/>
     )
