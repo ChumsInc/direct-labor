@@ -15,10 +15,10 @@ export const averageMinutes = (params: (string | number)[]): string => params.le
 
 const toMinutes = (value: string | number) => {
     if (typeof value === 'string' && regexpMinSec.test(value)) {
-        const [_, min, sec] = regexpMinSec.exec(value) ?? []
+        const [, min, sec] = regexpMinSec.exec(value) ?? []
         return new Decimal(dayjs.duration({
-            minutes: +min ?? 0,
-            seconds: +sec ?? 0
+            minutes: +(min ?? 0),
+            seconds: +(sec ?? 0)
         }).asMilliseconds()).div(1000).toDecimalPlaces(4).toNumber();
     }
     return new Decimal(value).toDecimalPlaces(4).toNumber();
