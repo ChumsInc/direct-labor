@@ -60,3 +60,32 @@ export async function postWorkCenterRate(wc:WorkCenter):Promise<WorkCenter|null>
         return Promise.reject(new Error('Error in postWorkCenterRate()'));
     }
 }
+
+export async function fetchTemplateChanges(arg:string):Promise<number> {
+    try {
+        const url = `/api/operations/production/dl/codes/template-import/${encodeURIComponent(arg)}.json`;
+        const res = await fetchJSON<unknown[]>(url, {cache: 'no-cache'});
+        return res?.length ?? 0;
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.debug("fetchTemplateChanges()", err.message);
+            return Promise.reject(err);
+        }
+        console.debug("fetchTemplateChanges()", err);
+        return Promise.reject(new Error('Error in fetchTemplateChanges()'));
+    }
+}
+export async function fetchActivityCodeChanges(arg:string):Promise<number> {
+    try {
+        const url = `/api/operations/production/dl/codes/activity-code-import/${encodeURIComponent(arg)}.json`;
+        const res = await fetchJSON<unknown[]>(url, {cache: 'no-cache'});
+        return res?.length ?? 0;
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.debug("fetchActivityCodeChanges()", err.message);
+            return Promise.reject(err);
+        }
+        console.debug("fetchActivityCodeChanges()", err);
+        return Promise.reject(new Error('Error in fetchActivityCodeChanges()'));
+    }
+}

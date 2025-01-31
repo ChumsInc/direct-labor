@@ -1,7 +1,7 @@
 import {selectLoading,} from "./selectors";
 import {WorkCenterList} from "../types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {fetchWorkCenters, postWorkCenterRate} from "./api";
+import {fetchActivityCodeChanges, fetchTemplateChanges, fetchWorkCenters, postWorkCenterRate} from "./api";
 import {SortProps} from "chums-components";
 import {RootState} from "../../app/configureStore";
 import {WorkCenter} from "chums-types";
@@ -30,6 +30,32 @@ export const saveWorkCenter = createAsyncThunk<WorkCenter | null, WorkCenter>(
     'workCenters/save',
     async (arg) => {
         return await postWorkCenterRate(arg);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !selectLoading(state);
+        }
+    }
+)
+
+export const loadTemplateChanges = createAsyncThunk<number, string>(
+    'workCenters/loadTemplateChanges',
+    async (arg) => {
+        return await fetchTemplateChanges(arg);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState() as RootState;
+            return !selectLoading(state);
+        }
+    }
+)
+
+export const loadActivityCodeChanges = createAsyncThunk<number, string>(
+    'workCenters/loadActivityCodeChanges',
+    async (arg) => {
+        return await fetchActivityCodeChanges(arg);
     },
     {
         condition: (arg, {getState}) => {

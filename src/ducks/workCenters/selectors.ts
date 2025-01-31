@@ -9,6 +9,8 @@ export const selectWorkCentersLoaded = (state: RootState) => state.workCenters.l
 export const selectSaving = (state: RootState) => state.workCenters.current.actionStatus === 'saving';
 export const selectCurrentWorkCenter = (state: RootState) => state.workCenters.current.workCenter;
 export const selectWorkCenterSearch = (state: RootState) => state.workCenters.list.search;
+export const selectTemplateChanges = (state:RootState) => state.workCenters.current.templateChanges;
+export const selectActivityCodeChanges = (state:RootState) => state.workCenters.current.activityCodeChanges;
 
 export const selectWorkCenterSort = (state: RootState) => state.workCenters.list.sort;
 export const selectFilterRatedWC = (state: RootState) => state.workCenters.list.filterRatedWorkCenters;

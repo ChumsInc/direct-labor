@@ -1,6 +1,7 @@
 import {WorkCenterList} from "../types";
 import {createReducer} from "@reduxjs/toolkit";
 import {
+    loadActivityCodeChanges, loadTemplateChanges,
     loadWorkCenters,
     saveWorkCenter,
     setCurrentWorkCenter,
@@ -29,6 +30,8 @@ export interface WorkCentersState {
         code: string | null;
         workCenter: WorkCenter | null;
         actionStatus: 'idle' | 'loading' | 'saving';
+        templateChanges: number;
+        activityCodeChanges: number;
     }
 }
 
@@ -45,7 +48,9 @@ export const initialWorkCenterState: WorkCentersState = {
     current: {
         code: null,
         workCenter: null,
-        actionStatus: 'idle'
+        actionStatus: 'idle',
+        templateChanges: 0,
+        activityCodeChanges: 0,
     }
 }
 
@@ -54,6 +59,8 @@ const workCentersReducer = createReducer(initialWorkCenterState, (builder) => {
         .addCase(setCurrentWorkCenter, (state, action) => {
             state.current.code = action.payload;
             state.current.workCenter = state.list.workCenters[action.payload] ?? null;
+            state.current.templateChanges = 0;
+            state.current.activityCodeChanges = 0;
         })
         .addCase(setWorkCenterRate, (state, action) => {
             if (state.current.workCenter) {
@@ -98,7 +105,13 @@ const workCentersReducer = createReducer(initialWorkCenterState, (builder) => {
         })
         .addCase(setWCSearch, (state, action) => {
             state.list.search = action.payload;
-        } )
+        })
+        .addCase(loadTemplateChanges.fulfilled, (state, action) => {
+            state.current.templateChanges = action.payload;
+        })
+        .addCase(loadActivityCodeChanges.fulfilled, (state, action) => {
+            state.current.activityCodeChanges = action.payload;
+        })
     ;
 });
 
