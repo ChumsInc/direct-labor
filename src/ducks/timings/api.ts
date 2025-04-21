@@ -44,7 +44,7 @@ export async function fetchTiming(arg:StepTimingId):Promise<StepTiming|null> {
 
 export async function postApplyTiming(arg:StepTimingId):Promise<DLStep|null> {
     try {
-        const url = `/api/operations/production/dl/steps/:stepId/timing/:timingId/apply.json`
+        const url = `/api/operations/production/dl/steps/:stepId/timings/:timingId/apply.json`
             .replace(':stepId', encodeURIComponent(arg.idSteps))
             .replace(':timingId', encodeURIComponent(arg.id));
         const res = await fetchJSON<{step: DLStep}>(url, {method: 'PUT'});

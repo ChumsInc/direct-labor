@@ -1,9 +1,8 @@
 import React from 'react';
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
-import {FormCheck, SortableTable, SortableTableField} from "chums-components";
-import {selectCurrentStep} from "../dlSteps/selectors";
-import {dlStepChangeTimingAction} from "../dlSteps/actions";
+import {SortableTable, SortableTableField} from "chums-components";
+import {selectCurrentStep} from "../dlSteps/index";
 import {
     selectCurrentLoading,
     selectCurrentSaving,
@@ -18,22 +17,12 @@ import {useAppDispatch} from "../../app/configureStore";
 import {SortProps, StepTiming} from "chums-types";
 import CurrentTimingButton from "./CurrentTimingButton";
 
-export interface TimingRadioProps {
+export interface TimingButtonProps {
     timing: StepTiming,
 }
 
-const TimingRadio: React.FC<TimingRadioProps> = ({timing}) => {
-    const dispatch = useAppDispatch();
-    const currentStep = useSelector(selectCurrentStep);
-    const clickHandler = () => dispatch(dlStepChangeTimingAction(timing));
-    return (
-        <FormCheck label={numeral(timing.standardAllowedMinutes).format('0.0000')}
-                   checked={currentStep?.idCurrentTiming === timing.id}
-                   onChange={clickHandler} type="radio"/>
-    )
-}
 
-const TimingEditButton: React.FC<TimingRadioProps> = ({timing}) => {
+const TimingEditButton = ({timing}: TimingButtonProps) => {
     const dispatch = useDispatch();
     const clickHandler = () => {
         dispatch(setCurrentTiming(timing));
@@ -53,7 +42,7 @@ const fields: SortableTableField<StepTiming>[] = [
     },
     {field: 'timingDate', title: 'Date', render: (row: StepTiming) => new Date(row.timingDate).toLocaleDateString()},
     {field: 'notes', title: 'Notes'},
-    {field: 'id', title: 'Action', render: (row) => <CurrentTimingButton timing={row} className="btn-sm"/>},
+    {field: 'id', title: 'Action', render: (row) => <CurrentTimingButton timing={row} size="sm"/>},
 ];
 
 

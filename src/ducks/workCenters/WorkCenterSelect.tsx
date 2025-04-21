@@ -1,15 +1,14 @@
-import React, {ChangeEvent, SelectHTMLAttributes, useEffect} from "react";
+import React, {ChangeEvent, useEffect} from "react";
 import {useSelector} from "react-redux";
-import {BootstrapSize, Select} from "chums-components";
 import {loadWorkCenters} from "./actions";
 import {workCenterIcon} from "../../icons";
 import {WorkCenter} from "chums-types";
 import {useAppDispatch} from "../../app/configureStore";
-import {selectSortedWorkCenters, selectWorkCenters, selectWorkCentersList, selectWorkCentersLoaded} from "./selectors";
+import {selectWorkCenters, selectWorkCentersLoaded} from "./selectors";
+import {FormSelect, FormSelectProps, InputGroup} from "react-bootstrap";
 
-export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface WorkCenterSelectProps extends FormSelectProps {
     value: string,
-    bsSize?: BootstrapSize
     includeUnrated?: boolean,
     onSelectWorkCenter?: (wc: WorkCenter | null) => void;
     children?: React.ReactNode;
@@ -17,11 +16,11 @@ export interface WorkCenterSelectProps extends SelectHTMLAttributes<HTMLSelectEl
 
 const WorkCenterSelect = ({
                               value,
-                              bsSize,
+                              size,
                               includeUnrated,
                               onSelectWorkCenter,
                               onChange,
-                            children,
+                              children,
                               ...rest
                           }: WorkCenterSelectProps) => {
     const dispatch = useAppDispatch();
@@ -44,9 +43,11 @@ const WorkCenterSelect = ({
     }
 
     return (
-        <div className="input-group">
-            <div className="input-group-text"><span className={workCenterIcon}/></div>
-            <Select value={value} onChange={changeHandler} bsSize={bsSize} {...rest}>
+        <InputGroup size={size}>
+            <InputGroup.Text>
+                <span className={workCenterIcon} aria-label="Work Center" />
+            </InputGroup.Text>
+            <FormSelect value={value} onChange={changeHandler} size={size} {...rest}>
                 <option value="">Select Work Center</option>
                 <optgroup label="Std Work Centers">
                     {list
@@ -72,9 +73,9 @@ const WorkCenterSelect = ({
                         }
                     </optgroup>
                 )}
-            </Select>
+            </FormSelect>
             {children}
-        </div>
+        </InputGroup>
     )
 }
 

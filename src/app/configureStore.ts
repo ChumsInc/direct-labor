@@ -6,7 +6,7 @@ import {default as workCentersReducer} from '../ducks/workCenters';
 import {default as operationCodesReducer} from '../ducks/operationCodes';
 import {default as glAccountsReducer} from '../ducks/glAccounts';
 import {default as dlCodesReducer} from '../ducks/dlCodes';
-import {default as dlStepsReducer} from '../ducks/dlSteps';
+import {default as dlStepsSlice} from '../ducks/dlSteps';
 import {default as timingsReducer} from '../ducks/timings';
 import {configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
@@ -19,7 +19,7 @@ export const rootReducer = combineReducers({
     alerts: alertsReducer,
     billMaterials: billMaterialsReducer,
     dlCodes: dlCodesReducer,
-    dlSteps: dlStepsReducer,
+    [dlStepsSlice.reducerPath]: dlStepsSlice.reducer,
     glAccounts: glAccountsReducer,
     operationCodes: operationCodesReducer,
     routing: routingReducer,

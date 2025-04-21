@@ -1,14 +1,15 @@
-import React, {ButtonHTMLAttributes} from 'react';
+import React from 'react';
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
-import {selectCurrentStep, selectCurrentStepStatus} from "../dlSteps/selectors";
-import {setCurrentTiming} from "./actions";
+import {selectCurrentStep, selectCurrentStepStatus} from "../dlSteps/index";
+import {applyTiming} from "./actions";
 import {StepTiming} from "chums-types";
-import classNames from "classnames";
+import {Button, ButtonProps} from "react-bootstrap";
 
-export interface CurrentTimingButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
+export interface CurrentTimingButtonProps extends Omit<ButtonProps, 'onClick'> {
     timing: StepTiming;
 }
-const CurrentTimingButton = ({timing, className, children, onClick, ...btnProps}: CurrentTimingButtonProps) => {
+
+const CurrentTimingButton = ({timing, className, children, ...btnProps}: CurrentTimingButtonProps) => {
     const dispatch = useAppDispatch();
     const step = useAppSelector(selectCurrentStep);
     const stepStatus = useAppSelector(selectCurrentStepStatus);
@@ -16,7 +17,7 @@ const CurrentTimingButton = ({timing, className, children, onClick, ...btnProps}
     const isCurrent = step?.idCurrentTiming === timing.id;
 
     const clickHandler = () => {
-        dispatch(setCurrentTiming(timing));
+        dispatch(applyTiming(timing));
     }
 
     const renderButtonChildren = () => {
@@ -31,10 +32,10 @@ const CurrentTimingButton = ({timing, className, children, onClick, ...btnProps}
     }
 
     return (
-        <button type="button" className={classNames('btn btn-outline-primary', className)}
+        <Button type="button" variant="outline-secondary" className={className}
                 onClick={clickHandler} disabled={isCurrent || stepStatus !== 'idle'} {...btnProps}>
             {renderButtonChildren()}
-        </button>
+        </Button>
     )
 }
 

@@ -1,24 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort} from "./selectors";
-import {loadDLSteps, setStepSort} from "./actions";
-import {DLBasicStep, DLStep, SortProps} from "chums-types";
+import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort, setStepSort} from "./index";
+import {loadDLSteps} from "./actions";
+import {DLBasicStep, SortProps} from "chums-types";
 import {dlStepKey} from "./utils";
 import {stepsListFields} from "./StepsListFields";
 import {useNavigate} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
-import DLStepsFilter from "./DLStepsFilter";
 import {useAppDispatch} from "../../app/configureStore";
 import {LocalStore, SortableTable, TablePagination} from "chums-components";
 import classNames from "classnames";
 import {localStorageKeys} from "../../api/preferences";
 import ErrorBoundary from '../../components/ErrorBoundary';
 
-const tableKey = 'steps-list';
-const defaultSort: SortProps<DLStep> = {
-    field: 'stepCode',
-    ascending: true,
-}
 
 const StepsList = () => {
     // const history = useHistory();
@@ -43,7 +37,7 @@ const StepsList = () => {
 
     const onSelectRow = (row: DLBasicStep) => {
         navigate(dlStepPath(row.id));
-   }
+    }
 
     const sortChangeHandler = (sort: SortProps) => {
         dispatch(setStepSort(sort));

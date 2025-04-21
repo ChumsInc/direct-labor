@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentStep, selectCurrentStepStatus} from "./selectors";
+import {selectCurrentStep, selectCurrentStepStatus} from "./index";
 import {loadDLStep, loadDLStepWhereUsed, setCurrentStep} from "./actions";
 import {Helmet} from "react-helmet";
 import {LoadingProgressBar, Tab, TabList} from "chums-components";

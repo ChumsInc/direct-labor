@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect} from "react";
 import {DLStep} from "chums-types";
 import {useSelector} from "react-redux";
-import {selectStepsLoaded, selectStepsLoading, selectSortedStepsList} from "./selectors";
+import {selectStepsLoaded, selectStepsLoading, selectSortedStepsList} from "./index";
 import {newDLStep} from "./utils";
 import {Select} from "chums-components";
 import {loadDLSteps} from "./actions";

@@ -1,7 +1,7 @@
 import {LoadDLStepsResponse} from "./types";
 import {DLBasicStep, DLCode, DLStep, SortProps, StepTiming} from "chums-types";
 import {stepTimingChanged} from "./actionTypes";
-import {selectCurrentStepId, selectCurrentStepStatus, selectStepsLoading} from "./selectors";
+import {selectCurrentStepId, selectCurrentStepStatus, selectStepsLoading} from "./index";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {RootState} from "../../app/configureStore";
 import {fetchDLStep, fetchDLSteps, fetchDLStepWhereUsed, postDLStep} from "./api";

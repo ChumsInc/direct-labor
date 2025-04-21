@@ -1,9 +1,17 @@
 import React, {ChangeEvent} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {filterInactiveSelector, filterSelector, selectStepsLoading, wcFilterSelector} from "./selectors";
+import {
+    selectFilterInactive,
+    selectStepsFilter,
+    selectStepsLoading,
+    selectWCFilter,
+    setStepFilter,
+    setStepWCFilter,
+    toggleShowInactive
+} from "./index";
 import {WorkCenter} from "chums-types";
-import {loadDLSteps, setStepFilter, setStepWCFilter, toggleShowInactive} from "./actions";
+import {loadDLSteps} from "./actions";
 import SearchInput from "../../components/SearchInput";
 import {FormCheck, SpinnerButton} from "chums-components";
 import {useAppDispatch} from "../../app/configureStore";
@@ -12,10 +20,10 @@ import {useNavigate} from "react-router-dom";
 const DLCodeFilter: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const filter = useSelector(filterSelector);
-    const wcFilter = useSelector(wcFilterSelector);
+    const filter = useSelector(selectStepsFilter);
+    const wcFilter = useSelector(selectWCFilter);
     const loading = useSelector(selectStepsLoading);
-    const filterInactive = useSelector(filterInactiveSelector)
+    const filterInactive = useSelector(selectFilterInactive)
 
     const onSelectWC = (wc: WorkCenter | null) => dispatch(setStepWCFilter(wc?.workCenter ?? ''));
     const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setStepFilter(ev.target.value ?? ''));
@@ -35,7 +43,8 @@ const DLCodeFilter: React.FC = () => {
             </div>
             <div className="col-auto">
                 <FormCheck label="Show Inactive" checked={filterInactive}
-                           onChange={(ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked))} type="checkbox"/>
+                           onChange={(ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked))}
+                           type="checkbox"/>
             </div>
             <div className="col-auto">
                 <button type="button" className="btn btn-outline-secondary" onClick={newButtonHandler}>New</button>

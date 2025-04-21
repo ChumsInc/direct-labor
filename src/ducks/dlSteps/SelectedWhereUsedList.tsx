@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectStepsWhereUsed} from "./selectors";
+import {selectStepsWhereUsed} from "./index";
 import DLCodeList from "../dlCodes/DLCodeList";
 import {TablePagination} from "chums-components";
 import {DLCode, SortProps} from "chums-types";

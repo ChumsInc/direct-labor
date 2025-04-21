@@ -1,4 +1,4 @@
-import {Editable, SortProps, StepTiming} from "chums-types";
+import {SortProps, StepTiming} from "chums-types";
 import {loadDLStep} from "../dlSteps/actions";
 import {createReducer} from "@reduxjs/toolkit";
 import {loadTiming, saveTiming, setCurrentTiming, updateCurrentTiming, updateTimingEntry} from "./actions";
@@ -59,10 +59,10 @@ const timingsReducer = createReducer(initialTimingsState, builder => {
             }
         })
         .addCase(loadTiming.pending, (state) => {
-            state.current.actionStatus === 'loading';
+            state.current.actionStatus = 'loading';
         })
         .addCase(loadTiming.fulfilled, (state, action) => {
-            state.current.actionStatus === 'idle';
+            state.current.actionStatus = 'idle';
             if (action.payload) {
                 state.current.stepTiming = action.payload;
             } else {
@@ -89,7 +89,7 @@ const timingsReducer = createReducer(initialTimingsState, builder => {
             if (state.current.stepTiming) {
                 if (action.payload.index === null) {
                     state.current.stepTiming.entries.push(action.payload.value ?? 0);
-                } else if (typeof state.current.stepTiming.entries[action.payload.index] !== undefined) {
+                } else if (state.current.stepTiming.entries[action.payload.index] !== undefined) {
                     if (action.payload.value === null) {
                         state.current.stepTiming.entries.splice(action.payload.index, 1);
                     } else {
