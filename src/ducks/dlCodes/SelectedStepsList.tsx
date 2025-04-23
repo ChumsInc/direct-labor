@@ -7,16 +7,15 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import DraggableTR from "./DraggableTR";
 import DeleteStepButton from "./DeleteStepButton";
-import {addDLStep, saveDLStepSort} from "./actions";
+import {saveDLStepSort} from "./actions";
 import {stepTotalReducer} from "./utils";
 import {Link} from "react-router-dom";
 import {dlStepPath} from "../../routerPaths";
 import classNames from "classnames";
-import StepSelect from "../dlSteps/StepSelect";
-import {newDLStep} from "../dlSteps/utils";
-import {useAppDispatch} from "../../app/configureStore";
+import {useAppDispatch} from "@/app/configureStore";
 import {SortableTableField} from "chums-components";
-import {DLCodeStep, DLStep} from "chums-types";
+import {DLCodeStep} from "chums-types";
+import AddDLStepForm from "@/ducks/dlCodes/AddDLStepForm";
 
 
 export const stepsListFields: SortableTableField<DLCodeStep>[] = [
@@ -57,7 +56,6 @@ const SelectedStepsList = () => {
     const stepKeys = steps.map(step => step.id).join(':');
     const total: DLStepTotal = stepTotalReducer(steps);
     const [list, setList] = useState(steps ?? []);
-    const [newStep, setNewStep] = useState(newDLStep);
 
     useEffect(() => {
         setList(steps);
@@ -76,17 +74,6 @@ const SelectedStepsList = () => {
         dispatch(saveDLStepSort(list));
     }
 
-    const onAddStep = () => {
-        if (!selected || newStep.id === 0) {
-            return;
-        }
-        dispatch(addDLStep({id: selected.id, stepId: newStep.id}));
-        setNewStep(newDLStep);
-    }
-
-    const onChangeNewStep = (step?: DLStep) => {
-        setNewStep(step || newStep);
-    }
 
     if (!selected) {
         return null;
@@ -128,16 +115,7 @@ const SelectedStepsList = () => {
                 </tr>
                 </tfoot>
             </table>
-            <div className="row g-3">
-                <div className="col-auto">
-                    <StepSelect id={newStep.id} onChange={onChangeNewStep} filterInactive/>
-                </div>
-                <div className="col-auto">
-                    <button type="button" className="btn btn-sm btn-outline-secondary" disabled={!newStep.id}
-                            onClick={onAddStep}>Add Step
-                    </button>
-                </div>
-            </div>
+            <AddDLStepForm/>
         </div>
     )
 
