@@ -56,7 +56,7 @@ export const initialStepsState = (): DLStepsState => ({
     filter: '',
     wcFilter: '',
     filterInactive: LocalStore.getItem<boolean>(filterInactiveStepsKey, true) ?? true,
-    sort: {field: 'id', ascending: true}
+    sort: {field: 'stepCode', ascending: true}
 })
 
 const stepsSlice = createSlice({

@@ -3,6 +3,7 @@ import {AddDLStepArg, DLCodeResponse} from "./types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {SortProps} from "chums-components";
 import {
+    deleteDLCode,
     deleteStep,
     fetchDLCode,
     fetchDLCodeList,
@@ -134,6 +135,19 @@ export const rebuildDLCode = createAsyncThunk<DLCodeResponse | null, number>(
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
             return !!arg && selectCurrentDLCodeStatus(state) === 'idle';
+        }
+    }
+)
+
+export const removeDLCode = createAsyncThunk<DLCodeResponse|null, number|string, {state:RootState}>(
+    'dlCodes/remove',
+    async (arg) => {
+        return await deleteDLCode(arg);
+    },
+    {
+        condition: (arg, {getState}) => {
+            const state = getState();
+            return !!+arg && selectCurrentDLCodeStatus(state) === 'idle';
         }
     }
 )

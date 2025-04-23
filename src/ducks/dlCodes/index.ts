@@ -7,7 +7,7 @@ import {
     loadDLCode,
     loadDLCodes,
     rebuildDLCode,
-    recalculateDLCodes,
+    recalculateDLCodes, removeDLCode,
     removeDLStep,
     saveDLCode,
     saveDLStepSort,
@@ -21,7 +21,7 @@ import {DLCode, DLCodeStep, DLCodeWorkTemplate} from "chums-types";
 export interface DLCodesState {
     list: {
         values: DLCode[];
-        status: 'idle' | 'loading' | 'calculating';
+        status: 'idle' | 'loading' | 'calculating' | 'rejected';
         loaded: boolean;
         sort: SortProps<DLCode>,
         filters: {
@@ -35,7 +35,7 @@ export interface DLCodesState {
         header: DLCode | null;
         steps: DLCodeStep[];
         templates: DLCodeWorkTemplate[];
-        status: 'idle' | 'loading' | 'saving';
+        status: 'idle' | 'loading' | 'saving' | 'deleting';
         changed: boolean;
     },
 }
@@ -223,6 +223,19 @@ const dlCodesReducer = createReducer(initialState, (builder) => {
         })
         .addCase(recalculateDLCodes.rejected, (state) => {
             state.list.status = 'idle';
+        })
+        .addCase(removeDLCode.pending, (state) => {
+            state.current.status = 'deleting';
+        })
+        .addCase(removeDLCode.fulfilled, (state, action) => {
+            state.current.status = 'idle';
+            state.current.header = null;
+            state.current.templates = [];
+            state.current.steps = [];
+            state.list.values = state.list.values.filter(row => row.id !== action.meta.arg);
+        })
+        .addCase(removeDLCode.rejected, (state) => {
+            state.current.status = 'idle';
         })
 
 });

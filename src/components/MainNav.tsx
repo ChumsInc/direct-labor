@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
+import React, {useState} from "react";
 import {NavItem, NavItemProps, NavList} from "chums-components";
 import {currentMenuCollapseKey, currentTabStorageKey, getPreference, setPreference} from "../utils/preferences";
 import {
@@ -64,7 +63,7 @@ export const mainTabs: NavItemProps[] = [
         id: 'activity-codes',
         title: 'Activity Codes',
         icon: activityCodeIcon,
-        element: <RoutedLink to="/activity-codes" title="Activity Codes" icon="bi-activity" />
+        element: <RoutedLink to="/activity-codes" title="Activity Codes" icon="bi-activity"/>
     },
     {
         id: 'templates',
@@ -108,7 +107,7 @@ const MainNav = () => {
                 <ul className="nav">
                     <NavItem onSelect={onCollapse} id="toggle-nav" title="Collapse" icon={collapseIcon}/>
                 </ul>
-                <NavList items={mainTabs} onChange={setCurrentTab} currentTab={currentTab} variant="pills" vertical />
+                <NavList items={mainTabs} onChange={setCurrentTab} currentTab={currentTab} variant="pills" vertical/>
             </div>
         </ErrorBoundary>
     )

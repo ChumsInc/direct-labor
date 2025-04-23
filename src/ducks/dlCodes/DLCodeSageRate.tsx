@@ -1,27 +1,33 @@
-import React from 'react';
-import {InputGroup} from "chums-components";
+import React, {useId} from 'react';
+import {Col, FormControl, InputGroup} from "react-bootstrap";
 import {useAppSelector} from "../../app/configureStore";
 import {selectCurrentDLSageRate} from "./selectors";
 
 export default function DLCodeSageRate() {
     const rateProps = useAppSelector(selectCurrentDLSageRate);
+    const idLaborRate = useId();
+    const idLaborScalingQuantity = useId();
 
     return (
-        <div className="row g-3">
-            <div className="col-6">
-                <InputGroup>
-                    <span className="input-group-text">Labor Rate</span>
-                    <input type="text" value={rateProps?.averageHourlyRate ?? ''} className="form-control text-end"
-                           readOnly/>
-                </InputGroup>
-            </div>
-            <div className="col-6">
-                <InputGroup>
-                    <span className="input-group-text">Labor Scaling Quantity</span>
-                    <input type="text" value={rateProps?.scalingFactorLabor ?? ''} className="form-control text-end"
-                           readOnly/>
-                </InputGroup>
-            </div>
-        </div>
+        <>
+        <Col>
+            <InputGroup>
+                <InputGroup.Text as="label" htmlFor={idLaborRate}>Labor Rate</InputGroup.Text>
+                <FormControl type="text" id={idLaborRate}
+                             value={rateProps?.averageHourlyRate ?? ''}
+                             className="text-end"
+                             readOnly/>
+            </InputGroup>
+        </Col>
+        <Col>
+            <InputGroup>
+                <InputGroup.Text as="label" htmlFor={idLaborScalingQuantity}>Labor Scaling Quantity</InputGroup.Text>
+                <FormControl type="text" id={idLaborScalingQuantity}
+                             value={rateProps?.scalingFactorLabor ?? ''}
+                             className="text-end"
+                       readOnly/>
+            </InputGroup>
+        </Col>
+        </>
     )
 }

@@ -51,7 +51,8 @@ export async function postAddStep(arg:AddDLStepArg):Promise<DLCodeResponse|null>
 
 export async function postDLCode(arg:DLCode):Promise<DLCodeResponse|null> {
     try {
-        const url = `/api/operations/production/dl/codes/${encodeURIComponent(arg.id)}`;
+        const url = `/api/operations/production/dl/codes/:id.json`
+            .replace(':id', encodeURIComponent(arg.id ? arg.id.toString() : '0'));
         const body = JSON.stringify(arg);
         return await fetchJSON<DLCodeResponse>(url, {method: 'POST', body});
     } catch(err:unknown) {
@@ -122,5 +123,20 @@ export async function postRecalculateDLCodes():Promise<DLCode[]> {
         }
         console.debug("postRecalculateDLCodes()", err);
         return Promise.reject(new Error('Error in postRecalculateDLCodes()'));
+    }
+}
+
+export async function deleteDLCode(arg:number|string):Promise<DLCodeResponse|null> {
+    try {
+        const url = '/api/operations/production/dl/codes/:id.json'
+            .replace(':id', encodeURIComponent(arg))
+        return await fetchJSON<DLCodeResponse>(url, {method: 'DELETE'});
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.debug("deleteDLCode()", err.message);
+            return Promise.reject(err);
+        }
+        console.debug("deleteDLCode()", err);
+        return Promise.reject(new Error('Error in deleteDLCode()'));
     }
 }

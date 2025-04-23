@@ -3,7 +3,7 @@ import {LoadDLStepResponse, LoadDLStepsResponse} from "./types";
 import {fetchJSON} from "chums-components";
 import {DLBasicStep, DLCode, DLStep} from "chums-types";
 
-const listURL = `/api/operations/production/dl/steps`;
+const listURL = `/api/operations/production/dl/steps.json`;
 const stepURL = (step: DLBasicStep) => `/api/operations/production/dl/steps/${encodeURIComponent(step.id)}`;
 
 export async function fetchDLSteps():Promise<LoadDLStepsResponse> {
@@ -55,9 +55,13 @@ export async function fetchDLStepWhereUsed(arg:number|string):Promise<DLCode[]> 
 
 export async function postDLStep(arg:DLStep):Promise<DLStep|null> {
     try {
-        const url = `/api/operations/production/dl/steps/${encodeURIComponent(arg.id)}`;
+        const url = arg.id
+            ? `/api/operations/production/dl/steps/:id.json`
+                .replace(':id', encodeURIComponent(arg.id))
+            : '/api/operations/production/dl/steps.json';
+        const method = arg.id ? 'PUT' : 'POST';
         const body = JSON.stringify(arg);
-        const res = await fetchJSON<LoadDLStepResponse>(url, {method: 'POST', body});
+        const res = await fetchJSON<LoadDLStepResponse>(url, {method, body});
         return res?.step ?? null;
     } catch(err:unknown) {
         if (err instanceof Error) {

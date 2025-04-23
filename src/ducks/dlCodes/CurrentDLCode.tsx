@@ -1,11 +1,11 @@
-import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, FormEvent, useEffect, useId, useState} from "react";
 import {Link, useParams} from 'react-router-dom';
 import {useSelector} from "react-redux";
 import {selectCurrentChanged, selectCurrentDLCodeStatus, selectCurrentHeader, selectCurrentSteps} from "./selectors";
-import {loadDLCode, rebuildDLCode, saveDLCode} from "./actions";
+import {loadDLCode, rebuildDLCode, removeDLCode, saveDLCode} from "./actions";
 import {Helmet} from "react-helmet";
-import {Alert, FormCheck, FormColumn, Input, InputGroup, SpinnerButton} from "chums-components";
-import {DLCode, Editable, OperationCode, WorkCenter} from 'chums-types'
+import {Alert, FormColumn} from "chums-components";
+import {ActivityCode, DLCode, Editable, OperationCode, WorkCenter} from 'chums-types'
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import OperationCodeSelect from "../operationCodes/OperationCodeSelect";
 import SelectedStepsList from "./SelectedStepsList";
@@ -14,6 +14,10 @@ import numeral from "numeral";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import DLCodeSageRate from "./DLCodeSageRate";
 import CurrentDLCodeTemplates from "./CurrentDLCodeTemplates";
+import {Col, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
+import ActivityCodeSelect from "@/components/activity-codes/ActivityCodeSelect";
+import SpinnerButton from "@/components/common/SpinnerButton";
+import {deleteDLCode} from "@/ducks/dlCodes/api";
 
 
 const CurrentDLCode = () => {
@@ -23,7 +27,19 @@ const CurrentDLCode = () => {
     const selected = useSelector(selectCurrentHeader);
     const steps = useSelector(selectCurrentSteps);
     const changed = useSelector(selectCurrentChanged);
-    const [current, setCurrent] = useState<DLCode & Editable>({...(selected ?? newDLCode)})
+    const [current, setCurrent] = useState<DLCode & Editable>({...(selected ?? newDLCode)});
+    const idDLCode = useId()
+    const idActive = useId();
+    const idDescription = useId();
+    const idWorkCenter = useId();
+    const idOperationCode = useId();
+    const idLaborBudget = useId();
+    const idFixedCosts = useId();
+    const idTotal = useId();
+    const idLaborRate = useId();
+    const idLaborScaling = useId();
+    const idTimestamp = useId();
+    const idActivityCode = useId();
 
     useEffect(() => {
         if (!params.id) {
@@ -49,11 +65,10 @@ const CurrentDLCode = () => {
     }
     const onChangeWorkCenter = (wc: WorkCenter | null) => {
         setCurrent({...current, workCenter: wc?.workCenter ?? '', changed: true});
-
     }
 
-    const onChangeOperationCode = (oc: OperationCode | null) => {
-        setCurrent({...current, operationCode: oc?.OperationCode ?? '', changed: true})
+    const onChangeActivityCode = (value: ActivityCode | null) => {
+        setCurrent({...current, activityCode: value?.ActivityCode ?? ''})
     }
 
     const onToggleActive = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -65,6 +80,16 @@ const CurrentDLCode = () => {
             return;
         }
         dispatch(rebuildDLCode(selected.id));
+    }
+
+    const onRemoveDLCode = () => {
+        if (!selected || changed || !selected.id) {
+            return;
+        }
+        if (!window.confirm('Are you sure you want to delete this D/L Code?')) {
+            return;
+        }
+        dispatch(removeDLCode(selected.id));
     }
 
     const onSubmit = (ev: FormEvent) => {
@@ -84,89 +109,107 @@ const CurrentDLCode = () => {
                     <h2>D/L Code Editor: <strong>{current.dlCode}</strong></h2>
                 </div>
                 <div className="card-body">
-                    <form onSubmit={onSubmit}>
-                        <FormColumn label={"Direct Labor Code"} width={9}>
-                            <div className="row g-3 align-items-baseline">
-                                <div className="col-md-9">
-                                    <Input type="text" value={current.dlCode} onChange={changeHandler('dlCode')}/>
-                                </div>
-                                <div className="col-md-3">
-                                    <FormCheck label="Active" checked={current.active} onChange={onToggleActive}
-                                               type="checkbox"/>
-                                </div>
-                            </div>
-                        </FormColumn>
-                        <FormColumn label={"Description"} width={9}>
-                            <Input type="text" value={current.description} onChange={changeHandler('description')}/>
-                        </FormColumn>
-                        <FormColumn label="Sage Activity" width={9}>
-                            <div className="row g-3">
-                                <div className="col-6">
-                                    <WorkCenterSelect value={current.workCenter} required
-                                                      onSelectWorkCenter={onChangeWorkCenter}/>
-                                </div>
-                                <div className="col-6">
-                                    <OperationCodeSelect operationCode={current.operationCode}
-                                                         workCenter={current.workCenter}
-                                                         onChange={onChangeOperationCode}/>
-                                </div>
-                            </div>
-                        </FormColumn>
-                        <FormColumn label="Costs" width={9}>
-                            <div className="row g-3">
-                                <div className="col-4">
-                                    <InputGroup>
-                                        <span className="input-group-text">Labor</span>
-                                        <Input type="text" value={numeral(current.laborBudget).format('$0,0.0000')}
-                                               readOnly
-                                               className="text-end"/>
-                                    </InputGroup>
-                                </div>
-                                <div className="col-4">
-                                    <InputGroup>
-                                        <span className="input-group-text">Fixed</span>
-                                        <Input type="text" value={numeral(current.fixedCosts).format('$0,0.0000')}
-                                               readOnly
-                                               className="text-end"/>
-                                    </InputGroup>
-                                </div>
-                                <div className="col-4">
-                                    <InputGroup>
-                                        <span className="input-group-text">Total</span>
-                                        <Input type="text" value={numeral(current.directLaborCost).format('$0,0.0000')}
-                                               readOnly
-                                               className="text-end"/>
-                                    </InputGroup>
-                                </div>
-                            </div>
-                        </FormColumn>
-                        <FormColumn label="Last Updated" width={9}>
-                            {!!current.timestamp &&
-                                <input type="text" className="form-control form-control-plaintext"
-                                       defaultValue={new Date(current.timestamp).toLocaleString()}/>}
-                        </FormColumn>
-                        <FormColumn label="Sage Template Data" width={9}>
+                    <Form onSubmit={onSubmit}>
+                        <Form.Group as={Row} className="g-3 mb-1 align-items-baseline">
+                            <Form.Label column sm={3} htmlFor={idDLCode}>Direct Labor Code</Form.Label>
+                            <Col>
+                                <FormControl type="text" id={idDLCode}
+                                             value={current.dlCode} onChange={changeHandler('dlCode')}/>
+                            </Col>
+                            <Col xs="auto">
+                                <FormCheck type="checkbox" id={idActive} label="Active"
+                                           checked={current.active} onChange={onToggleActive}/>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="g-3 mb-1 align-items-baseline">
+                            <Form.Label column sm={3} htmlFor={idDLCode}>Description</Form.Label>
+                            <Col>
+                                <FormControl type="text" id={idDescription}
+                                             value={current.description} onChange={changeHandler('description')}/>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="g-3 mb-1 align-items-baseline">
+                            <Form.Label column sm={3}>Sage Activity</Form.Label>
+                            <Col>
+                                <WorkCenterSelect value={current.workCenter} required
+                                                  onSelectWorkCenter={onChangeWorkCenter}/>
+                            </Col>
+                            <Col>
+                                <InputGroup>
+                                    <InputGroup.Text as="label" htmlFor={idActivityCode}>
+                                        <span className="visually-hidden">Activity Code</span>
+                                        <span className="bi-activity" aria-hidden={true} />
+                                    </InputGroup.Text>
+                                    <ActivityCodeSelect workCenter={current.workCenter}
+                                                        value={current.activityCode ?? ''}
+                                                        onChange={onChangeActivityCode} />
+                                </InputGroup>
+                            </Col>
+                        </Form.Group>
+
+                        <Form.Group as={Row} className="g-3 mb-1" label="Costs" width={9}>
+                            <Form.Label column sm={3}>Costs</Form.Label>
+                            <Col>
+                                <InputGroup>
+                                    <InputGroup.Text as="label" htmlFor={idLaborBudget}>Labor</InputGroup.Text>
+                                    <FormControl type="text" id={idLaborBudget}
+                                                 value={numeral(current.laborBudget).format('$0,0.0000')}
+                                                 readOnly
+                                                 className="text-end"/>
+                                </InputGroup>
+                            </Col>
+                            <Col>
+                                <InputGroup>
+                                    <InputGroup.Text as="label" htmlFor={idFixedCosts}>Fixed</InputGroup.Text>
+                                    <FormControl type="text" id={idFixedCosts}
+                                                 value={numeral(current.fixedCosts).format('$0,0.0000')}
+                                                 readOnly
+                                                 className="text-end"/>
+                                </InputGroup>
+                            </Col>
+                            <Col>
+                                <InputGroup>
+                                    <InputGroup.Text as="label" htmlFor={idTotal}>Total</InputGroup.Text>
+                                    <FormControl type="text" id={idTotal}
+                                                 value={numeral(current.directLaborCost).format('$0,0.0000')}
+                                                 readOnly
+                                                 className="text-end"/>
+                                </InputGroup>
+
+                            </Col>
+                        </Form.Group>
+                        {!!current.timestamp && (
+                            <Form.Group as={Row} className="g-3 mb-1" label="Last Updated" width={9}>
+                                <Form.Label column sm={3} htmlFor={idTimestamp}>Last Updated</Form.Label>
+                                <Col>
+                                    <FormControl plaintext id={idTimestamp}
+                                                 defaultValue={new Date(current.timestamp).toLocaleString()}/>
+                                </Col>
+                            </Form.Group>
+                        )}
+                        <Form.Group as={Row} className="g-3 mb-1">
+                            <Form.Label column sm={3}>Sage Template Data</Form.Label>
                             <DLCodeSageRate/>
-                        </FormColumn>
+                        </Form.Group>
 
 
-                        <div className="row g-3 mt-3">
-                            <div className="col"></div>
-                            <div className="col-auto">
-                                <SpinnerButton type="button" color="danger"
+                        <Row className="mt-3 justify-content-end">
+                            <Col xs="auto">
+                                <SpinnerButton type="button" variant="outline-danger"
+                                               spinning={status === 'deleting'}
                                                disabled={status !== 'idle' || !!steps.length || !current.id} size="sm"
-                                               onClick={() => window.alert('Not implemented yet.')}>
+                                               onClick={onRemoveDLCode}>
                                     Delete DL Code
                                 </SpinnerButton>
 
-                            </div>
+                            </Col>
                             <div className="col-auto">
                                 <Link to="/dl-codes/0" className="btn btn-sm btn-outline-secondary">New DL Code</Link>
                             </div>
                             <div className="col-auto">
                                 <SpinnerButton type="button" spinning={status === 'loading'}
                                                disabled={status !== 'idle'} size="sm"
-                                               color="secondary"
+                                               variant="secondary"
                                                onClick={onReload}>
                                     Rebuild Cost
                                 </SpinnerButton>
@@ -177,9 +220,9 @@ const CurrentDLCode = () => {
                                     Save
                                 </SpinnerButton>
                             </div>
-                        </div>
+                        </Row>
                         {changed && <Alert color="warning">Don't forget to save your changes.</Alert>}
-                    </form>
+                    </Form>
                 </div>
                 <hr/>
                 <div className="card-body">

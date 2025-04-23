@@ -1,6 +1,5 @@
 const reLocal = /^local/;
 
-
 const sessionStoragePrefix:string = 'session/direct-labor';
 const localStoragePrefix:string = 'local/direct-labor';
 
@@ -24,14 +23,18 @@ function getStorage(key:string):Storage {
     return reLocal.test(key) ? window.localStorage : window.sessionStorage;
 }
 
-export const setPreference = <T=any>(key:string, value:T) => {
+export const setPreference = <T=unknown>(key:string, value:T) => {
     try {
-        if (!global.window) {
+        if (typeof window === 'undefined') {
             return;
         }
         getStorage(key).setItem(key, JSON.stringify(value));
-    } catch(err:any) {
-        console.log("setPreference()", err.message);
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.log("setPreference()", err.message);
+            return;
+        }
+        console.log("setPreference()", err);
     }
 };
 
@@ -42,9 +45,9 @@ export const clearPreference = (key:string) => {
     getStorage(key).removeItem(key);
 }
 
-export const getPreference = <T = any>(key:string, defaultValue: T):T => {
+export const getPreference = <T = unknown>(key:string, defaultValue: T):T => {
     try {
-        if (!global.window) {
+        if (typeof window === 'undefined') {
             return defaultValue;
         }
         const value = getStorage(key).getItem(key);
@@ -52,8 +55,12 @@ export const getPreference = <T = any>(key:string, defaultValue: T):T => {
             return defaultValue;
         }
         return JSON.parse(value) ?? defaultValue;
-    } catch(err:any) {
-        console.log("getPreference()", err.message);
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.log("getPreference()", err.message);
+            return defaultValue;
+        }
+        console.log("getPreference()", err);
         return defaultValue;
     }
 };

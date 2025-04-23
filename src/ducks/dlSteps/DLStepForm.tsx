@@ -39,7 +39,13 @@ const DLStepForm = () => {
     const notesId = useId();
 
     const changeHandler = (field: keyof DLStep) => (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        dispatch(changeDLStep({[field]: ev.target.value}));
+        switch (field) {
+            case 'stepCode':
+                dispatch(changeDLStep({stepCode: ev.target.value.toUpperCase()}));
+                return;
+            default:
+                dispatch(changeDLStep({[field]: ev.target.value}));
+        }
     }
 
     const onChangeWorkCenter = (wc: WorkCenter | null) => {

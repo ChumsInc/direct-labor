@@ -20,6 +20,7 @@ import {loadDLCodes} from "../ducks/dlCodes/actions";
 import {loadDLSteps} from "../ducks/dlSteps/actions";
 import TemplatesPage from "./TemplatesPage";
 import CurrentTemplate from "../ducks/templates/CurrentTemplate";
+import Alert from "react-bootstrap/Alert";
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -55,6 +56,7 @@ const App = () => {
                     <Route path="work-centers" element={<WorkCenterPage/>}>
                         <Route path=":workCenter" element={<WorkCenterForm/>}/>
                     </Route>
+                    <Route path="*" element={<Alert variant="danger">Path not found</Alert>}/>
                 </Route>
             </Routes>
         </HashRouter>

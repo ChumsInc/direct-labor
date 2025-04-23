@@ -5,14 +5,18 @@ export const currentMenuCollapseKey: string = `${localStoragePrefix}.current-men
 export const filterInactiveStepsKey: string = `${localStoragePrefix}.filter-inactive-steps`;
 export const filterInactiveCodesKey: string = `${localStoragePrefix}.filter-inactive-codes`;
 
-export const setPreference = (key:string, value:any) => {
+export const setPreference = (key:string, value:unknown) => {
     try {
-        if (!global.window) {
+        if (typeof window === 'undefined') {
             return;
         }
         window.localStorage.setItem(key, JSON.stringify(value));
-    } catch(err:any) {
-        console.log("setPreference()", err.message);
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.log("setPreference()", err.message);
+            return;
+        }
+        console.log("setPreference()", err);
     }
 };
 
@@ -23,9 +27,9 @@ export const clearPreference = (key:string) => {
     window.localStorage.removeItem(key);
 }
 
-export const getPreference = (key:string, defaultValue: any) => {
+export const getPreference = (key:string, defaultValue: unknown) => {
     try {
-        if (!global.window) {
+        if (typeof window === 'undefined') {
             return defaultValue;
         }
         const value = window.localStorage.getItem(key);
@@ -33,8 +37,12 @@ export const getPreference = (key:string, defaultValue: any) => {
             return defaultValue;
         }
         return JSON.parse(value);
-    } catch(err:any) {
-        console.log("getPreference()", err.message);
+    } catch(err:unknown) {
+        if (err instanceof Error) {
+            console.log("getPreference()", err.message);
+            return defaultValue;
+        }
+        console.log("getPreference()", err);
         return defaultValue;
     }
 };
