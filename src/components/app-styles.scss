@@ -1,0 +1,17 @@
+#app {
+    @media (prefers-color-scheme: dark) {
+        .text-secondary {
+            --bs-secondary-rgb: 175, 185, 194;
+        }
+        .btn-outline-secondary {
+            --bs-btn-border-color: #9098a0;
+            --bs-btn-color: #9098a0;
+            --bs-btn-hover-border-color: #9098a0;
+            --bs-btn-active-bg: #9098a0;
+            --bs-btn-active-border-color: #9098a0;
+            --bs-btn-disabled-color: #9098a0;
+            --bs-btn-disabled-bg: transparent;
+            --bs-btn-disabled-border-color: #9098a0;
+        }
+    }
+}

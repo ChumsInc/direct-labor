@@ -8,11 +8,12 @@ export interface SpinnerButtonProps extends ButtonProps {
 }
 
 export default function SpinnerButton({spinnerProps, spinning, children, ...props}: SpinnerButtonProps) {
+    const spinnerSize = spinnerProps?.size ?? (props.size === 'sm' ? 'sm' : undefined);
     return (
-        <Button {...props}>
+        <Button {...props} >
             {spinning && (
                 <span className="me-1">
-                    <Spinner as="span" animation="border" role="status" aria-hidden="true" {...spinnerProps}/>
+                    <Spinner as="span" animation="border" role="status" size={spinnerSize} aria-hidden="true" {...spinnerProps}/>
                     <span className="visually-hidden">Loading...</span>
                 </span>
             )}

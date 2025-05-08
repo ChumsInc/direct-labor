@@ -1,23 +1,19 @@
 import React, {ChangeEvent, FormEvent, useEffect, useId, useState} from "react";
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router';
 import {useSelector} from "react-redux";
 import {selectCurrentChanged, selectCurrentDLCodeStatus, selectCurrentHeader, selectCurrentSteps} from "./selectors";
 import {loadDLCode, rebuildDLCode, removeDLCode, saveDLCode} from "./actions";
-import {Helmet} from "react-helmet";
-import {Alert, FormColumn} from "chums-components";
-import {ActivityCode, DLCode, Editable, OperationCode, WorkCenter} from 'chums-types'
+import {Alert, Col, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
+import {ActivityCode, DLCode, Editable, WorkCenter} from 'chums-types'
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import OperationCodeSelect from "../operationCodes/OperationCodeSelect";
 import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./utils";
 import numeral from "numeral";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import DLCodeSageRate from "./DLCodeSageRate";
 import CurrentDLCodeTemplates from "./CurrentDLCodeTemplates";
-import {Col, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
 import ActivityCodeSelect from "@/components/activity-codes/ActivityCodeSelect";
 import SpinnerButton from "@/components/common/SpinnerButton";
-import {deleteDLCode} from "@/ducks/dlCodes/api";
 
 
 const CurrentDLCode = () => {
@@ -31,13 +27,9 @@ const CurrentDLCode = () => {
     const idDLCode = useId()
     const idActive = useId();
     const idDescription = useId();
-    const idWorkCenter = useId();
-    const idOperationCode = useId();
     const idLaborBudget = useId();
     const idFixedCosts = useId();
     const idTotal = useId();
-    const idLaborRate = useId();
-    const idLaborScaling = useId();
     const idTimestamp = useId();
     const idActivityCode = useId();
 
@@ -57,7 +49,7 @@ const CurrentDLCode = () => {
 
     if (!current) {
         return (
-            <Alert color="info">Select a D/L Code</Alert>
+            <Alert variant="info">Select a D/L Code</Alert>
         )
     }
     const changeHandler = (field: keyof DLCode) => (ev: ChangeEvent<HTMLInputElement>) => {
@@ -99,10 +91,7 @@ const CurrentDLCode = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>D/L Code: {current.dlCode}</title>
-            </Helmet>
-
+            <title>D/L Code: {current.dlCode}</title>
 
             <div className="card">
                 <div className="card-header">
@@ -138,11 +127,11 @@ const CurrentDLCode = () => {
                                 <InputGroup>
                                     <InputGroup.Text as="label" htmlFor={idActivityCode}>
                                         <span className="visually-hidden">Activity Code</span>
-                                        <span className="bi-activity" aria-hidden={true} />
+                                        <span className="bi-activity" aria-hidden={true}/>
                                     </InputGroup.Text>
                                     <ActivityCodeSelect workCenter={current.workCenter}
                                                         value={current.activityCode ?? ''}
-                                                        onChange={onChangeActivityCode} />
+                                                        onChange={onChangeActivityCode}/>
                                 </InputGroup>
                             </Col>
                         </Form.Group>
@@ -221,7 +210,7 @@ const CurrentDLCode = () => {
                                 </SpinnerButton>
                             </div>
                         </Row>
-                        {changed && <Alert color="warning">Don't forget to save your changes.</Alert>}
+                        {changed && <Alert variant="warning">Don't forget to save your changes.</Alert>}
                     </Form>
                 </div>
                 <hr/>

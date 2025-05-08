@@ -1,7 +1,7 @@
 import {SortProps, WorkTemplate, WorkTemplateStep} from "chums-types";
 import Decimal from "decimal.js";
 import numeral from "numeral";
-import {generatePath} from "react-router-dom";
+import {generatePath} from "react-router";
 
 
 export const templateStepKey = (value: WorkTemplateStep) => `${value.TemplateNo}:${value.RevisionNo}:${value.StepNo}`;

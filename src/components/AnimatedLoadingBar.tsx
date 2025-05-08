@@ -1,16 +1,16 @@
 import React from 'react';
-import {LoadingProgressBar} from "chums-components";
+import {ProgressBar, ProgressBarProps} from "react-bootstrap";
 
-export interface AnimatedLoadingBarProps {
+export interface AnimatedLoadingBarProps extends ProgressBarProps {
     loading?: boolean;
 }
 
-const AnimatedLoadingBar = ({loading}:AnimatedLoadingBarProps) => {
+const AnimatedLoadingBar = ({loading, ...props}: AnimatedLoadingBarProps) => {
     if (!loading) {
         return null;
     }
     return (
-        <LoadingProgressBar animated striped style={{height: '5px'}} />
+        <ProgressBar animated striped style={{height: '5px'}} {...props} />
     )
 }
 

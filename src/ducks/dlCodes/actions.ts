@@ -1,7 +1,7 @@
 import {selectCurrentDLCodeStatus, selectCurrentHeader, selectDLCodesStatus,} from "./selectors";
 import {AddDLStepArg, DLCodeResponse} from "./types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {SortProps} from "chums-components";
+import {DLCode, DLCodeStep, SortProps} from "chums-types";
 import {
     deleteDLCode,
     deleteStep,
@@ -14,7 +14,6 @@ import {
     postStepSort
 } from "./api";
 import {RootState} from "../../app/configureStore";
-import {DLCode, DLCodeStep} from "chums-types";
 import {newDLCode} from "./utils";
 
 export const setWorkCenterFilter = createAction<string>('dlCodes/filter/workCenter');
@@ -139,7 +138,7 @@ export const rebuildDLCode = createAsyncThunk<DLCodeResponse | null, number>(
     }
 )
 
-export const removeDLCode = createAsyncThunk<DLCodeResponse|null, number|string, {state:RootState}>(
+export const removeDLCode = createAsyncThunk<DLCodeResponse | null, number | string, { state: RootState }>(
     'dlCodes/remove',
     async (arg) => {
         return await deleteDLCode(arg);

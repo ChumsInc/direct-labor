@@ -7,7 +7,7 @@ import {billHeaderKey, billHeaderSorter, defaultBillSort} from "./utils";
 import {billHeaderSelector} from "./selectors";
 import StatusBadge from "../../components/StatusBadge";
 import {BillHeader, BillType, SortProps} from "chums-types";
-import {SortableTable, SortableTableField, TablePagination} from "chums-components";
+import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {BillTypeDesc} from "../types";
 
 const detailTableFields: SortableTableField<BillHeader>[] = [
@@ -24,7 +24,7 @@ const detailTableFields: SortableTableField<BillHeader>[] = [
         field: 'DateLastUsed',
         title: 'Last Used',
         sortable: true,
-        render: (row) => !!row.DateLastUsed ? new Date(row.DateLastUsed).toLocaleDateString() : 'N/A'
+        render: (row) => row.DateLastUsed ? new Date(row.DateLastUsed).toLocaleDateString() : 'N/A'
     },
     {
         field: 'BillHasOptions',
@@ -60,8 +60,8 @@ const BillWhereUsed = ({className}: { className?: string }) => {
                            rowClassName={rowClassName}
                            data={[...list].sort(billHeaderSorter(sort)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
             <TablePagination page={page} onChangePage={setPage}
-                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={setRowsPerPage}
-                             count={list.length} bsSize="sm"
+                             rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: setRowsPerPage}}
+                             count={list.length} size="sm"
                              showFirst={list.length > rowsPerPage * 2}
                              showLast={list.length > rowsPerPage * 2}/>
         </div>

@@ -1,7 +1,7 @@
 import React from 'react';
-import AlertList from "../ducks/alerts/AlertList";
+import AlertList from "./alerts/AlertList";
 import MainNav from "./MainNav";
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import VersionInfo from "../ducks/version/VersionInfo";
 
 const MainOutlet = () => {

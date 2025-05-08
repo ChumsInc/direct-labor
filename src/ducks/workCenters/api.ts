@@ -1,5 +1,5 @@
 import {WorkCenterList} from "../types";
-import {fetchJSON} from "chums-components";
+import {fetchJSON} from "@chumsinc/ui-utils";
 import {WorkCenter} from "chums-types";
 import {localStorageKeys, setPreference} from "../../api/preferences";
 
@@ -46,7 +46,8 @@ export async function postWorkCenterRate(wc:WorkCenter):Promise<WorkCenter|null>
         let url = '/api/operations/production/pm/work-centers.json';
         let method = 'POST'
         if (wc.id) {
-            url = `/api/operations/production/pm/work-centers/${encodeURIComponent(wc.workCenter)}.json`;
+            url = `/api/operations/production/pm/work-centers/:workCenter.json`
+                .replace(':workCenter', encodeURIComponent(wc.workCenter));
             method = 'PUT'
         }
         const res = await fetchJSON<{workCenter: WorkCenter}>(url, {method, body});
@@ -63,7 +64,8 @@ export async function postWorkCenterRate(wc:WorkCenter):Promise<WorkCenter|null>
 
 export async function fetchTemplateChanges(arg:string):Promise<number> {
     try {
-        const url = `/api/operations/production/dl/codes/template-import/${encodeURIComponent(arg)}.json`;
+        const url = `/api/operations/production/dl/codes/template-import/:workCenter.json`
+            .replace(':workCenter', encodeURIComponent(arg));
         const res = await fetchJSON<unknown[]>(url, {cache: 'no-cache'});
         return res?.length ?? 0;
     } catch(err:unknown) {
@@ -77,7 +79,8 @@ export async function fetchTemplateChanges(arg:string):Promise<number> {
 }
 export async function fetchActivityCodeChanges(arg:string):Promise<number> {
     try {
-        const url = `/api/operations/production/dl/codes/activity-code-import/${encodeURIComponent(arg)}.json`;
+        const url = `/api/operations/production/dl/codes/activity-code-import/:workCenter.json`
+            .replace(':workCenter', encodeURIComponent(arg));
         const res = await fetchJSON<unknown[]>(url, {cache: 'no-cache'});
         return res?.length ?? 0;
     } catch(err:unknown) {

@@ -9,11 +9,11 @@ import DraggableTR from "./DraggableTR";
 import DeleteStepButton from "./DeleteStepButton";
 import {saveDLStepSort} from "./actions";
 import {stepTotalReducer} from "./utils";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import {dlStepPath} from "../../routerPaths";
 import classNames from "classnames";
 import {useAppDispatch} from "@/app/configureStore";
-import {SortableTableField} from "chums-components";
+import {SortableTableField} from "@chumsinc/sortable-tables";
 import {DLCodeStep} from "chums-types";
 import AddDLStepForm from "@/ducks/dlCodes/AddDLStepForm";
 

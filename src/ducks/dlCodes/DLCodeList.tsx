@@ -1,9 +1,9 @@
 import React from "react";
-import {Link} from 'react-router-dom';
+import {Link} from 'react-router';
 import {dlCodePath} from "../../routerPaths";
 import numeral from "numeral";
-import {DLCode, DLCodeWorkTemplate} from "chums-types";
-import {SortableTable, SortableTableField, SortProps} from "chums-components";
+import {DLCode} from "chums-types";
+import {SortableTable, SortableTableField, SortProps} from "@chumsinc/sortable-tables";
 import classNames from "classnames";
 import NumericTableValue from "../../components/NumericTableValue";
 import Decimal from "decimal.js";

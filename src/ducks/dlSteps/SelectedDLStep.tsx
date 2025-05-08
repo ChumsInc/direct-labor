@@ -2,26 +2,21 @@ import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentStep, selectCurrentStepStatus} from "./index";
 import {loadDLStep, loadDLStepWhereUsed, setCurrentStep} from "./actions";
-import {Helmet} from "react-helmet";
-import {LoadingProgressBar, Tab, TabList} from "chums-components";
 import SelectedStepTimings from "../timings/SelectedStepTimings";
-import {dlCodeIcon, dlTextIcon, dlTimingIcon} from "../../icons";
 import DLStepForm from "./DLStepForm";
 import SelectedWhereUsedList from "./SelectedWhereUsedList";
-import {useAppDispatch} from "../../app/configureStore";
-import {useParams} from "react-router-dom";
+import {useAppDispatch} from "@/app/configureStore";
+import {useParams} from "react-router";
 import {newDLStep} from "./utils";
+import {ProgressBar} from "react-bootstrap";
+import StepTabs from "@/ducks/dlSteps/StepTabs";
 
 const tabID = {
     settings: 'settings',
     timings: 'timings',
     whereUsed: 'where-used',
 }
-const tabs: Tab[] = [
-    {id: tabID.settings, title: 'Settings', icon: dlTextIcon},
-    {id: tabID.timings, title: 'Timings', icon: dlTimingIcon},
-    {id: tabID.whereUsed, title: 'Where Used', icon: dlCodeIcon},
-]
+
 
 const SelectedDLStep = () => {
     const dispatch = useAppDispatch();
@@ -44,15 +39,12 @@ const SelectedDLStep = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>D/L Step: {step?.stepCode ?? '-'}</title>
-            </Helmet>
+            <title>D/L Step: {step?.stepCode ?? '-'}</title>
             <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
-            <h3>{step?.description}</h3>
-
-            <TabList tabs={tabs} className="mt-1 mb-1" currentTabId={tab} onSelectTab={(tab) => setTab(tab.id)}/>
+            {step?.description && <h3>{step?.description}</h3>}
+            <StepTabs activeKey={tab} onChangeTab={setTab}/>
             <div style={{height: '5px'}}>
-                {status !== 'idle' && <LoadingProgressBar striped style={{height: '100%'}}/>}
+                {status !== 'idle' && <ProgressBar animated striped now={100} style={{height: '100%'}}/>}
             </div>
             {tab === tabID.settings && (
                 <DLStepForm/>

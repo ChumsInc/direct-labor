@@ -1,16 +1,17 @@
 import {WorkCenterList} from "../types";
 import {createReducer} from "@reduxjs/toolkit";
 import {
-    loadActivityCodeChanges, loadTemplateChanges,
+    loadActivityCodeChanges,
+    loadTemplateChanges,
     loadWorkCenters,
     saveWorkCenter,
     setCurrentWorkCenter,
-    setSort, setWCSearch,
+    setSort,
+    setWCSearch,
     setWorkCenterRate,
     toggleFilterRatedWC
 } from "./actions";
-import {SortProps} from "chums-components";
-import {WorkCenter} from "chums-types";
+import {SortProps, WorkCenter} from "chums-types";
 
 export const defaultSort: SortProps<WorkCenter> = {
     field: "workCenter",

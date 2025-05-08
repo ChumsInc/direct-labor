@@ -1,11 +1,12 @@
 import React from "react";
-import {Badge, BootstrapBGColor} from "chums-components";
+import Badge from "react-bootstrap/Badge";
+import {Variant} from "react-bootstrap/types";
 
 interface StatusBadgeProps {
     status: boolean,
     className?: string,
-    trueColor?: BootstrapBGColor,
-    falseColor?: BootstrapBGColor,
+    trueColor?: Variant,
+    falseColor?: Variant,
     trueValue?: string,
     falseValue?: string,
 }
@@ -19,7 +20,7 @@ const StatusBadge = ({
                          falseValue = 'N'
                      }: StatusBadgeProps) => {
     const color = status ? trueColor : falseColor;
-    return (<Badge color={color} className={className}>{status ? trueValue : falseValue}</Badge>)
+    return (<Badge bg={color} className={className}>{status ? trueValue : falseValue}</Badge>)
 }
 
 export default StatusBadge;

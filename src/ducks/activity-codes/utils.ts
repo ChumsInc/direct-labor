@@ -1,9 +1,8 @@
 import {ActivityCode, SortProps} from "chums-types";
 import Decimal from "decimal.js";
-import dayjs from "dayjs";
-import {generatePath} from "react-router-dom";
+import {generatePath} from "react-router";
 
-export const activityCodeKey = (ac: Pick<ActivityCode, 'WorkCenter'|'ActivityCode'>) => `${ac.WorkCenter}:${ac.ActivityCode}`;
+export const activityCodeKey = (ac: Pick<ActivityCode, 'WorkCenter' | 'ActivityCode'>) => `${ac.WorkCenter}:${ac.ActivityCode}`;
 
 export const activityCodeKeyDiff = (a: ActivityCode, b: ActivityCode) => activityCodeKey(a) > activityCodeKey(b) ? 1 : -1;
 
@@ -30,7 +29,7 @@ export const activityCodeSorter = ({
         case 'updated':
             return (
                 a[field] === b[field]
-                ? activityCodeKeyDiff(a, b)
+                    ? activityCodeKeyDiff(a, b)
                     : (a[field] > b[field] ? 1 : -1)
             ) * sortMod;
         case 'ActivityDesc':
@@ -45,7 +44,7 @@ export const activityCodeSorter = ({
 }
 
 
-export const activityCodePath = (arg:Pick<ActivityCode, 'WorkCenter'|'ActivityCode'>) => {
+export const activityCodePath = (arg: Pick<ActivityCode, 'WorkCenter' | 'ActivityCode'>) => {
     return generatePath('/activity-codes/:workCenter/:activityCode', {
         workCenter: arg.WorkCenter,
         activityCode: arg.ActivityCode,

@@ -1,19 +1,16 @@
-import {DLSteps} from "../types";
 import {LoadDLStepResponse, LoadDLStepsResponse} from "./types";
-import {fetchJSON} from "chums-components";
-import {DLBasicStep, DLCode, DLStep} from "chums-types";
+import {fetchJSON} from "@chumsinc/ui-utils";
+import {DLCode, DLStep} from "chums-types";
 
-const listURL = `/api/operations/production/dl/steps.json`;
-const stepURL = (step: DLBasicStep) => `/api/operations/production/dl/steps/${encodeURIComponent(step.id)}`;
-
-export async function fetchDLSteps():Promise<LoadDLStepsResponse> {
+export async function fetchDLSteps(): Promise<LoadDLStepsResponse> {
     try {
-        const response = await fetchJSON<LoadDLStepsResponse>(listURL, {cache: 'no-cache'});
+        const url = `/api/operations/production/dl/steps.json`;
+        const response = await fetchJSON<LoadDLStepsResponse>(url, {cache: 'no-cache'});
         return {
             steps: response?.steps ?? [],
             machines: response?.machines ?? []
         };
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchDLSteps()", err.message);
             return Promise.reject(err);
@@ -23,12 +20,13 @@ export async function fetchDLSteps():Promise<LoadDLStepsResponse> {
     }
 }
 
-export async function fetchDLStep(arg:number|string):Promise<DLStep|null> {
+export async function fetchDLStep(arg: number | string): Promise<DLStep | null> {
     try {
-        const url = `/api/operations/production/dl/steps/${encodeURIComponent(arg)}.json`;
+        const url = `/api/operations/production/dl/steps/:id.json`
+            .replace(':id', encodeURIComponent(arg))
         const res = await fetchJSON<LoadDLStepResponse>(url, {cache: 'no-cache'});
         return res?.step ?? null;
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchDLStep()", err.message);
             return Promise.reject(err);
@@ -38,12 +36,13 @@ export async function fetchDLStep(arg:number|string):Promise<DLStep|null> {
     }
 }
 
-export async function fetchDLStepWhereUsed(arg:number|string):Promise<DLCode[]> {
+export async function fetchDLStepWhereUsed(arg: number | string): Promise<DLCode[]> {
     try {
-        const url = `/api/operations/production/dl/steps/${encodeURIComponent(arg)}/where-used.json`;
+        const url = `/api/operations/production/dl/steps/:id/where-used.json`
+            .replace(':id', encodeURIComponent(arg));
         const res = await fetchJSON<{ whereUsed: DLCode[] }>(url, {cache: 'no-cache'});
         return res?.whereUsed ?? [];
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchDLStep()", err.message);
             return Promise.reject(err);
@@ -53,7 +52,7 @@ export async function fetchDLStepWhereUsed(arg:number|string):Promise<DLCode[]> 
     }
 }
 
-export async function postDLStep(arg:DLStep):Promise<DLStep|null> {
+export async function postDLStep(arg: DLStep): Promise<DLStep | null> {
     try {
         const url = arg.id
             ? `/api/operations/production/dl/steps/:id.json`
@@ -63,7 +62,7 @@ export async function postDLStep(arg:DLStep):Promise<DLStep|null> {
         const body = JSON.stringify(arg);
         const res = await fetchJSON<LoadDLStepResponse>(url, {method, body});
         return res?.step ?? null;
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("postDLStep()", err.message);
             return Promise.reject(err);

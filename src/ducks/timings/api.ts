@@ -1,10 +1,7 @@
 import {DLStep, StepTiming} from "chums-types";
-import {fetchJSON} from "chums-components";
+import {fetchJSON} from "@chumsinc/ui-utils";
 import {SaveTimingResponse, StepTimingId} from "./types";
 
-
-const timingsURL = (id: number, idTimings?: number) => `/api/operations/production/dl/steps/${encodeURIComponent(id)}/timings/${encodeURIComponent(idTimings || '')}`;
-const applyTimingsURL = (id: number, idTiming: number) => `/api/operations/production/dl/steps/${encodeURIComponent(id)}/timing/${encodeURIComponent(idTiming)}`;
 
 export async function postTiming(arg: StepTiming): Promise<SaveTimingResponse|null> {
     try {

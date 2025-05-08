@@ -1,10 +1,11 @@
 import {RoutingResponse} from "../types";
-import {fetchJSON} from "chums-components";
+import {fetchJSON} from "@chumsinc/ui-utils";
 import {RoutingHeader} from "chums-types";
 
 export async function fetchRouting(arg:string):Promise<RoutingResponse|null> {
     try {
-        const url = `/api/operations/production/wo/chums/routings/${encodeURIComponent(arg)}`;
+        const url = `/api/operations/production/wo/routings/:routingNo.json`
+            .replace(':routingNo', encodeURIComponent(arg));
         return await fetchJSON<RoutingResponse>(url, {cache: 'no-cache'});
     } catch(err:unknown) {
         if (err instanceof Error) {
@@ -18,7 +19,7 @@ export async function fetchRouting(arg:string):Promise<RoutingResponse|null> {
 
 export async function fetchRoutings():Promise<RoutingHeader[]> {
     try {
-        const url = `/api/operations/production/wo/chums/routings`;
+        const url = `/api/operations/production/wo/routings.json`;
         const res = await fetchJSON<{ routingHeader:RoutingHeader[] }>(url, {cache: 'no-cache'});
         return res?.routingHeader ?? [];
     } catch(err:unknown) {

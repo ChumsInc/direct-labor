@@ -1,5 +1,5 @@
 import React, {useRef} from "react";
-import {DataTableRow, DataTableRowProps} from "chums-components";
+import {DataTableRow, DataTableRowProps} from "@chumsinc/sortable-tables";
 import {DLCodeStep} from "chums-types";
 import {useDrag, useDrop} from "react-dnd";
 import "./DraggableTR.scss";

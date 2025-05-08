@@ -1,8 +1,7 @@
 import React, {useEffect} from "react";
 import SelectedRoutingHeader from "./SelectedRoutingHeader";
 import {selectCurrentLoading, selectCurrentRoutingNo} from "./selectors";
-import {useParams} from "react-router-dom";
-import {Helmet} from "react-helmet";
+import {useParams} from "react-router";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {setCurrentRouting} from "./actions";
 import SelectedRoutingDetail from "./SelectedRoutingDetail";
@@ -24,9 +23,7 @@ const RoutingInfo = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>D/L Routing: {currentRoutingNo || ''}</title>
-            </Helmet>
+            <title>D/L Routing: {currentRoutingNo || ''}</title>
             <SelectedRoutingHeader/>
             <AnimatedLoadingBar loading={loading !== 'idle'}/>
             <SelectedRoutingDetail className="mt-3"/>

@@ -3,7 +3,7 @@ import {loadDLStep} from "../dlSteps/actions";
 import {createReducer} from "@reduxjs/toolkit";
 import {loadTiming, saveTiming, setCurrentTiming, updateCurrentTiming, updateTimingEntry} from "./actions";
 import {timingsSorter} from "./utils";
-import {averageMinutes, calcStandardAllowedMinutes} from "../../utils/math";
+import {averageMinutes, calcStandardAllowedMinutes} from "@/utils/math";
 
 export interface TimingsState {
     stepId: number;

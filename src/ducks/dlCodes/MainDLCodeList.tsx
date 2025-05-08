@@ -4,13 +4,13 @@ import {selectCurrentHeader, selectDLCodesStatus, selectLoaded, selectSort, sele
 import {loadDLCodes, setSort} from "./actions";
 import {DLCode} from "chums-types";
 import DLCodeList from "./DLCodeList";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {dlCodePath} from "../../routerPaths";
-import {useAppDispatch} from "../../app/configureStore";
-import {TablePagination} from "chums-components";
+import {useAppDispatch} from "@/app/configureStore";
+import {TablePagination} from "@chumsinc/sortable-tables";
 import ErrorBoundary from "../../components/ErrorBoundary";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
-import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
+import {getPreference, localStorageKeys, setPreference} from "@/api/preferences";
 
 const MainDLCodeList = () => {
     const navigate = useNavigate();
@@ -50,8 +50,8 @@ const MainDLCodeList = () => {
                         sort={sort} onChangeSort={sort => dispatch(setSort(sort))}
                         selected={selected} onSelectDLCode={onSelectDLCode}/>
             <TablePagination page={page} onChangePage={setPage}
-                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
-                             bsSize="sm" count={list.length} showFirst showLast/>
+                             rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
+                             size="sm" count={list.length} showFirst showLast/>
         </ErrorBoundary>
 
     )

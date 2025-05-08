@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {RoutingDetail, SortProps} from "chums-types";
-import {Link} from 'react-router-dom';
+import React, {useEffect} from "react";
+import {RoutingDetail} from "chums-types";
+import {Link} from 'react-router';
 import {selectLoaded, selectLoading} from "./selectors";
 import numeral from "numeral";
 import {operationCodesOperationPath, selectedRoutingPath, selectedWorkCenterPath} from "../../routerPaths";
 import {useAppDispatch} from "../../app/configureStore";
 import {useSelector} from "react-redux";
 import {routingDetailKey} from "./utils";
-import {DataTable, SortableTableField} from "chums-components";
+import {DataTable, SortableTableField} from "@chumsinc/sortable-tables";
 import {loadRoutings} from "./actions";
 
 export interface RoutingDetailListProps {

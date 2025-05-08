@@ -1,35 +1,39 @@
-import {ActivityCode, Editable, SortProps, WorkTemplate, WorkTemplateStep} from "chums-types";
+import {ActivityCode, Editable, SortProps, WorkTemplateStep} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {
-    loadActivityCodes, setACTemplateStepsSort,
+    loadActivityCodes,
+    setACTemplateStepsSort,
     setActivityCodeSearch,
     setActivityCodeSort,
     setActivityCodesWorkCenter,
-    setCurrentActivityCode, toggleActivityCodesWOTemplates, toggleUnratedWorkCenters
+    setCurrentActivityCode,
+    toggleActivityCodesWOTemplates,
+    toggleUnratedWorkCenters
 } from "./actions";
 import {activityCodeKey, activityCodeSorter} from "./utils";
 
 
-const defaultSort:SortProps<ActivityCode> = {field: "ActivityCode", ascending: true};
+const defaultSort: SortProps<ActivityCode> = {field: "ActivityCode", ascending: true};
+
 export interface ActivityCodesState {
     list: {
         activityCodes: ActivityCode[],
         status: 'idle' | 'loading',
-        loaded:boolean;
+        loaded: boolean;
         filter: {
             workCenter: string;
             unratedWorkCenters: boolean;
             search: string;
             showItemsWithoutTemplates: boolean;
         },
-        sort:SortProps<ActivityCode>
+        sort: SortProps<ActivityCode>
     },
     current: {
         key: string,
         activityCode: (ActivityCode & Editable) | null;
         status: 'idle' | 'loading';
         steps: WorkTemplateStep[];
-        stepsSort:SortProps<WorkTemplateStep>;
+        stepsSort: SortProps<WorkTemplateStep>;
     }
 }
 
@@ -57,7 +61,7 @@ export const initialState: ActivityCodesState = {
 
 const activityCodesReducer = createReducer(initialState, (builder) => {
     builder
-        .addCase(loadActivityCodes.pending, (state, action) => {
+        .addCase(loadActivityCodes.pending, (state) => {
             state.list.status = 'loading';
         })
         .addCase(loadActivityCodes.fulfilled, (state, action) => {
@@ -90,7 +94,7 @@ const activityCodesReducer = createReducer(initialState, (builder) => {
             state.current.activityCode = action.payload?.activityCode ?? null;
             state.current.steps = action.payload?.steps ?? [];
         })
-        .addCase(setCurrentActivityCode.rejected, (state, action) => {
+        .addCase(setCurrentActivityCode.rejected, (state) => {
             state.current.status = 'idle';
         })
         .addCase(setActivityCodeSort, (state, action) => {

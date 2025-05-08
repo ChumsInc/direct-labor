@@ -1,24 +1,22 @@
 import React from 'react';
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import StepsList from "./StepsList";
 import DLStepsFilter from "./DLStepsFilter";
-import {Helmet} from "react-helmet";
+import {Col, Row} from "react-bootstrap";
 
 const DirectLaborStepsPage = () => {
     return (
         <>
-            <Helmet>
-                <title>D/L Steps</title>
-            </Helmet>
-            <div className="row g-3">
-                <div className="col-6">
+            <title>D/L Steps</title>
+            <Row className="g-3">
+                <Col xs={6}>
                     <DLStepsFilter/>
                     <StepsList/>
-                </div>
-                <div className="col-6">
+                </Col>
+                <Col xs={6}>
                     <Outlet/>
-                </div>
-            </div>
+                </Col>
+            </Row>
         </>
     )
 }

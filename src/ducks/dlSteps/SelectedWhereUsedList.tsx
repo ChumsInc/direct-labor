@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectStepsWhereUsed} from "./index";
 import DLCodeList from "../dlCodes/DLCodeList";
-import {TablePagination} from "chums-components";
+import {TablePagination} from "@chumsinc/sortable-tables";
 import {DLCode, SortProps} from "chums-types";
 import {dlCodeSorter} from "../dlCodes/utils";
 
@@ -23,7 +23,7 @@ const SelectedWhereUsedList = () => {
             <DLCodeList list={sortedList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                         sort={sort} onChangeSort={setSort}/>
             <TablePagination page={page} onChangePage={setPage}
-                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={setRowsPerPage}
+                             rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: setRowsPerPage}}
                              count={list.length}/>
         </>
 

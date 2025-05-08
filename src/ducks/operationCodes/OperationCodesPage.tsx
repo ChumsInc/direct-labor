@@ -4,10 +4,9 @@ import {selectLoaded, selectLoading} from "./selectors";
 import {loadOperationCodes} from "./actions";
 import OperationCodeFilter from "./OperationCodeFilter";
 import OperationCodeList from "./OperationCodeList";
-import {Link, Outlet} from "react-router-dom";
-import {Helmet} from "react-helmet";
+import {Link, Outlet} from "react-router";
 import {useAppDispatch} from "../../app/configureStore";
-import {Alert} from "chums-components";
+import {Alert} from "react-bootstrap";
 
 const OperationCodesPage = () => {
     const dispatch = useAppDispatch();
@@ -21,10 +20,11 @@ const OperationCodesPage = () => {
 
     return (
         <>
-            <Helmet>
-                <title>D/L OpCodes</title>
-            </Helmet>
-            <Alert color="danger"><strong>Note:</strong> These values are for reference only. For current values see <Link to="/activity-codes">Activity Codes</Link></Alert>
+            <title>D/L OpCodes</title>
+            <Alert variant="danger">
+                <strong className="me-1">Note:</strong> These values are for reference only. For current values
+                see <Link to="/activity-codes" className="ms-1">Activity Codes</Link>
+            </Alert>
             <div className="row g-5">
                 <div className="col-6">
                     <OperationCodeFilter/>

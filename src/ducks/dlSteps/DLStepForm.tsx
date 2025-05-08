@@ -2,23 +2,22 @@ import React, {ChangeEvent, FormEvent, useId} from 'react';
 import Alert from "react-bootstrap/Alert";
 import numeral from "numeral";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {TextareaAutosize} from "@mui/base";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import {useSelector} from "react-redux";
 import {
     changeDLStep,
     selectCurrentStep,
     selectCurrentStepStatus,
     selectedChangedSelector,
-    selectedSavingSelector,
     selectStepsMachines
 } from "./index";
 import {loadDLStep, saveDLStep} from "./actions";
 
 import {DLStep, WorkCenter} from "chums-types";
-import {useAppDispatch} from "../../app/configureStore";
+import {useAppDispatch} from "@/app/configureStore";
 import Decimal from "decimal.js";
 import {Button, Col, Form, FormControl, InputGroup, ProgressBar, Row} from "react-bootstrap";
+import TextArea from "@/components/common/TextArea";
 
 const DLStepForm = () => {
     const dispatch = useAppDispatch();
@@ -128,7 +127,7 @@ const DLStepForm = () => {
                         <FormControl type="number" id={fixedCostsId} step="0.0001"
                                      value={step.fixedCosts} onChange={changeHandler('fixedCosts')}/>
                         <InputGroup.Text as="label" htmlFor={totalCostId}>Total Cost</InputGroup.Text>
-                        <FormControl readOnly
+                        <FormControl readOnly id={totalCostId}
                                      value={numeral(new Decimal(step.laborCost).add(step.fixedCosts)).format('$0.0000')}/>
                     </InputGroup>
                 </Col>
@@ -136,7 +135,7 @@ const DLStepForm = () => {
             <Form.Group as={Row}>
                 <Form.Label column sm={4} htmlFor={machineId}>Machine</Form.Label>
                 <Col>
-                    <FormControl type="text" size="sm"
+                    <FormControl type="text" size="sm" id={machineId}
                                  value={step.machine} onChange={changeHandler('machine')}
                                  list="input-machine-list"/>
                     <datalist id="input-machine-list">
@@ -155,7 +154,7 @@ const DLStepForm = () => {
             <Form.Group as={Row}>
                 <Form.Label column sm={4} htmlFor={instructionsId}>Instructions</Form.Label>
                 <Col>
-                    <TextareaAutosize id={instructionsId}
+                    <TextArea id={instructionsId}
                                       value={step.instructions ?? ''} placeholder="Instructions"
                                       className="form-control form-control-sm mb-1"
                                       onChange={changeHandler('instructions')} minRows={2}/>
@@ -164,7 +163,7 @@ const DLStepForm = () => {
             <Form.Group as={Row}>
                 <Form.Label column sm={4} htmlFor={notesId}>Notes</Form.Label>
                 <Col>
-                    <TextareaAutosize id={notesId}
+                    <TextArea id={notesId}
                                       value={step.notes ?? ''} placeholder="Notes"
                                       className="form-control form-control-sm mb-1"
                                       onChange={changeHandler('notes')} minRows={2}/>

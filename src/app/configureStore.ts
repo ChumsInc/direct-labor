@@ -1,5 +1,4 @@
 import {combineReducers} from "redux";
-import {default as alertsReducer} from "../ducks/alerts";
 import {default as billMaterialsReducer} from "../ducks/billMaterials";
 import {default as routingReducer} from '../ducks/routing';
 import {default as workCentersReducer} from '../ducks/workCenters';
@@ -13,10 +12,11 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import versionReducer from "../ducks/version";
 import activityCodesReducer from "../ducks/activity-codes";
 import templatesReducer from "../ducks/templates";
+import {alertsSlice} from "@chumsinc/alert-list";
 
 export const rootReducer = combineReducers({
     activityCodes: activityCodesReducer,
-    alerts: alertsReducer,
+    [alertsSlice.reducerPath]: alertsSlice.reducer,
     billMaterials: billMaterialsReducer,
     dlCodes: dlCodesReducer,
     [dlStepsSlice.reducerPath]: dlStepsSlice.reducer,

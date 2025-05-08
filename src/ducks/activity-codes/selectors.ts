@@ -1,11 +1,10 @@
-import {RootState} from "../../app/configureStore";
+import {RootState} from "@/app/configureStore";
 import {createSelector} from "@reduxjs/toolkit";
 import {activityCodeSorter} from "./utils";
-import {selectRatedWorkCenterCodes} from "../workCenters/selectors";
 import {TemplateStepSorter} from "../templates/utils";
 import {selectDLCodesList} from "../dlCodes/selectors";
 import {DLCode} from "chums-types";
-import {getPreference, localStorageKeys} from "../../api/preferences";
+import {getPreference, localStorageKeys} from "@/api/preferences";
 
 export const selectActivityCodes = (state: RootState) => state.activityCodes.list.activityCodes;
 export const selectActivityCodesStatus = (state: RootState) => state.activityCodes.list.status;
@@ -14,7 +13,7 @@ export const selectActivityCodesFilter = (state: RootState) => state.activityCod
 export const selectActivityCodesWorkCenter = (state: RootState) => state.activityCodes.list.filter.workCenter;
 export const selectActivityCodesSort = (state: RootState) => state.activityCodes.list.sort;
 export const selectActivityCodesUnratedWCs = (state: RootState) => state.activityCodes.list.filter.unratedWorkCenters;
-export const selectActivityCodesWithoutTemplates = (state:RootState) => state.activityCodes.list.filter.showItemsWithoutTemplates;
+export const selectActivityCodesWithoutTemplates = (state: RootState) => state.activityCodes.list.filter.showItemsWithoutTemplates;
 
 export const selectCurrentActivityCodeKey = (state: RootState) => state.activityCodes.current.key;
 export const selectCurrentActivityCode = (state: RootState) => state.activityCodes.current.activityCode;
@@ -47,7 +46,7 @@ export const selectCurrentActivityCodeSteps = createSelector(
 export const selectCurrentActivityDLCodes = createSelector(
     [selectCurrentActivityCode, selectDLCodesList],
     (current, dlCodesList) => {
-        const dlCodes:DLCode[] = Object.values(dlCodesList);
+        const dlCodes: DLCode[] = Object.values(dlCodesList);
         return dlCodes
             .filter(code => code.activityCode === current?.ActivityCode)
             .filter(code => code.workCenter === current?.WorkCenter);

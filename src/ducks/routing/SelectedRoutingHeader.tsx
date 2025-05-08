@@ -1,8 +1,8 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentHeader} from "./selectors";
-import {Alert, FormColumn} from "chums-components";
 import numeral from "numeral";
+import FormColumn from "@/components/common/FormColumn";
 
 const SelectedRoutingHeader: React.FC = () => {
     const header = useSelector(selectCurrentHeader);

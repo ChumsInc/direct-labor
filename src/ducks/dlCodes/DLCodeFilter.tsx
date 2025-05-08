@@ -1,13 +1,13 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {selectFilter, selectShowInactive, selectWorkCenterFilter} from "./selectors";
 import {WorkCenter} from "chums-types";
 import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "./actions";
-import SearchInput from "../../components/SearchInput";
-import {FormCheck} from "chums-components";
-import {useAppDispatch} from "../../app/configureStore";
-import {useNavigate} from "react-router-dom";
+import SearchInput from "@/components/common/SearchInput";
+import {Button, Col, FormCheck, Row} from "react-bootstrap";
+import {useAppDispatch} from "@/app/configureStore";
+import {useNavigate} from "react-router";
 
 const DLCodeFilter: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -15,32 +15,34 @@ const DLCodeFilter: React.FC = () => {
     const wcFilter = useSelector(selectWorkCenterFilter);
     const navigate = useNavigate();
     const showInactive = useSelector(selectShowInactive);
+    const idShowInactive = useId();
 
     const onSelectWC = (wc: WorkCenter | null) => dispatch(setWorkCenterFilter(wc?.workCenter || ''));
-    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearch(ev.target.value || ''));
+    const onChangeSearch = (search: string) => dispatch(setSearch(search));
     const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
     const onReloadList = () => dispatch(loadDLCodes());
     const newButtonHandler = () => navigate('/dl-codes/0');
 
     return (
-        <div className="row g-3 mb-3 align-items-baseline">
-            <div className="col-auto">
+        <Row className="g-3 mb-3 align-items-baseline">
+            <Col xs="auto">
                 <WorkCenterSelect value={wcFilter} onSelectWorkCenter={onSelectWC}/>
-            </div>
-            <div className="col">
+            </Col>
+            <Col>
                 <SearchInput onChange={onChangeSearch} value={filter}/>
-            </div>
-            <div className="col-auto">
-                <FormCheck label="Show Inactive" checked={showInactive} onChange={onToggleShowInactive}
+            </Col>
+            <Col xs="auto">
+                <FormCheck label="Show Inactive" id={idShowInactive}
+                           checked={showInactive} onChange={onToggleShowInactive}
                            type="checkbox"/>
-            </div>
-            <div className="col-auto">
-                <button type="button" className="btn btn-outline-secondary" onClick={newButtonHandler}>New</button>
-            </div>
-            <div className="col-auto">
-                <button type="button" className="btn btn-primary" onClick={onReloadList}>Reload</button>
-            </div>
-        </div>
+            </Col>
+            <Col xs="auto">
+                <Button type="button" variant="outline-secondary" size="sm" onClick={newButtonHandler}>New</Button>
+            </Col>
+            <Col xs="auto">
+                <Button type="button" size="sm" variant="primary" onClick={onReloadList}>Reload</Button>
+            </Col>
+        </Row>
     )
 }
 

@@ -1,9 +1,9 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
 import {loadRoutings, setSearch, toggleShowInactive} from "./actions";
 import {selectSearch, selectShowInactive,} from './selectors';
-import {FormCheck} from "chums-components";
-import SearchInput from "../../components/SearchInput";
+import {FormCheck} from "react-bootstrap";
+import SearchInput from "@/components/common/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
 import ErrorBoundary from "../../components/ErrorBoundary";
 
@@ -12,9 +12,10 @@ const RoutingFilter: React.FC = () => {
     const dispatch = useAppDispatch();
     const filter = useSelector(selectSearch);
     const showInactive = useSelector(selectShowInactive);
+    const idShowInactive = useId();
 
-    const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
-        dispatch(setSearch(ev.target.value));
+    const onChange = (value: string) => {
+        dispatch(setSearch(value));
     }
 
     const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
@@ -30,11 +31,12 @@ const RoutingFilter: React.FC = () => {
                     <SearchInput value={filter} onChange={onChange} placeholder="Filter Routings"/>
                 </div>
                 <div className="col-auto">
-                    <FormCheck label={"Show Inactive"} checked={showInactive} onChange={onToggleShowInactive}
+                    <FormCheck label={"Show Inactive"} id={idShowInactive}
+                               checked={showInactive} onChange={onToggleShowInactive}
                                type="checkbox"/>
                 </div>
                 <div className="col-auto">
-                    <button type="button" onClick={onLoad} className="btn btn-primary" >
+                    <button type="button" onClick={onLoad} className="btn btn-primary">
                         Load Routings
                     </button>
                 </div>

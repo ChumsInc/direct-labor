@@ -5,17 +5,17 @@ import {loadDLSteps} from "./actions";
 import {DLBasicStep, SortProps} from "chums-types";
 import {dlStepKey} from "./utils";
 import {stepsListFields} from "./StepsListFields";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {dlStepPath} from "../../routerPaths";
-import {useAppDispatch} from "../../app/configureStore";
-import {LocalStore, SortableTable, TablePagination} from "chums-components";
+import {useAppDispatch} from "@/app/configureStore";
+import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import classNames from "classnames";
-import {localStorageKeys} from "../../api/preferences";
+import {localStorageKeys} from "@/api/preferences";
 import ErrorBoundary from '../../components/ErrorBoundary';
+import {LocalStore} from "@chumsinc/ui-utils";
 
 
 const StepsList = () => {
-    // const history = useHistory();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const sort = useSelector(selectStepsSort);
@@ -39,7 +39,7 @@ const StepsList = () => {
         navigate(dlStepPath(row.id));
     }
 
-    const sortChangeHandler = (sort: SortProps) => {
+    const sortChangeHandler = (sort: SortProps<DLBasicStep>) => {
         dispatch(setStepSort(sort));
     }
 
@@ -48,18 +48,19 @@ const StepsList = () => {
         setRowsPerPage(rpp);
     }
 
-    const pagedList = list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const rowClassName = (row: DLBasicStep) => classNames({'table-warning': !row.active});
 
     return (
         <ErrorBoundary>
             <div className="mt-3">
-                <SortableTable keyField={dlStepKey} fields={stepsListFields}
+                <SortableTable keyField={dlStepKey} fields={stepsListFields} size="sm"
                                currentSort={sort} onChangeSort={sortChangeHandler}
-                               data={pagedList} size="sm"
-                               rowClassName={(row: DLBasicStep) => classNames({'table-warning': !row.active})}
-                               selected={selected?.id} onSelectRow={onSelectRow}/>
-                <TablePagination page={page} onChangePage={setPage}
-                                 rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
+                               data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                               rowClassName={rowClassName}
+                               selected={selected?.id}
+                               onSelectRow={onSelectRow}/>
+                <TablePagination page={page} onChangePage={setPage} size="sm"
+                                 rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                                  count={list.length} showFirst showLast/>
             </div>
         </ErrorBoundary>

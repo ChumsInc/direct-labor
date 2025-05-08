@@ -13,7 +13,6 @@ import {
     WorkCenter,
     WorkTemplateStep
 } from "chums-types";
-import {NavItemProps} from "chums-components/src/NavList/NavList.types";
 
 export interface ListState {
     list: any[] | object,
@@ -116,9 +115,6 @@ export interface WorkCenterList {
     [key: string]: WorkCenter;
 }
 
-export interface RoutedTab extends NavItemProps {
-    to: string;
-}
 
 export interface LoadActivityCodeResponse {
     activityCode: ActivityCode;

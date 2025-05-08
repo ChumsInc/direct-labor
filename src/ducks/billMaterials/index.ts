@@ -6,7 +6,7 @@ import {
     defaultBillOptionSort,
     defaultBillSort
 } from "./utils";
-import {RootState} from "../../app/configureStore";
+import {RootState} from "@/app/configureStore";
 import {setCurrentRouting} from "../routing/actions";
 
 import {BillHeader, BillOptionHeader} from "chums-types";

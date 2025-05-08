@@ -1,14 +1,13 @@
 import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {selectCurrentTemplate, selectCurrentTemplateStatus, selectCurrentTemplateSteps} from "./selectors";
-import {Helmet} from "react-helmet";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 import {loadTemplate} from "./actions";
 import CurrentTemplateSteps from "./CurrentTemplateSteps";
-import {FormColumn} from "chums-components";
 import numeral from "numeral";
 import dayjs from "dayjs";
+import FormColumn from "@/components/common/FormColumn";
 
 
 const CurrentTemplate = () => {
@@ -33,9 +32,7 @@ const CurrentTemplate = () => {
 
     return (
         <div>
-            <Helmet>
-                <title>W/T Template: {template.TemplateNo}:{template.RevisionNo}</title>
-            </Helmet>
+            <title>W/T Template: {template.TemplateNo}:{template.RevisionNo}</title>
             <div className="card mb-3">
                 <div className="card-header">
                     <h3>W/T Template: {template.TemplateNo}:{template.RevisionNo}</h3>
@@ -44,11 +41,12 @@ const CurrentTemplate = () => {
                     <h4>{template.TemplateDesc}</h4>
                     <AnimatedLoadingBar loading={loading !== 'idle'}/>
                     <FormColumn label="Cost">
-                        <input type="text" readOnly className="form-control form-control-plaintext" value={numeral(template.TemplateCost).format('$0,0.0000')} />
+                        <input type="text" readOnly className="form-control form-control-plaintext"
+                               value={numeral(template.TemplateCost).format('$0,0.0000')}/>
                     </FormColumn>
                     <FormColumn label="Updated">
                         <input type="text" readOnly className="form-control form-control-plaintext"
-                               value={dayjs(template.updated).isValid() ? dayjs(template.updated).toDate().toLocaleString() : '-'} />
+                               value={dayjs(template.updated).isValid() ? dayjs(template.updated).toDate().toLocaleString() : '-'}/>
                     </FormColumn>
                 </div>
             </div>

@@ -1,22 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {SortableTable, SortableTableField, TablePagination} from "chums-components";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {
     selectActivityCodesLoaded,
     selectActivityCodesSort,
     selectActivityCodesStatus,
     selectCurrentActivityCode,
     selectSortedActivityCodes
-} from "./selectors";
+} from "@/ducks/activity-codes/selectors";
 import {ActivityCode, SortProps} from "chums-types";
-import {loadActivityCodes, setActivityCodeSort} from "./actions";
-import {activityCodeKey, activityCodePath} from "./utils";
-import {generatePath, useNavigate} from "react-router-dom";
+import {loadActivityCodes, setActivityCodeSort} from "@/ducks/activity-codes/actions";
+import {activityCodeKey, activityCodePath} from "@/ducks/activity-codes/utils";
+import {useNavigate} from "react-router";
 import ActivityCodesFilter from "./ActivityCodesFilter";
-import {friendlyDate} from "../../utils/date-utils";
-import numeral from "numeral";
-import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
-import NumericTableValue from "../../components/NumericTableValue";
+import AnimatedLoadingBar from "../AnimatedLoadingBar";
+import NumericTableValue from "../NumericTableValue";
 
 
 const fields: SortableTableField<ActivityCode>[] = [
@@ -28,7 +26,7 @@ const fields: SortableTableField<ActivityCode>[] = [
         title: 'Cost/Hr',
         sortable: true,
         align: 'end',
-        render: (row) => <NumericTableValue value={row.StandardCostPerHour} format={'$0,0.00'} />,
+        render: (row) => <NumericTableValue value={row.StandardCostPerHour} format={'$0,0.00'}/>,
     },
     {
         field: 'StepAvgCost',
@@ -93,7 +91,8 @@ const ActivityCodesList = () => {
                            selected={current ? activityCodeKey(current) : undefined}
                            onSelectRow={onSelectActivityCode}/>
             <TablePagination page={page} onChangePage={setPage} rowsPerPage={rowsPerPage}
-                             onChangeRowsPerPage={onChangeRowsPerPage} showFirst showLast
+                             rowsPerPageProps={{onChange: onChangeRowsPerPage}}
+                             showFirst showLast
                              count={list.length}/>
         </div>
     )

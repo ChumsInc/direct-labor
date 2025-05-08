@@ -1,18 +1,12 @@
 import React from "react";
-import RoutingList from "../ducks/routing/RoutingList";
-import RoutingFilter from "../ducks/routing/RoutingFilter";
-import ErrorBoundary from "./ErrorBoundary";
-import {Helmet} from "react-helmet";
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import TemplatesFilter from "../ducks/templates/TemplatesFilter";
 import TemplatesList from "../ducks/templates/TemplatesList";
 
 const TemplatesPage = () => {
     return (
         <div className="row g-3">
-            <Helmet>
-                <title>W/T Templates</title>
-            </Helmet>
+            <title>W/T Templates</title>
             <div className="col-6">
                 <TemplatesFilter/>
                 <TemplatesList/>

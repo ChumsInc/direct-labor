@@ -1,20 +1,20 @@
 import React, {ChangeEvent, useId} from 'react';
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
-import WorkCenterSelect from "../workCenters/WorkCenterSelect";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
+import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect";
 import {useSelector} from "react-redux";
 import {
     selectActivityCodesFilter,
     selectActivityCodesUnratedWCs,
     selectActivityCodesWithoutTemplates,
     selectActivityCodesWorkCenter
-} from "./selectors";
+} from "@/ducks/activity-codes/selectors";
 import {
     loadActivityCodes,
     setActivityCodeSearch,
     setActivityCodesWorkCenter, toggleActivityCodesWOTemplates,
     toggleUnratedWorkCenters
-} from "./actions";
-import {FormCheck} from "chums-components";
+} from "@/ducks/activity-codes/actions";
+import {Button, Col, FormCheck, FormControl, Row} from "react-bootstrap";
 
 const ActivityCodesFilter = () => {
     const dispatch = useAppDispatch();
@@ -22,7 +22,8 @@ const ActivityCodesFilter = () => {
     const unrated = useSelector(selectActivityCodesUnratedWCs);
     const search = useSelector(selectActivityCodesFilter);
     const showACWoTemplates = useAppSelector(selectActivityCodesWithoutTemplates);
-    const cbId = useId();
+    const idWOTemplates = useId();
+    const idUnrated = useId();
 
     const wcChange = (ev:ChangeEvent<HTMLSelectElement>) => {
         dispatch(setActivityCodesWorkCenter(ev.target.value));
@@ -46,28 +47,30 @@ const ActivityCodesFilter = () => {
 
     return (
         <div>
-            <div className="row g-3 align-items-baseline">
-                <div className="col">
-                    <input type="search" className="form-control" value={search} placeholder="Search"
+            <Row className="g-3 mb-1 align-items-baseline">
+                <Col className="col">
+                    <FormControl type="search" size="sm" value={search} placeholder="Search"
                            onChange={searchChangeHandler}/>
-                </div>
-                <div className="col-auto">
-                    <button type="button" className="btn btn-outline-primary" onClick={reloadHandler}>Reload</button>
-                </div>
-            </div>
-            <div className="row g-3 align-items-baseline">
-                <div className="col-auto">
-                    <WorkCenterSelect value={workCenter} includeUnrated={unrated} onChange={wcChange} />
-                </div>
-                <div className="col-auto">
-                    <FormCheck type="checkbox" checked={unrated} onChange={onToggleUnrated}
+                </Col>
+                <Col xs="auto">
+                    <Button type="button" variant="outline-primary" size="sm" onClick={reloadHandler}>Reload</Button>
+                </Col>
+            </Row>
+            <Col className="row g-3 align-items-baseline">
+                <Col>
+                    <WorkCenterSelect value={workCenter} includeUnrated={unrated} onChange={wcChange} size="sm" />
+                </Col>
+                <Col xs="auto">
+                    <FormCheck type="checkbox" id={idUnrated}
+                               checked={unrated} onChange={onToggleUnrated}
                                disabled={workCenter !== ''} label="Show Inactive W/C" />
-                </div>
-                <div className="col-auto">
-                    <FormCheck type="checkbox" checked={showACWoTemplates} onChange={onToggleWithoutAC}
+                </Col>
+                <Col xs="auto">
+                    <FormCheck type="checkbox" id={idWOTemplates}
+                               checked={showACWoTemplates} onChange={onToggleWithoutAC}
                                label="Show Activity Codes w/o Templates" />
-                </div>
-            </div>
+                </Col>
+            </Col>
         </div>
     )
 }

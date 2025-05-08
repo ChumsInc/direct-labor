@@ -1,11 +1,11 @@
 import React from 'react';
 import {useAppSelector} from "../../app/configureStore";
 import {selectCurrentTemplateSteps} from "./selectors";
-import {DataTable, DataTableField} from "chums-components";
+import {DataTable, DataTableField} from "@chumsinc/sortable-tables";
 import {calculateStepLaborCost, templateStepKey} from "./utils";
 import {WorkTemplateStep} from "chums-types";
 import {activityCodePath} from "../activity-codes/utils";
-import {Link} from "react-router-dom";
+import {Link} from "react-router";
 import NumericTableValue from "../../components/NumericTableValue";
 
 const fields:DataTableField<WorkTemplateStep>[] = [

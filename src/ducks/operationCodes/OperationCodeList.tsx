@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import {SortableTable, SortableTableField, TablePagination} from "chums-components";
+import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {OperationCode, SortProps} from "chums-types";
 import {operationCodeKey} from "./utils";
 import {useSelector} from "react-redux";
 import numeral from "numeral";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {operationCodesOperationPath} from "../../routerPaths";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {selectCurrentOperationCode, selectFilteredOpCodeList, selectLoading, selectSort} from "./selectors";
@@ -57,9 +57,10 @@ const OperationCodeList = () => {
                            data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                            size="sm" currentSort={sort} onChangeSort={sortChangeHandler}
                            onSelectRow={onSelectOperationCode} selected={operationCodeKey(selected)}/>
-            <TablePagination page={page} onChangePage={setPage} rowsPerPageOptions={[15, 25, 50, 100]}
-                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
-                             bsSize="sm"
+            <TablePagination page={page} onChangePage={setPage}
+                             rowsPerPageProps={{pageValues: [15, 25, 50, 100], onChange: rowsPerPageChangeHandler}}
+                             rowsPerPage={rowsPerPage}
+                             size="sm"
                              showFirst showLast count={list.length}/>
         </ErrorBoundary>
     )

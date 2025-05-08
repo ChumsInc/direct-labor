@@ -8,13 +8,12 @@ import {
 } from "./selectors";
 import {loadTemplateList, setTemplatesSort} from "./actions";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
-import {pageFilter, SortableTable, SortableTableField, TablePagination} from "chums-components";
+import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {templateKey, templatePath, templateStepCount} from "./utils";
 import {SortProps, WorkTemplate} from "chums-types";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router";
 import NumericTableValue from "../../components/NumericTableValue";
 import classNames from "classnames";
-import mainNav from "../../components/MainNav";
 
 const fields: SortableTableField<WorkTemplate>[] = [
     {
@@ -64,16 +63,18 @@ const TemplatesList = () => {
         dispatch(setTemplatesSort(sort));
     }
 
-    const rppChangeHandler = (rpp:number) => {
+    const rppChangeHandler = (rpp: number) => {
         setPage(0);
         setRowsPerPage(rpp);
     }
 
-    const rowClassName = (row:WorkTemplate) => classNames({
+    const rowClassName = (row: WorkTemplate) => classNames({
         'table-warning': row.CurrentRevision !== 'Y',
     })
 
-    const rowClickHandler = (row:WorkTemplate) => navigate(templatePath(row));
+    const rowClickHandler = (row: WorkTemplate) => {
+        navigate(templatePath(row));
+    }
 
     return (
         <div>
@@ -83,8 +84,8 @@ const TemplatesList = () => {
                            rowClassName={rowClassName} onSelectRow={rowClickHandler}
                            keyField={templateKey}/>
             <TablePagination page={page} onChangePage={setPage}
-                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={rppChangeHandler}
-                             count={list.length} />
+                             rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rppChangeHandler}}
+                             count={list.length}/>
         </div>
     )
 }

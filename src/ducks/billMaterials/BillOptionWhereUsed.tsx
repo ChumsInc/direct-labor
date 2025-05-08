@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {SortableTable, SortableTableField} from "chums-components";
+import {SortableTable, SortableTableField} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 
 import classNames from "classnames";

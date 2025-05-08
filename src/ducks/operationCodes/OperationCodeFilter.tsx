@@ -5,7 +5,7 @@ import {selectLoading, selectSearch, selectWorkCenter} from "./selectors";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {WorkCenter} from "chums-types";
 import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
-import SearchInput from "../../components/SearchInput";
+import SearchInput from "@/components/common/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
 
 
@@ -27,7 +27,7 @@ const OperationCodeFilter = () => {
         setPreference(currentOCWorkCenterKey, wc?.workCenter ?? '');
     }
 
-    const onChangeSearch = (ev: ChangeEvent<HTMLInputElement>) => dispatch(setSearch(ev.target.value || ''));
+    const onChangeSearch = (value:string) => dispatch(setSearch(value));
     const onReload = () => dispatch(loadOperationCodes());
 
 

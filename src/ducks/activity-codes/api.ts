@@ -1,4 +1,4 @@
-import {fetchJSON} from "chums-components";
+import {fetchJSON} from "@chumsinc/ui-utils";
 import {ActivityCode, WorkTemplateStep} from "chums-types";
 import {LoadActivityCodeResponse} from "../types";
 

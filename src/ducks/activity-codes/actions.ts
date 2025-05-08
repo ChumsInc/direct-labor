@@ -1,7 +1,7 @@
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchActivityCode, fetchActivityCodes} from "./api";
 import {ActivityCode, SortProps, WorkTemplateStep} from "chums-types";
-import {RootState} from "../../app/configureStore";
+import {RootState} from "@/app/configureStore";
 import {selectActivityCodesStatus, selectCurrentActivityCodeStatus} from "./selectors";
 import {LoadActivityCodeResponse} from "../types";
 

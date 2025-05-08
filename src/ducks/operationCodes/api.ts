@@ -1,10 +1,10 @@
 import {OperationCodeKey} from "chums-types";
-import {fetchJSON} from "chums-components";
+import {fetchJSON} from "@chumsinc/ui-utils";
 import {OperationCodeResponse} from "./types";
 
 export async function fetchOperationCodes(): Promise<OperationCodeResponse> {
     try {
-        const url = `/api/operations/production/wo/chums/operation-codes`;
+        const url = `/api/operations/production/wo/operation-codes.json`;
         const res = await fetchJSON<OperationCodeResponse>(url, {cache: 'no-cache'});
         return {
             operationCodes: res?.operationCodes ?? [],
@@ -23,7 +23,7 @@ export async function fetchOperationCodes(): Promise<OperationCodeResponse> {
 
 export async function fetchOperationCode(arg: OperationCodeKey): Promise<OperationCodeResponse> {
     try {
-        const url = `/api/operations/production/wo/chums/operation-codes/:workCenter/:operationCode`
+        const url = `/api/operations/production/wo/operation-codes/:workCenter/:operationCode.json`
             .replace(':workCenter', encodeURIComponent(arg.WorkCenter))
             .replace(':operationCode', encodeURIComponent(arg.OperationCode));
         const res = await fetchJSON<OperationCodeResponse>(url, {cache: 'no-cache'});

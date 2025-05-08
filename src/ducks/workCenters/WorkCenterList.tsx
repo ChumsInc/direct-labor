@@ -1,12 +1,10 @@
 import React, {ChangeEvent, useEffect, useId, useState} from "react";
 import {
-    FormCheck,
     SortableTable,
     SortableTableField,
     SortProps,
-    SpinnerButton,
     TablePagination
-} from "chums-components";
+} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 import {loadWorkCenters, setSort, setWCSearch, toggleFilterRatedWC} from "./actions";
 import {
@@ -19,11 +17,13 @@ import {
 } from "./selectors";
 import {workCenterKey} from "./utils";
 import numeral from "numeral";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {selectedWorkCenterPath} from "../../routerPaths";
 import {WorkCenter} from "chums-types";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import Decimal from "decimal.js";
+import {FormCheck} from "react-bootstrap";
+import SpinnerButton from "@/components/common/SpinnerButton";
 
 const fields: SortableTableField<WorkCenter>[] = [
     {field: 'workCenter', title: 'W/C Code', sortable: true},
@@ -70,7 +70,9 @@ const WorkCenterList: React.FC = () => {
     }, [list, sort]);
 
     const onReload = () => dispatch(loadWorkCenters());
-    const onSelectWorkCenter = (row: WorkCenter) => navigate(selectedWorkCenterPath(row.workCenter));
+    const onSelectWorkCenter = (row: WorkCenter) => {
+        navigate(selectedWorkCenterPath(row.workCenter));
+    }
 
     const onChangeFilter = () => dispatch(toggleFilterRatedWC());
     const onChangeSort = (sort: SortProps<WorkCenter>) => dispatch(setSort(sort));
@@ -100,7 +102,7 @@ const WorkCenterList: React.FC = () => {
                                onChange={onChangeFilter} type="checkbox"/>
                 </div>
                 <div className="col-auto">
-                    <SpinnerButton type="button" color="primary" spinning={loading} onClick={onReload}>
+                    <SpinnerButton type="button" variant="primary" spinning={loading} onClick={onReload}>
                         Reload
                     </SpinnerButton>
                 </div>
@@ -112,7 +114,7 @@ const WorkCenterList: React.FC = () => {
                            selected={selected?.workCenter}
                            onSelectRow={onSelectWorkCenter}/>
             <TablePagination page={page} onChangePage={onChangePage} rowsPerPage={rowsPerPage}
-                             onChangeRowsPerPage={onChangeRowsPerPage} showFirst showLast
+                             rowsPerPageProps={{onChange: onChangeRowsPerPage}} showFirst showLast
                              count={list.length}/>
         </div>
     )

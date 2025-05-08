@@ -1,25 +1,25 @@
 import React, {useEffect} from "react";
-import {LoadingProgressBar, SortableTable, SortableTableField, TablePagination} from "chums-components";
+import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 import {
     selectCurrentHeader,
     selectLoaded,
     selectLoading,
     selectPage,
-    selectRowsPerPage,
     selectRoutingSort,
+    selectRowsPerPage,
     selectSortedRoutingList,
 } from "./selectors";
-import {RoutingHeader} from "chums-types";
+import {RoutingHeader, SortProps} from "chums-types";
 import numeral from "numeral";
 import classNames from "classnames";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router";
 import {selectedRoutingPath} from "../../routerPaths";
 import StatusBadge from "../../components/StatusBadge";
 import {useAppDispatch} from "../../app/configureStore";
-import {SortProps} from "chums-types";
-import {loadRoutings, setCurrentRouting, setPage, setRowsPerPage, setSort} from "./actions";
+import {loadRoutings, setPage, setRowsPerPage, setSort} from "./actions";
 import ErrorBoundary from "../../components/ErrorBoundary";
+import {ProgressBar} from "react-bootstrap";
 
 
 const routingListFields: SortableTableField<RoutingHeader>[] = [
@@ -76,7 +76,7 @@ const RoutingList = () => {
 
     return (
         <ErrorBoundary>
-            {loading && <LoadingProgressBar striped animated style={{height: '5px'}} />}
+            {loading && <ProgressBar striped animated style={{height: '5px'}}/>}
             <SortableTable keyField={"RoutingNo"} size="xs" fields={routingListFields}
                            data={pagedList}
                            currentSort={sort} onChangeSort={onChangeSort}
@@ -84,8 +84,8 @@ const RoutingList = () => {
                            rowClassName={rowClassName}
                            onSelectRow={onSelect}/>
             <TablePagination page={page} onChangePage={pageChangeHandler}
-                             rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
-                             showFirst showLast bsSize="sm"
+                             rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
+                             showFirst showLast size="sm"
                              count={filteredList.length}/>
         </ErrorBoundary>
     )

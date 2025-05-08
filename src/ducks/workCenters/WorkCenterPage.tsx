@@ -1,16 +1,13 @@
 import React from "react";
 import WorkCenterList from "./WorkCenterList";
 import ErrorBoundary from "../../components/ErrorBoundary";
-import {Outlet} from "react-router-dom";
-import {Helmet} from "react-helmet";
+import {Outlet} from "react-router";
 import DirectLaborRecalc from "../dlCodes/DirectLaborRecalc";
 
 const WorkCenterPage = () => {
     return (
         <>
-            <Helmet>
-                <title>D/L Work Centers</title>
-            </Helmet>
+            <title>D/L Work Centers</title>
             <div className="row g-3">
                 <div className="col-8">
                     <ErrorBoundary>

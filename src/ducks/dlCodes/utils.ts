@@ -1,7 +1,6 @@
 import {DLCodeSteps, DLStepTotal} from "../types";
-import {DLCode, DLCodeStep} from "chums-types";
+import {DLCode, DLCodeStep, SortProps} from "chums-types";
 import Decimal from "decimal.js";
-import {SortProps} from "chums-components";
 
 export const dlStepList = (list: DLCodeStep[]): DLCodeSteps => {
     const steps: DLCodeSteps = {};

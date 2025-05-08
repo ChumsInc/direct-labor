@@ -1,11 +1,9 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link} from 'react-router';
 import {DLBasicStep} from "chums-types";
 import numeral from "numeral";
 import {dlStepPath} from "../../routerPaths";
-import {SortableTableField} from "chums-components";
-import Decimal from "decimal.js";
-import classNames from "classnames";
+import {SortableTableField} from "@chumsinc/sortable-tables";
 
 
 export const stepsListFields: SortableTableField<(DLBasicStep)>[] = [

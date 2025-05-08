@@ -1,7 +1,7 @@
-import React, {ChangeEvent, useEffect} from "react";
+import React, {ChangeEvent, useEffect, useId} from "react";
 import {useSelector} from "react-redux";
 import {loadWorkCenters} from "./actions";
-import {workCenterIcon} from "../../icons";
+import {workCenterIcon} from "@/utils/icons";
 import {WorkCenter} from "chums-types";
 import {useAppDispatch} from "../../app/configureStore";
 import {selectWorkCenters, selectWorkCentersLoaded} from "./selectors";
@@ -26,6 +26,7 @@ const WorkCenterSelect = ({
     const dispatch = useAppDispatch();
     const loaded = useSelector(selectWorkCentersLoaded);
     const list = useSelector(selectWorkCenters);
+    const id = useId();
 
     useEffect(() => {
         if (!loaded) {
@@ -44,10 +45,10 @@ const WorkCenterSelect = ({
 
     return (
         <InputGroup size={size}>
-            <InputGroup.Text>
-                <span className={workCenterIcon} aria-label="Work Center" />
+            <InputGroup.Text as="label" htmlFor={id} className="input-group-text" aria-label="Work Center">
+                <span className={workCenterIcon} aria-hidden="true" />
             </InputGroup.Text>
-            <FormSelect value={value} onChange={changeHandler} size={size} {...rest}>
+            <FormSelect value={value} onChange={changeHandler} size={size} id={id} {...rest}>
                 <option value="">Select Work Center</option>
                 <optgroup label="Std Work Centers">
                     {list

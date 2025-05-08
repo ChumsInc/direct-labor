@@ -1,28 +1,20 @@
 import React, {useEffect} from 'react';
 import {useSelector} from "react-redux";
-import {
-    selectCurrentLoading,
-    selectCurrentOperationCode,
-    selectLoaded,
-    selectOperationCodeByCode,
-    selectWhereUsed
-} from "./selectors";
-import {Alert, FormColumn, LoadingProgressBar} from "chums-components";
+import {selectCurrentLoading, selectCurrentOperationCode, selectWhereUsed} from "./selectors";
 import GLAccountElement from "../glAccounts/GLAccountElement";
 import RoutingDetailList from "../routing/RoutingDetailList";
 import {selectWhereUsedByRoutingKeys} from "../routing/selectors";
 import numeral from "numeral";
-import {operationCodeKey} from "./utils";
-import {Helmet} from "react-helmet";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {loadOperationCode} from "./actions";
-import {useParams} from "react-router-dom";
+import {useParams} from "react-router";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
+import FormColumn from "@/components/common/FormColumn";
 
 
 const SelectedOperationCode = () => {
     const dispatch = useAppDispatch();
-    const params = useParams<{operationCode: string; workCenter: string}>()
+    const params = useParams<{ operationCode: string; workCenter: string }>()
     const operationCode = useSelector(selectCurrentOperationCode);
     const whereUsedKeys = useSelector(selectWhereUsed);
     const whereUsed = useAppSelector((state) => selectWhereUsedByRoutingKeys(state, whereUsedKeys));
@@ -54,16 +46,15 @@ const SelectedOperationCode = () => {
     } = operationCode;
     return (
         <div>
-            <Helmet>
-                <title>D/L OpCode: {WorkCenter}/{OperationCode}</title>
-            </Helmet>
+            <title>D/L OpCode: {WorkCenter}/{OperationCode}</title>
+
             <FormColumn label={"Work Center"}>
-                <h3>{WorkCenter}</h3>
+                <div className="h3">{WorkCenter}</div>
             </FormColumn>
             <FormColumn label={"Operation Code"}>
-                <h3>{OperationCode}</h3>
+                <h2 className="h3">{OperationCode}</h2>
             </FormColumn>
-            <AnimatedLoadingBar loading={loading} />
+            <AnimatedLoadingBar loading={loading}/>
             <hr/>
 
             <FormColumn label="Description">
@@ -78,7 +69,7 @@ const SelectedOperationCode = () => {
 
             <hr/>
 
-            <h4>GL Codes</h4>
+            <h3 className="h4">GL Codes</h3>
             <FormColumn label="WIP Direct Account">
                 <GLAccountElement accountKey={WipDirectAcct} showDescription/>
             </FormColumn>

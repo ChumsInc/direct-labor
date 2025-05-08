@@ -2,9 +2,8 @@ import {selectLoading,} from "./selectors";
 import {WorkCenterList} from "../types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchActivityCodeChanges, fetchTemplateChanges, fetchWorkCenters, postWorkCenterRate} from "./api";
-import {SortProps} from "chums-components";
+import {SortProps, WorkCenter} from "chums-types";
 import {RootState} from "../../app/configureStore";
-import {WorkCenter} from "chums-types";
 
 export const setCurrentWorkCenter = createAction<string>('workCenters/setCurrent');
 export const setWorkCenterRate = createAction<number>('workCenters/setCurrentRate');

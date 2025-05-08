@@ -1,7 +1,7 @@
 import React from 'react';
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
-import {SortableTable, SortableTableField} from "chums-components";
+import {SortableTable, SortableTableField} from "@chumsinc/sortable-tables";
 import {selectCurrentStep} from "../dlSteps/index";
 import {
     selectCurrentLoading,

@@ -1,8 +1,9 @@
 import React from 'react';
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {selectDLCodesStatus} from "./selectors";
 import {recalculateDLCodes} from "./actions";
-import {Alert, SpinnerButton} from "chums-components";
+import {Alert} from "react-bootstrap";
+import SpinnerButton from "@/components/common/SpinnerButton";
 
 const DirectLaborRecalc = () => {
     const dispatch = useAppDispatch();
@@ -17,11 +18,12 @@ const DirectLaborRecalc = () => {
             <hr/>
             <h3>Recalculate DL Codes</h3>
             <div>
-                <SpinnerButton color="warning" onClick={clickHandler} spinning={status === 'calculating'}>
+                <SpinnerButton variant="warning" onClick={clickHandler} spinning={status === 'calculating'}
+                               spinnerProps={{size: 'sm'}}>
                     Recalculate All D/L Codes Costs
                 </SpinnerButton>
             </div>
-            <Alert color="warning" title="Caution">
+            <Alert variant="warning my-3" title="Caution">
                 This will recalculate the costs of all Direct Labor Codes for the current Work Center rate.
             </Alert>
         </div>

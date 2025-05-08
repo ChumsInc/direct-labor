@@ -1,12 +1,6 @@
 import React, {ChangeEvent, FormEvent, useId, useState} from "react";
 import {useSelector} from "react-redux";
-import {
-    selectCurrentLoading,
-    selectCurrentSaving,
-    selectCurrentTiming,
-    selectCurrentTimingActionStatus
-} from "./selectors";
-import {SpinnerButton} from "chums-components";
+import {selectCurrentLoading, selectCurrentTiming, selectCurrentTimingActionStatus} from "./selectors";
 import {saveTiming, setCurrentTiming, updateCurrentTiming} from "./actions";
 import {StepTiming} from "chums-types";
 import numeral from "numeral";
@@ -16,8 +10,9 @@ import {useAppDispatch} from "../../app/configureStore";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
 import StepTimingEntries from "./StepTimingEntries";
-import {TextareaAutosize} from "@mui/base";
 import CurrentTimingButton from "./CurrentTimingButton";
+import SpinnerButton from "@/components/common/SpinnerButton";
+import TextArea from "@/components/common/TextArea";
 
 const formId = 'selected-stepTiming-edit';
 
@@ -46,7 +41,7 @@ const SelectedTimingForm: React.FC = () => {
         dispatch(updateCurrentTiming({efficiency: Number(ev.target.value || 0) / 100}));
     }
     const onChange = (field: keyof StepTiming) =>
-        (ev: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => dispatch(updateCurrentTiming({[field]: ev.target.value}));
+        (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => dispatch(updateCurrentTiming({[field]: ev.target.value}));
 
     const onChangeNumeric = (field: keyof StepTiming) =>
         (ev: ChangeEvent<HTMLInputElement>) => dispatch(updateCurrentTiming({[field]: Number(ev.target.value || 0)}));
@@ -154,8 +149,8 @@ const SelectedTimingForm: React.FC = () => {
                 </div>
                 <div className="mb-1">
                     <label htmlFor={`${id}-timing-notes`}>Notes</label>
-                    <TextareaAutosize className="form-control" id={`${id}-timing-notes`} value={stepTiming.notes || ''}
-                           placeholder="Timing notes" onChange={onChange('notes')}/>
+                    <TextArea className="form-control" id={`${id}-timing-notes`} value={stepTiming.notes || ''}
+                              placeholder="Timing notes" onChange={onChange('notes')}/>
                 </div>
             </form>
             <StepTimingEntries/>
@@ -168,10 +163,10 @@ const SelectedTimingForm: React.FC = () => {
                     </button>
                 </div>
                 <div className="col-auto">
-                    <CurrentTimingButton timing={stepTiming} />
+                    <CurrentTimingButton timing={stepTiming}/>
                 </div>
                 <div className="col-auto">
-                    <SpinnerButton type="submit" color="primary" form={formId}
+                    <SpinnerButton type="submit" variant="primary" form={formId}
                                    spinning={actionStatus === 'saving'} disabled={actionStatus !== 'idle'}>
                         Save
                     </SpinnerButton>

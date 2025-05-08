@@ -1,5 +1,5 @@
 import {defaultDLCodeSort, dlCodeSorter, dlCodeStepSorter} from "./utils";
-import {SortProps} from "chums-components";
+import {DLCode, DLCodeStep, DLCodeWorkTemplate, SortProps} from "chums-types";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
 import {createReducer} from "@reduxjs/toolkit";
 import {
@@ -7,7 +7,8 @@ import {
     loadDLCode,
     loadDLCodes,
     rebuildDLCode,
-    recalculateDLCodes, removeDLCode,
+    recalculateDLCodes,
+    removeDLCode,
     removeDLStep,
     saveDLCode,
     saveDLStepSort,
@@ -16,7 +17,6 @@ import {
     setWorkCenterFilter,
     toggleShowInactive
 } from "./actions";
-import {DLCode, DLCodeStep, DLCodeWorkTemplate} from "chums-types";
 
 export interface DLCodesState {
     list: {

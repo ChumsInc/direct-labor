@@ -77,7 +77,7 @@ const templatesReducer = createReducer(initialTemplatesState, (builder) => {
                 state.current.steps = isTemplateStepCount(action.payload.Steps) ? [] : [...action.payload.Steps];
             }
         })
-        .addCase(loadTemplate.rejected, (state, action) => {
+        .addCase(loadTemplate.rejected, (state) => {
             state.current.status = 'idle';
         })
         .addCase(setTemplatesSort, (state, action) => {

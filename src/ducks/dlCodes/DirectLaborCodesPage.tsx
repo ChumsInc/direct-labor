@@ -1,15 +1,12 @@
 import React from 'react';
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 import DLCodeFilter from "./DLCodeFilter";
 import MainDLCodeList from "./MainDLCodeList";
-import {Helmet} from "react-helmet";
 
 const DirectLaborCodesPage = () => {
     return (
         <>
-            <Helmet>
-                <title>D/L Codes</title>
-            </Helmet>
+            <title>D/L Codes</title>
             <div className="row g-3">
                 <div className="col-6">
                     <DLCodeFilter/>
