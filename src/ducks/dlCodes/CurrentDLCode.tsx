@@ -32,6 +32,7 @@ const CurrentDLCode = () => {
     const idTotal = useId();
     const idTimestamp = useId();
     const idActivityCode = useId();
+    const idWorkCenter = useId();
 
     useEffect(() => {
         if (!params.id) {
@@ -95,36 +96,45 @@ const CurrentDLCode = () => {
 
             <div className="card">
                 <div className="card-header">
-                    <h2>D/L Code Editor: <strong>{current.dlCode}</strong></h2>
+                    <h2>D/L Code Editor: <strong>{current.workCenter}/{current.dlCode}</strong></h2>
                 </div>
                 <div className="card-body">
                     <Form onSubmit={onSubmit}>
-                        <Form.Group as={Row} className="g-3 mb-1 align-items-baseline">
+                        <Form.Group as={Row} className="g-3 align-items-baseline">
                             <Form.Label column sm={3} htmlFor={idDLCode}>Direct Labor Code</Form.Label>
                             <Col>
-                                <FormControl type="text" id={idDLCode}
-                                             value={current.dlCode} onChange={changeHandler('dlCode')}/>
+                                <InputGroup size="sm">
+                                    <FormControl type="text" id={idDLCode}
+                                                 value={current.dlCode} onChange={changeHandler('dlCode')}/>
+                                    <InputGroup.Text>ID: {current.id}</InputGroup.Text>
+                                </InputGroup>
                             </Col>
                             <Col xs="auto">
                                 <FormCheck type="checkbox" id={idActive} label="Active"
                                            checked={current.active} onChange={onToggleActive}/>
                             </Col>
                         </Form.Group>
-                        <Form.Group as={Row} className="g-3 mb-1 align-items-baseline">
-                            <Form.Label column sm={3} htmlFor={idDLCode}>Description</Form.Label>
+                        <Form.Group as={Row} className="g-3 align-items-baseline">
+                            <Form.Label column sm={3} htmlFor={idWorkCenter}>Work Center</Form.Label>
                             <Col>
-                                <FormControl type="text" id={idDescription}
-                                             value={current.description} onChange={changeHandler('description')}/>
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} className="g-3 mb-1 align-items-baseline">
-                            <Form.Label column sm={3}>Sage Activity</Form.Label>
-                            <Col>
-                                <WorkCenterSelect value={current.workCenter} required
+                                <WorkCenterSelect value={current.workCenter} required size="sm" id={idWorkCenter}
                                                   onSelectWorkCenter={onChangeWorkCenter}/>
                             </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="g-3 align-items-baseline">
+                            <Form.Label column sm={3} htmlFor={idDLCode}>Description</Form.Label>
                             <Col>
-                                <InputGroup>
+                                <InputGroup size="sm">
+                                    <InputGroup.Text><span className="bi-card-text" /></InputGroup.Text>
+                                    <FormControl type="text" id={idDescription}
+                                                 value={current.description} onChange={changeHandler('description')}/>
+                                </InputGroup>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="g-3 align-items-baseline">
+                            <Form.Label column sm={3}>Sage Activity</Form.Label>
+                            <Col>
+                                <InputGroup size="sm">
                                     <InputGroup.Text as="label" htmlFor={idActivityCode}>
                                         <span className="visually-hidden">Activity Code</span>
                                         <span className="bi-activity" aria-hidden={true}/>
@@ -136,10 +146,10 @@ const CurrentDLCode = () => {
                             </Col>
                         </Form.Group>
 
-                        <Form.Group as={Row} className="g-3 mb-1" label="Costs" width={9}>
+                        <Form.Group as={Row} className="g-3 align-items-baseline" label="Costs" width={9}>
                             <Form.Label column sm={3}>Costs</Form.Label>
                             <Col>
-                                <InputGroup>
+                                <InputGroup size="sm">
                                     <InputGroup.Text as="label" htmlFor={idLaborBudget}>Labor</InputGroup.Text>
                                     <FormControl type="text" id={idLaborBudget}
                                                  value={numeral(current.laborBudget).format('$0,0.0000')}
@@ -148,7 +158,7 @@ const CurrentDLCode = () => {
                                 </InputGroup>
                             </Col>
                             <Col>
-                                <InputGroup>
+                                <InputGroup size="sm">
                                     <InputGroup.Text as="label" htmlFor={idFixedCosts}>Fixed</InputGroup.Text>
                                     <FormControl type="text" id={idFixedCosts}
                                                  value={numeral(current.fixedCosts).format('$0,0.0000')}
@@ -157,7 +167,7 @@ const CurrentDLCode = () => {
                                 </InputGroup>
                             </Col>
                             <Col>
-                                <InputGroup>
+                                <InputGroup size="sm">
                                     <InputGroup.Text as="label" htmlFor={idTotal}>Total</InputGroup.Text>
                                     <FormControl type="text" id={idTotal}
                                                  value={numeral(current.directLaborCost).format('$0,0.0000')}
@@ -168,7 +178,7 @@ const CurrentDLCode = () => {
                             </Col>
                         </Form.Group>
                         {!!current.timestamp && (
-                            <Form.Group as={Row} className="g-3 mb-1" label="Last Updated" width={9}>
+                            <Form.Group as={Row} className="g-3  align-items-baseline" label="Last Updated" width={9}>
                                 <Form.Label column sm={3} htmlFor={idTimestamp}>Last Updated</Form.Label>
                                 <Col>
                                     <FormControl plaintext id={idTimestamp}
@@ -176,7 +186,7 @@ const CurrentDLCode = () => {
                                 </Col>
                             </Form.Group>
                         )}
-                        <Form.Group as={Row} className="g-3 mb-1">
+                        <Form.Group as={Row} className="g-3  align-items-baseline">
                             <Form.Label column sm={3}>Sage Template Data</Form.Label>
                             <DLCodeSageRate/>
                         </Form.Group>

@@ -76,7 +76,7 @@ const RoutingList = () => {
 
     return (
         <ErrorBoundary>
-            {loading && <ProgressBar striped animated style={{height: '5px'}}/>}
+            {loading && <ProgressBar striped animated now={100} style={{height: '5px'}}/>}
             <SortableTable keyField={"RoutingNo"} size="xs" fields={routingListFields}
                            data={pagedList}
                            currentSort={sort} onChangeSort={onChangeSort}

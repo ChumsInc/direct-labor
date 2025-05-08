@@ -63,7 +63,7 @@ const fields: SortableTableField<DLCode>[] = [
             'text-danger': new Decimal(row.directLaborCost ?? 0).sub(row.StdRatePiece ?? 0).abs().gte(0.001),
         }),
         sortable: true,
-        render: (row: DLCode) => row.operationCode ? numeral(row.StdRatePiece).format('$0,0.0000') : null,
+        render: (row: DLCode) => row.activityCode ? numeral(row.StdRatePiece).format('$0,0.0000') : null,
     },
 ]
 const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: DLCodeListProps) => {
@@ -71,7 +71,7 @@ const DLCodeList = ({list, selected, onSelectDLCode, onChangeSort, sort}: DLCode
         <SortableTable keyField="id" fields={fields} data={list} size="sm"
                        rowClassName={(row: DLCode) => classNames({'table-warning': !row.active})}
                        currentSort={sort} onChangeSort={onChangeSort}
-                       selected={selected?.id}
+                       selected={(row) => row.id === selected?.id}
                        onSelectRow={onSelectDLCode}/>
     )
 }

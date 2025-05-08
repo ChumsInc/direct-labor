@@ -11,7 +11,7 @@ export default function DLCodeSageRate() {
     return (
         <>
         <Col>
-            <InputGroup>
+            <InputGroup size="sm">
                 <InputGroup.Text as="label" htmlFor={idLaborRate}>Labor Rate</InputGroup.Text>
                 <FormControl type="text" id={idLaborRate}
                              value={rateProps?.averageHourlyRate ?? ''}
@@ -20,7 +20,7 @@ export default function DLCodeSageRate() {
             </InputGroup>
         </Col>
         <Col>
-            <InputGroup>
+            <InputGroup size="sm">
                 <InputGroup.Text as="label" htmlFor={idLaborScalingQuantity}>Labor Scaling Quantity</InputGroup.Text>
                 <FormControl type="text" id={idLaborScalingQuantity}
                              value={rateProps?.scalingFactorLabor ?? ''}

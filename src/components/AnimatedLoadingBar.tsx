@@ -10,7 +10,7 @@ const AnimatedLoadingBar = ({loading, ...props}: AnimatedLoadingBarProps) => {
         return null;
     }
     return (
-        <ProgressBar animated striped style={{height: '5px'}} {...props} />
+        <ProgressBar animated striped style={{height: '5px'}} now={100} {...props} />
     )
 }
 
