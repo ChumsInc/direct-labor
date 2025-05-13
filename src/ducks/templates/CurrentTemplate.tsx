@@ -8,6 +8,7 @@ import CurrentTemplateSteps from "./CurrentTemplateSteps";
 import numeral from "numeral";
 import dayjs from "dayjs";
 import FormColumn from "@/components/common/FormColumn";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 
 const CurrentTemplate = () => {
@@ -32,7 +33,7 @@ const CurrentTemplate = () => {
 
     return (
         <div>
-            <title>W/T Template: {template.TemplateNo}:{template.RevisionNo}</title>
+            <DocumentTitle>{`W/T Template: ${template.TemplateNo}:${template.RevisionNo}`}</DocumentTitle>
             <div className="card mb-3">
                 <div className="card-header">
                     <h3>W/T Template: {template.TemplateNo}:{template.RevisionNo}</h3>

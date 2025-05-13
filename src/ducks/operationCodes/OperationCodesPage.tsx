@@ -7,6 +7,7 @@ import OperationCodeList from "./OperationCodeList";
 import {Link, Outlet} from "react-router";
 import {useAppDispatch} from "../../app/configureStore";
 import {Alert} from "react-bootstrap";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 const OperationCodesPage = () => {
     const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ const OperationCodesPage = () => {
 
     return (
         <>
-            <title>D/L OpCodes</title>
+            <DocumentTitle>D/L OpCodes</DocumentTitle>
             <Alert variant="danger">
                 <strong className="me-1">Note:</strong> These values are for reference only. For current values
                 see <Link to="/activity-codes" className="ms-1">Activity Codes</Link>

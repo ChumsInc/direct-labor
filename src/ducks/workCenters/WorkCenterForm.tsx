@@ -12,6 +12,7 @@ import {useParams} from "react-router";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import SpinnerButton from "@/components/common/SpinnerButton";
 import {Col, Form, FormControl, Row} from "react-bootstrap";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 
 const WorkCenterForm = () => {
@@ -58,7 +59,7 @@ const WorkCenterForm = () => {
 
     return (
         <div>
-            <title>D/L WC: {workCenter.workCenter}</title>
+            <DocumentTitle>{`D/L WC: ${workCenter.workCenter}`}</DocumentTitle>
             <Form onSubmit={onSubmit}>
                 <Row className="g-3 align-items-baseline">
                     <Col xs="auto">

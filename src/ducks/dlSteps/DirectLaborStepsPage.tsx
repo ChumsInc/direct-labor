@@ -6,18 +6,15 @@ import {Col, Row} from "react-bootstrap";
 
 const DirectLaborStepsPage = () => {
     return (
-        <>
-            <title>D/L Steps</title>
-            <Row className="g-3">
-                <Col xs={6}>
-                    <DLStepsFilter/>
-                    <StepsList/>
-                </Col>
-                <Col xs={6}>
-                    <Outlet/>
-                </Col>
-            </Row>
-        </>
+        <Row className="g-3">
+            <Col xs={6}>
+                <DLStepsFilter/>
+                <StepsList/>
+            </Col>
+            <Col xs={6}>
+                <Outlet/>
+            </Col>
+        </Row>
     )
 }
 

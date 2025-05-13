@@ -10,6 +10,7 @@ import {loadOperationCode} from "./actions";
 import {useParams} from "react-router";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
 import FormColumn from "@/components/common/FormColumn";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 
 const SelectedOperationCode = () => {
@@ -19,7 +20,6 @@ const SelectedOperationCode = () => {
     const whereUsedKeys = useSelector(selectWhereUsed);
     const whereUsed = useAppSelector((state) => selectWhereUsedByRoutingKeys(state, whereUsedKeys));
     const loading = useSelector(selectCurrentLoading);
-
 
     useEffect(() => {
         const {operationCode, workCenter} = params;
@@ -46,7 +46,7 @@ const SelectedOperationCode = () => {
     } = operationCode;
     return (
         <div>
-            <title>D/L OpCode: {WorkCenter}/{OperationCode}</title>
+            <DocumentTitle>{`D/L OpCode: ${operationCode?.WorkCenter}/${operationCode?.OperationCode}`}</DocumentTitle>
 
             <FormColumn label={"Work Center"}>
                 <div className="h3">{WorkCenter}</div>

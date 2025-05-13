@@ -2,12 +2,13 @@ import React, {useEffect} from "react";
 import SelectedRoutingHeader from "./SelectedRoutingHeader";
 import {selectCurrentLoading, selectCurrentRoutingNo} from "./selectors";
 import {useParams} from "react-router";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {setCurrentRouting} from "./actions";
 import SelectedRoutingDetail from "./SelectedRoutingDetail";
 import BillWhereUsed from "../billMaterials/BillWhereUsed";
 import BillOptionWhereUsed from "../billMaterials/BillOptionWhereUsed";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 const RoutingInfo = () => {
     const dispatch = useAppDispatch();
@@ -23,7 +24,7 @@ const RoutingInfo = () => {
 
     return (
         <div>
-            <title>D/L Routing: {currentRoutingNo || ''}</title>
+            <DocumentTitle>{`D/L Routing: ${currentRoutingNo ?? ''}`}</DocumentTitle>
             <SelectedRoutingHeader/>
             <AnimatedLoadingBar loading={loading !== 'idle'}/>
             <SelectedRoutingDetail className="mt-3"/>

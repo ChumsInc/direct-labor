@@ -10,6 +10,7 @@ import {useParams} from "react-router";
 import {newDLStep} from "./utils";
 import {ProgressBar} from "react-bootstrap";
 import StepTabs from "@/ducks/dlSteps/StepTabs";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 const tabID = {
     settings: 'settings',
@@ -25,6 +26,7 @@ const SelectedDLStep = () => {
     const status = useSelector(selectCurrentStepStatus);
     const [tab, setTab] = useState<string>(tabID.settings);
 
+
     useEffect(() => {
         if (!params.id) {
             return;
@@ -39,7 +41,7 @@ const SelectedDLStep = () => {
 
     return (
         <div>
-            <title>D/L Step: {step?.stepCode ?? '-'}</title>
+            <DocumentTitle>{`D/L Step: ${step?.stepCode ?? 'new'}`}</DocumentTitle>
             <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
             {step?.description && <h3>{step?.description}</h3>}
             <StepTabs activeKey={tab} onChangeTab={setTab}/>

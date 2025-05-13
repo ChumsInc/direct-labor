@@ -13,6 +13,7 @@ import classNames from "classnames";
 import {localStorageKeys} from "@/api/preferences";
 import ErrorBoundary from '../../components/ErrorBoundary';
 import {LocalStore} from "@chumsinc/ui-utils";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 
 const StepsList = () => {
@@ -52,6 +53,7 @@ const StepsList = () => {
 
     return (
         <ErrorBoundary>
+            <DocumentTitle>Direct Labor Steps</DocumentTitle>
             <div className="mt-3">
                 <SortableTable keyField={dlStepKey} fields={stepsListFields} size="sm"
                                currentSort={sort} onChangeSort={sortChangeHandler}

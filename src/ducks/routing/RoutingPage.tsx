@@ -3,11 +3,12 @@ import RoutingList from "./RoutingList";
 import RoutingFilter from "./RoutingFilter";
 import {Link, Outlet} from "react-router";
 import {Alert} from "react-bootstrap";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 const RoutingPage = () => {
     return (
         <>
-            <title>D/L Routing</title>
+            <DocumentTitle>D/L Routing</DocumentTitle>
             <Alert variant="danger">
                 <strong>Note:</strong> These values are for reference only. For current values see
                 <Link to="/templates" className="ms-1">W/T Templates</Link>

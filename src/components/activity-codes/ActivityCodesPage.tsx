@@ -1,11 +1,12 @@
 import React from 'react';
 import {Outlet} from "react-router";
 import ActivityCodesList from "./ActivityCodesList";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 const ActivityCodesPage = () => {
     return (
         <>
-            <title>Activity Codes</title>
+            <DocumentTitle>Activity Codes</DocumentTitle>
             <div className="row g-5">
                 <div className="col-6">
                     <ActivityCodesList/>

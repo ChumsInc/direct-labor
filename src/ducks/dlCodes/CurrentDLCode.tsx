@@ -14,6 +14,7 @@ import DLCodeSageRate from "./DLCodeSageRate";
 import CurrentDLCodeTemplates from "./CurrentDLCodeTemplates";
 import ActivityCodeSelect from "@/components/activity-codes/ActivityCodeSelect";
 import SpinnerButton from "@/components/common/SpinnerButton";
+import DocumentTitle from "@/components/common/DocumentTitle";
 
 
 const CurrentDLCode = () => {
@@ -92,7 +93,7 @@ const CurrentDLCode = () => {
 
     return (
         <div>
-            <title>D/L Code: {current.dlCode}</title>
+            <DocumentTitle>{`D/L Code: ${selected?.dlCode ?? 'New'}`}</DocumentTitle>
 
             <div className="card">
                 <div className="card-header">
