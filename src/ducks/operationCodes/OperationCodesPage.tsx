@@ -5,7 +5,7 @@ import {loadOperationCodes} from "./actions";
 import OperationCodeFilter from "./OperationCodeFilter";
 import OperationCodeList from "./OperationCodeList";
 import {Link, Outlet} from "react-router";
-import {useAppDispatch} from "../../app/configureStore";
+import {useAppDispatch} from "@/app/configureStore";
 import {Alert} from "react-bootstrap";
 import DocumentTitle from "@/components/common/DocumentTitle";
 

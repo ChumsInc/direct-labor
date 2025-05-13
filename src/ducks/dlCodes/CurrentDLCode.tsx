@@ -9,7 +9,7 @@ import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./utils";
 import numeral from "numeral";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import DLCodeSageRate from "./DLCodeSageRate";
 import CurrentDLCodeTemplates from "./CurrentDLCodeTemplates";
 import ActivityCodeSelect from "@/components/activity-codes/ActivityCodeSelect";

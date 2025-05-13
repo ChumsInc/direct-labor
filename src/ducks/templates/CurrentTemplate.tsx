@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {selectCurrentTemplate, selectCurrentTemplateStatus, selectCurrentTemplateSteps} from "./selectors";
-import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
+import AnimatedLoadingBar from "@/components/AnimatedLoadingBar";
 import {useParams} from "react-router";
 import {loadTemplate} from "./actions";
 import CurrentTemplateSteps from "./CurrentTemplateSteps";
