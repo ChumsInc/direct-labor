@@ -8,7 +8,7 @@ import {useNavigate} from "react-router";
 import {dlCodePath} from "../../routerPaths";
 import {useAppDispatch} from "@/app/configureStore";
 import {TablePagination} from "@chumsinc/sortable-tables";
-import ErrorBoundary from "../../components/ErrorBoundary";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
 import {getPreference, localStorageKeys, setPreference} from "@/api/preferences";
 
@@ -44,7 +44,7 @@ const MainDLCodeList = () => {
     }
 
     return (
-        <ErrorBoundary>
+        <AppErrorBoundary>
             <AnimatedLoadingBar loading={status === 'loading'}/>
             <DLCodeList list={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                         sort={sort} onChangeSort={sort => dispatch(setSort(sort))}
@@ -52,7 +52,7 @@ const MainDLCodeList = () => {
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                              size="sm" count={list.length} showFirst showLast/>
-        </ErrorBoundary>
+        </AppErrorBoundary>
 
     )
 }

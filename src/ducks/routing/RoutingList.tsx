@@ -18,7 +18,7 @@ import {selectedRoutingPath} from "../../routerPaths";
 import StatusBadge from "../../components/StatusBadge";
 import {useAppDispatch} from "../../app/configureStore";
 import {loadRoutings, setPage, setRowsPerPage, setSort} from "./actions";
-import ErrorBoundary from "../../components/ErrorBoundary";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 import {ProgressBar} from "react-bootstrap";
 
 
@@ -75,7 +75,7 @@ const RoutingList = () => {
     const rowsPerPageChangeHandler = (page: number) => dispatch(setRowsPerPage(page));
 
     return (
-        <ErrorBoundary>
+        <AppErrorBoundary>
             {loading && <ProgressBar striped animated now={100} style={{height: '5px'}}/>}
             <SortableTable keyField={"RoutingNo"} size="xs" fields={routingListFields}
                            data={pagedList}
@@ -87,7 +87,7 @@ const RoutingList = () => {
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                              showFirst showLast size="sm"
                              count={filteredList.length}/>
-        </ErrorBoundary>
+        </AppErrorBoundary>
     )
 }
 export default RoutingList;

@@ -9,6 +9,8 @@ import numeral from "numeral";
 import dayjs from "dayjs";
 import FormColumn from "@/components/common/FormColumn";
 import DocumentTitle from "@/components/common/DocumentTitle";
+import WhereUsed from "@/components/templates/WhereUsed";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 
 
 const CurrentTemplate = () => {
@@ -32,7 +34,7 @@ const CurrentTemplate = () => {
     }
 
     return (
-        <div>
+        <AppErrorBoundary>
             <DocumentTitle>{`W/T Template: ${template.TemplateNo}:${template.RevisionNo}`}</DocumentTitle>
             <div className="card mb-3">
                 <div className="card-header">
@@ -52,11 +54,8 @@ const CurrentTemplate = () => {
                 </div>
             </div>
             <CurrentTemplateSteps/>
-            <code>
-                <pre>{JSON.stringify(template, undefined, 2)}</pre>
-                <pre>{JSON.stringify(steps, undefined, 2)}</pre>
-            </code>
-        </div>
+            <WhereUsed templateNo={template.TemplateNo} />
+        </AppErrorBoundary>
     )
 }
 

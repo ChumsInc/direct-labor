@@ -5,7 +5,7 @@ import {selectSearch, selectShowInactive,} from './selectors';
 import {FormCheck} from "react-bootstrap";
 import SearchInput from "@/components/common/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
-import ErrorBoundary from "../../components/ErrorBoundary";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 
 
 const RoutingFilter: React.FC = () => {
@@ -25,7 +25,7 @@ const RoutingFilter: React.FC = () => {
     }
 
     return (
-        <ErrorBoundary>
+        <AppErrorBoundary>
             <div className="row g-3 align-items-baseline mb-3">
                 <div className="col">
                     <SearchInput value={filter} onChange={onChange} placeholder="Filter Routings"/>
@@ -41,7 +41,7 @@ const RoutingFilter: React.FC = () => {
                     </button>
                 </div>
             </div>
-        </ErrorBoundary>
+        </AppErrorBoundary>
     )
 }
 

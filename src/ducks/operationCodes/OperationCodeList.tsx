@@ -9,7 +9,7 @@ import {operationCodesOperationPath} from "../../routerPaths";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {selectCurrentOperationCode, selectFilteredOpCodeList, selectLoading, selectSort} from "./selectors";
 import {loadOperationCode, setSort} from "./actions";
-import ErrorBoundary from "../../components/ErrorBoundary";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
 
@@ -51,7 +51,7 @@ const OperationCodeList = () => {
     }
 
     return (
-        <ErrorBoundary>
+        <AppErrorBoundary>
             <AnimatedLoadingBar loading={loading}/>
             <SortableTable keyField={operationCodeKey} fields={fields}
                            data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
@@ -62,7 +62,7 @@ const OperationCodeList = () => {
                              rowsPerPage={rowsPerPage}
                              size="sm"
                              showFirst showLast count={list.length}/>
-        </ErrorBoundary>
+        </AppErrorBoundary>
     )
 }
 export default OperationCodeList;

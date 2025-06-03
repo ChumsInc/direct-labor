@@ -13,6 +13,9 @@ import versionReducer from "../ducks/version";
 import activityCodesReducer from "../ducks/activity-codes";
 import templatesReducer from "../ducks/templates";
 import {alertsSlice} from "@chumsinc/alert-list";
+import whereUsedSlice from "@/ducks/where-used";
+import wuBillHeadersSlice from "@/ducks/where-used/wuBillHeadersSlice";
+import wuBillOptionHeadersSlice from "@/ducks/where-used/wuBillOptionHeadersSlice";
 
 export const rootReducer = combineReducers({
     activityCodes: activityCodesReducer,
@@ -25,6 +28,9 @@ export const rootReducer = combineReducers({
     routing: routingReducer,
     templates: templatesReducer,
     timings: timingsReducer,
+    [whereUsedSlice.reducerPath]: whereUsedSlice.reducer,
+    [wuBillHeadersSlice.reducerPath]: wuBillHeadersSlice.reducer,
+    [wuBillOptionHeadersSlice.reducerPath]: wuBillOptionHeadersSlice.reducer,
     workCenters: workCentersReducer,
     version: versionReducer
 });

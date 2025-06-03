@@ -12,7 +12,7 @@ function ErrorFallback({error, resetErrorBoundary}: FallbackProps) {
     )
 }
 
-export default function ErrorBoundary({children}: {
+export default function AppErrorBoundary({children}: {
     children: React.ReactNode;
 }) {
     return (

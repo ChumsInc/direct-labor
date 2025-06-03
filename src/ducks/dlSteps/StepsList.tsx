@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort, setStepSort} from "./index";
 import {loadDLSteps} from "./actions";
-import {DLBasicStep, SortProps} from "chums-types";
+import {DLBasicStep, DLStep, SortProps} from "chums-types";
 import {dlStepKey} from "./utils";
 import {stepsListFields} from "./StepsListFields";
 import {useNavigate} from "react-router";
@@ -11,7 +11,7 @@ import {useAppDispatch} from "@/app/configureStore";
 import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import classNames from "classnames";
 import {localStorageKeys} from "@/api/preferences";
-import ErrorBoundary from '../../components/ErrorBoundary';
+import AppErrorBoundary from '@/components/AppErrorBoundary';
 import {LocalStore} from "@chumsinc/ui-utils";
 import DocumentTitle from "@/components/common/DocumentTitle";
 
@@ -40,8 +40,8 @@ const StepsList = () => {
         navigate(dlStepPath(row.id));
     }
 
-    const sortChangeHandler = (sort: SortProps<DLBasicStep>) => {
-        dispatch(setStepSort(sort));
+    const sortChangeHandler = (sort:unknown) => {
+        dispatch(setStepSort(sort as SortProps<DLBasicStep|DLStep>));
     }
 
     const rowsPerPageChangeHandler = (rpp: number) => {
@@ -52,7 +52,7 @@ const StepsList = () => {
     const rowClassName = (row: DLBasicStep) => classNames({'table-warning': !row.active});
 
     return (
-        <ErrorBoundary>
+        <AppErrorBoundary>
             <DocumentTitle>Direct Labor Steps</DocumentTitle>
             <div className="mt-3">
                 <SortableTable keyField={dlStepKey} fields={stepsListFields} size="sm"
@@ -65,7 +65,7 @@ const StepsList = () => {
                                  rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                                  count={list.length} showFirst showLast/>
             </div>
-        </ErrorBoundary>
+        </AppErrorBoundary>
     )
 }
 

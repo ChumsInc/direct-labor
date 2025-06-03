@@ -120,3 +120,51 @@ export interface LoadActivityCodeResponse {
     activityCode: ActivityCode;
     steps: WorkTemplateStep[];
 }
+
+
+
+export interface TemplateItem {
+    TemplateNo: string;
+    ItemCode: string;
+    ItemCodeDesc: string;
+    ProductType: string;
+    InactiveItem: 'Y' | 'N';
+}
+export interface TemplateBillHeader {
+    TemplateNo: string;
+    RevisionNo: string;
+    BillNo: string;
+    Revision: string;
+    BillDesc1: string|null;
+    BillDesc2: string|null;
+    BillType: string;
+    DateLastUsed: string|null;
+    BillHasOptions: string;
+    ProductType: string;
+    InactiveItem: 'Y' | 'N';
+    DateUpdated: string;
+}
+
+export interface TemplateBillOptionHeader {
+    TemplateNo: string;
+    RevisionNo: string;
+    BillNo: string;
+    Options: TemplateBillOption[];
+    ProductType: string;
+    InactiveItem: 'Y' | 'N';
+    DateLastUsed: string|null;
+    DateUpdated: string;
+}
+export interface TemplateBillOption {
+    BillOptionCategory: string;
+    BillOption: string;
+    OptionDesc1: string;
+    OptionDesc2: string;
+}
+
+export interface TemplateWhereUsedResponse {
+    items: TemplateItem[];
+    billHeaders: TemplateBillHeader[];
+    billOptions: TemplateBillOptionHeader[];
+
+}

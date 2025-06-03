@@ -22,7 +22,7 @@ import {
     workCenterIcon
 } from "@/utils/icons";
 import classNames from "classnames";
-import ErrorBoundary from "./ErrorBoundary";
+import AppErrorBoundary from "./AppErrorBoundary";
 import {NavLink} from 'react-router';
 import Nav from "react-bootstrap/Nav";
 import {NavLinkProps} from 'react-bootstrap/NavLink'
@@ -125,7 +125,7 @@ const MainNav = () => {
     const collapseIcon = collapsed ? 'bi-arrow-bar-right' : 'bi-arrow-bar-left';
 
     return (
-        <ErrorBoundary>
+        <AppErrorBoundary>
             <CollapsingNav className={classNames("main-nav", {collapsed})}>
                 <Nav defaultActiveKey={mainTabs[0].id} className="flex-column" variant="pills">
                     <Nav.Item>
@@ -145,7 +145,7 @@ const MainNav = () => {
                     ))}
                 </Nav>
             </CollapsingNav>
-        </ErrorBoundary>
+        </AppErrorBoundary>
     )
 }
 

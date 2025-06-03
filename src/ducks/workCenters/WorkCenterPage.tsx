@@ -1,6 +1,6 @@
 import React from "react";
 import WorkCenterList from "./WorkCenterList";
-import ErrorBoundary from "../../components/ErrorBoundary";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 import {Outlet} from "react-router";
 import DirectLaborRecalc from "../dlCodes/DirectLaborRecalc";
 import DocumentTitle from "@/components/common/DocumentTitle";
@@ -11,9 +11,9 @@ const WorkCenterPage = () => {
             <DocumentTitle>D/L Work Centers</DocumentTitle>
             <div className="row g-3">
                 <div className="col-8">
-                    <ErrorBoundary>
+                    <AppErrorBoundary>
                         <WorkCenterList/>
-                    </ErrorBoundary>
+                    </AppErrorBoundary>
                 </div>
                 <div className="col-4">
                     <Outlet/>
