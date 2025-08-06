@@ -1,19 +1,19 @@
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort, setStepSort} from "./index";
-import {loadDLSteps} from "./actions";
+import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort, setStepSort} from "@/ducks/dlSteps";
+import {loadDLSteps} from "@/ducks/dlSteps/actions.ts";
 import type {DLBasicStep, DLStep, SortProps} from "chums-types";
-import {dlStepKey} from "./utils";
-import {stepsListFields} from "./StepsListFields";
+import {dlStepKey} from "@/ducks/dlSteps/utils.ts";
+import {stepsListFields} from "./stepsListFields.tsx";
 import {useNavigate} from "react-router";
 import {dlStepPath} from "@/app/routerPaths.ts";
-import {useAppDispatch} from "@/app/configureStore";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import classNames from "classnames";
-import {localStorageKeys} from "@/api/preferences";
-import AppErrorBoundary from '@/components/AppErrorBoundary';
+import {localStorageKeys} from "@/api/preferences.ts";
+import AppErrorBoundary from '@/components/AppErrorBoundary.tsx';
 import {LocalStore} from "@chumsinc/ui-utils";
-import DocumentTitle from "@/components/common/DocumentTitle";
+import DocumentTitle from "@/components/common/DocumentTitle.tsx";
 
 
 const StepsList = () => {

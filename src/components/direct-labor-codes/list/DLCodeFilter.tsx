@@ -1,12 +1,12 @@
 import React, {type ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
-import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {selectFilter, selectShowInactive, selectWorkCenterFilter} from "./selectors";
+import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect.tsx";
+import {selectFilter, selectShowInactive, selectWorkCenterFilter} from "@/ducks/dlCodes/selectors.ts";
 import type {WorkCenter} from "chums-types";
-import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "./actions";
-import SearchInput from "@/components/common/SearchInput";
+import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "@/ducks/dlCodes/actions.ts";
+import SearchInput from "@/components/common/SearchInput.tsx";
 import {Button, Col, FormCheck, Row} from "react-bootstrap";
-import {useAppDispatch} from "@/app/configureStore";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import {useNavigate} from "react-router";
 
 const DLCodeFilter: React.FC = () => {

@@ -3,11 +3,11 @@ import {HashRouter, Route, Routes} from 'react-router';
 import RoutingPage from "@/ducks/routing/RoutingPage";
 import WorkCenterPage from "@/ducks/workCenters/WorkCenterPage";
 import OperationCodesPage from "@/ducks/operationCodes/OperationCodesPage";
-import DirectLaborCodesPage from "@/ducks/dlCodes/DirectLaborCodesPage";
-import DirectLaborStepsPage from "@/ducks/dlSteps/DirectLaborStepsPage";
+import DirectLaborCodes from "@/components/direct-labor-codes/DirectLaborCodes.tsx";
+import DirectLaborSteps from "@/components/direct-labor-steps/list/DirectLaborSteps.tsx";
 import MainOutlet from "@/components/MainOutlet";
-import SelectedDLStep from "@/ducks/dlSteps/SelectedDLStep";
-import CurrentDLCode from "@/ducks/dlCodes/CurrentDLCode";
+import CurrentDLStep from "@/components/direct-labor-steps/CurrentDLStep.tsx";
+import CurrentDLCode from "@/components/direct-labor-codes/form/CurrentDLCode.tsx";
 import RoutingInfo from "@/ducks/routing/RoutingInfo";
 import WorkCenterForm from "@/ducks/workCenters/WorkCenterForm";
 import SelectedOperationCode from "@/ducks/operationCodes/SelectedOperationCode";
@@ -37,17 +37,19 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<MainOutlet/>}>
                     <Route index element={<Redirect to="dl-steps"/>}/>
-                    <Route path="dl-steps" element={<DirectLaborStepsPage/>}>
-                        <Route path=":id" element={<SelectedDLStep/>}/>
+                    <Route path="dl-steps">
+                        <Route index element={<DirectLaborSteps/>}/>
+                        <Route path=":id" element={<CurrentDLStep/>}/>
                     </Route>
-                    <Route path="dl-codes" element={<DirectLaborCodesPage/>}>
+                    <Route path="dl-codes">
+                        <Route index element={<DirectLaborCodes/>}/>
                         <Route path=":id" element={<CurrentDLCode/>}/>
                     </Route>
                     <Route path="work-centers" element={<WorkCenterPage/>}>
                         <Route path=":workCenter" element={<WorkCenterForm/>}/>
                     </Route>
-                    <Route path="activity-codes" element={<ActivityCodesPage />}>
-                        <Route path=":workCenter/:activityCode" element={<CurrentActivityCode />} />
+                    <Route path="activity-codes" element={<ActivityCodesPage/>}>
+                        <Route path=":workCenter/:activityCode" element={<CurrentActivityCode/>}/>
                     </Route>
                     <Route path="templates" element={<TemplatesPage/>}>
                         <Route path=":templateNo/:revisionNo" element={<CurrentTemplate/>}/>

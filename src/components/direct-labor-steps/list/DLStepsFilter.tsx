@@ -1,6 +1,6 @@
 import {type ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
-import WorkCenterSelect from "../workCenters/WorkCenterSelect";
+import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect.tsx";
 import {
     selectFilterInactive,
     selectStepsFilter,
@@ -9,14 +9,14 @@ import {
     setStepFilter,
     setStepWCFilter,
     toggleShowInactive
-} from "./index";
+} from "@/ducks/dlSteps";
 import type {WorkCenter} from "chums-types";
-import {loadDLSteps} from "./actions";
-import SearchInput from "@/components/common/SearchInput";
-import {useAppDispatch} from "@/app/configureStore";
+import {loadDLSteps} from "@/ducks/dlSteps/actions.ts";
+import SearchInput from "@/components/common/SearchInput.tsx";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import {useNavigate} from "react-router";
 import {Button, Col, FormCheck, Row} from "react-bootstrap";
-import SpinnerButton from "@/components/common/SpinnerButton";
+import SpinnerButton from "@/components/common/SpinnerButton.tsx";
 
 const DLCodeFilter = () => {
     const dispatch = useAppDispatch();

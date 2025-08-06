@@ -1,7 +1,7 @@
 import {type ChangeEvent, type FormEvent, useId} from 'react';
 import Alert from "react-bootstrap/Alert";
 import numeral from "numeral";
-import WorkCenterSelect from "../workCenters/WorkCenterSelect";
+import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect.tsx";
 import {Link} from "react-router";
 import {useSelector} from "react-redux";
 import {
@@ -10,14 +10,15 @@ import {
     selectCurrentStepStatus,
     selectedChangedSelector,
     selectStepsMachines
-} from "./index";
-import {loadDLStep, saveDLStep} from "./actions";
+} from "@/ducks/dlSteps";
+import {loadDLStep, saveDLStep} from "@/ducks/dlSteps/actions.ts";
 
 import type {DLStep, WorkCenter} from "chums-types";
-import {useAppDispatch} from "@/app/configureStore";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import Decimal from "decimal.js";
 import {Button, Col, Form, FormControl, InputGroup, ProgressBar, Row} from "react-bootstrap";
-import TextArea from "@/components/common/TextArea";
+import TextArea from "@/components/common/TextArea.tsx";
+import {unitsPerHour} from "@/utils/math.ts";
 
 const DLStepForm = () => {
     const dispatch = useAppDispatch();
@@ -82,15 +83,14 @@ const DLStepForm = () => {
         )
     }
 
-    const uph = new Decimal(step.standardAllowedMinutes).eq(0) ? '0' : numeral(new Decimal(60).div(step.standardAllowedMinutes)).format('0,0.0');
-
+    const uph = unitsPerHour(step.standardAllowedMinutes);
 
     return (
-        <form onSubmit={onSubmit}>
-            <Form.Group as={Row}>
+        <Form onSubmit={onSubmit}>
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={4}>Step Code</Form.Label>
                 <Col>
-                    <InputGroup size="sm">
+                    <InputGroup >
                         <InputGroup.Text as="label" htmlFor={stepCodeId}>Code</InputGroup.Text>
                         <FormControl type="text" id={stepCodeId}
                                      value={step.stepCode} onChange={changeHandler('stepCode')}/>
@@ -99,17 +99,17 @@ const DLStepForm = () => {
                     </InputGroup>
                 </Col>
             </Form.Group>
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label as="label" column sm={4} htmlFor={descriptionId}>Description</Form.Label>
                 <Col>
-                    <FormControl type="text" id={descriptionId} size="sm"
+                    <FormControl type="text" id={descriptionId} 
                                  value={step.description} onChange={changeHandler('description')}/>
                 </Col>
             </Form.Group>
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={4}>Timing</Form.Label>
                 <Col>
-                    <InputGroup size="sm">
+                    <InputGroup >
                         <InputGroup.Text as="label" htmlFor={samId}>SAM</InputGroup.Text>
                         <FormControl readOnly id={samId}
                                      defaultValue={numeral(step.standardAllowedMinutes).format('0.0000')}/>
@@ -119,10 +119,10 @@ const DLStepForm = () => {
                     </InputGroup>
                 </Col>
             </Form.Group>
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={4}>Costs</Form.Label>
                 <Col>
-                    <InputGroup size="sm">
+                    <InputGroup >
                         <InputGroup.Text as="label" htmlFor={fixedCostsId}>Fixed Costs</InputGroup.Text>
                         <FormControl type="number" id={fixedCostsId} step="0.0001"
                                      value={step.fixedCosts} onChange={changeHandler('fixedCosts')}/>
@@ -132,31 +132,31 @@ const DLStepForm = () => {
                     </InputGroup>
                 </Col>
             </Form.Group>
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={4} htmlFor={machineId}>Machine</Form.Label>
                 <Col>
-                    <FormControl type="text" size="sm" id={machineId}
+                    <FormControl type="text"  id={machineId}
                                  value={step.machine} onChange={changeHandler('machine')}
-                                 list="input-machine-list"/>
+                                 list="input-machine-data"/>
                     <datalist id="input-machine-list">
                         {machines.map((machine, index) => (<option value={machine} key={index}/>))}
                     </datalist>
 
                 </Col>
             </Form.Group>
-            <Form.Group as={Row} label="Work Center">
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={4} htmlFor={workCenterId}>Work Center</Form.Label>
                 <Col>
-                    <WorkCenterSelect id={workCenterId} size="sm"
+                    <WorkCenterSelect id={workCenterId} 
                                       value={step.workCenter} onSelectWorkCenter={onChangeWorkCenter} required/>
                 </Col>
             </Form.Group>
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={4} htmlFor={instructionsId}>Instructions</Form.Label>
                 <Col>
                     <TextArea id={instructionsId}
                                       value={step.instructions ?? ''} placeholder="Instructions"
-                                      className="form-control form-control-sm mb-1"
+                                      className="form-control"
                                       onChange={changeHandler('instructions')} minRows={2}/>
                 </Col>
             </Form.Group>
@@ -172,10 +172,10 @@ const DLStepForm = () => {
 
             <Row className="g-3 mt-1 justify-content-end">
                 <Col xs="auto">
-                    <Link to="/dl-steps/0" className="btn btn-sm btn-outline-secondary">New DL Step</Link>
+                    <Link to="/dl-steps/0" className="btn btn-outline-secondary">New DL Step</Link>
                 </Col>
                 <Col xs="auto">
-                    <Button type="button" variant="danger" size="sm"
+                    <Button type="button" variant="danger"
                             disabled={loading !== 'idle' || !step.id}
                             onClick={() => window.alert('Not implemented. Call Steve if you really need this.')}>
                         Delete DL Step
@@ -184,21 +184,21 @@ const DLStepForm = () => {
                 </Col>
                 <Col xs="auto">
                     <Button type="button" disabled={loading !== 'idle'}
-                            size="sm"
+                            
                             variant="secondary"
                             onClick={onReload}>
                         Reload
                     </Button>
                 </Col>
                 <div className="col-auto">
-                    <Button type="submit" size="sm" disabled={loading !== 'idle'}>
+                    <Button type="submit"  disabled={loading !== 'idle'}>
                         Save
                     </Button>
                 </div>
             </Row>
             {loading !== 'idle' && (<ProgressBar animated striped now={100}/>)}
             {changed && <Alert variant="warning">Don&apos;t forget to save your changes.</Alert>}
-        </form>
+        </Form>
     )
 }
 export default DLStepForm;

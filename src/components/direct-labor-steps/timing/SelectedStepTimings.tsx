@@ -8,13 +8,13 @@ import {
     selectCurrentTiming,
     selectTimingList,
     selectTimingsSort
-} from "./selectors";
-import {setCurrentTiming, timingSortChangedAction} from "./actions";
-import SelectedTimingForm from "./SelectedTimingForm";
-import {newTiming} from "./utils";
-import {useAppDispatch} from "@/app/configureStore";
+} from "@/ducks/timings/selectors.ts";
+import {setCurrentTiming, timingSortChangedAction} from "@/ducks/timings/actions.ts";
+import StepTimingForm from "./StepTimingForm.tsx";
+import {newTiming} from "@/ducks/timings/utils.ts";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import type {SortProps, StepTiming} from "chums-types";
-import CurrentTimingButton from "./CurrentTimingButton";
+import CurrentTimingButton from "./CurrentTimingButton.tsx";
 
 export interface TimingButtonProps {
     timing: StepTiming,
@@ -74,7 +74,7 @@ const SelectedStepTimings = () => {
 
     return (
         <div>
-            {current && (<SelectedTimingForm/>)}
+            {current && (<StepTimingForm/>)}
             {!current && (
                 <>
                     <SortableTable keyField="id" fields={fields} data={timings || []} currentSort={sort}

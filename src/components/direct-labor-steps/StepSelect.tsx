@@ -1,10 +1,10 @@
 import {type ChangeEvent, useEffect, useState} from "react";
 import type {DLStep} from "chums-types";
 import {useSelector} from "react-redux";
-import {selectStepsLoaded, selectStepsLoading, selectSortedStepsList} from "./index";
-import {dlStepSorter, newDLStep} from "./utils";
-import {loadDLSteps} from "./actions";
-import {useAppDispatch} from "@/app/configureStore";
+import {selectStepsLoaded, selectStepsLoading, selectSortedStepsList} from "@/ducks/dlSteps";
+import {dlStepSorter, newDLStep} from "@/ducks/dlSteps/utils.ts";
+import {loadDLSteps} from "@/ducks/dlSteps/actions.ts";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import {FormSelect} from "react-bootstrap";
 
 export interface StepSelectProps {

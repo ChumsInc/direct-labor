@@ -11,7 +11,7 @@ export const toggleShowInactive = createAction<boolean | undefined>('steps/showI
 export const setCurrentStep = createAction<DLStep>('steps/setCurrentStep');
 
 export const loadDLSteps = createAsyncThunk<LoadDLStepsResponse, void>(
-    'steps/list/load',
+    'steps/data/load',
     async () => {
         return await fetchDLSteps();
     },

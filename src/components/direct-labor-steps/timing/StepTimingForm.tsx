@@ -1,17 +1,17 @@
 import React, {type ChangeEvent, type FormEvent, useId} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentTiming, selectCurrentTimingActionStatus} from "./selectors";
-import {saveTiming, setCurrentTiming, updateCurrentTiming} from "./actions";
+import {selectCurrentTiming, selectCurrentTimingActionStatus} from "@/ducks/timings/selectors.ts";
+import {saveTiming, setCurrentTiming, updateCurrentTiming} from "@/ducks/timings/actions.ts";
 import type {StepTiming} from "chums-types";
 import numeral from "numeral";
 import {unitsPerHour} from "@/utils/math.ts";
 import {useAppDispatch} from "@/app/configureStore.ts";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
-import StepTimingEntries from "./StepTimingEntries";
-import CurrentTimingButton from "./CurrentTimingButton";
-import SpinnerButton from "@/components/common/SpinnerButton";
-import TextArea from "@/components/common/TextArea";
+import StepTimingEntries from "./StepTimingEntries.tsx";
+import CurrentTimingButton from "./CurrentTimingButton.tsx";
+import SpinnerButton from "@/components/common/SpinnerButton.tsx";
+import TextArea from "@/components/common/TextArea.tsx";
 import styled from "@emotion/styled";
 
 const formId = 'selected-stepTiming-edit';
@@ -31,15 +31,11 @@ const TimingFormContainer = styled.div`
     }
 `
 
-const SelectedTimingForm: React.FC = () => {
+const StepTimingForm: React.FC = () => {
     const dispatch = useAppDispatch();
     const stepTiming = useSelector(selectCurrentTiming);
     const actionStatus = useSelector(selectCurrentTimingActionStatus);
-    // const loading = useSelector(selectCurrentLoading);
-    // const [newEntry, setNewEntry] = useState(0);
     const id = useId();
-
-    // const newTimingRef = React.useRef<HTMLInputElement>(null);
 
     if (!stepTiming) {
         return null;
@@ -61,23 +57,6 @@ const SelectedTimingForm: React.FC = () => {
     const onChangeNumeric = (field: keyof StepTiming) =>
         (ev: ChangeEvent<HTMLInputElement>) => dispatch(updateCurrentTiming({[field]: Number(ev.target.value || 0)}));
 
-    // const changeTimingHandler = (time: number | string, index: number) => {
-    //     const {entries, quantityPerTiming, efficiency} = stepTiming;
-    //     if (index < 0) {
-    //         entries.push(time);
-    //     } else {
-    //         entries[index] = time;
-    //     }
-    //     const avgTiming = entries.length === 0 ? '0' : Decimal.sum(...entries).div(entries.length).toString();
-    //     const standardAllowedMinutes = calcStandardAllowedMinutes(entries, quantityPerTiming, efficiency);
-    //     dispatch(updateCurrentTiming({entries: entries, avgTiming, standardAllowedMinutes}));
-    // }
-
-    // const onChangeTiming = (index: number) => (ev: ChangeEvent<HTMLInputElement>) => {
-    //     const time = Number(ev.target.value || 0);
-    //     changeTimingHandler(time, index);
-    // }
-
     const onCancel = () => dispatch(setCurrentTiming(null));
 
     const onSubmit = (ev: FormEvent) => {
@@ -85,27 +64,9 @@ const SelectedTimingForm: React.FC = () => {
         dispatch(saveTiming(stepTiming));
     }
 
-    // const onChangeNewEntry = (ev: ChangeEvent<HTMLInputElement>) => {
-    //     setNewEntry(Number(ev.target.value || 0));
-    // }
-
-    // const onAddNewEntry = (ev: FormEvent) => {
-    //     ev.preventDefault();
-    //     ev.stopPropagation();
-    //
-    //     const time = newEntry;
-    //     if (time === 0) {
-    //         return;
-    //     }
-    //     changeTimingHandler(time, -1);
-    //     setNewEntry(0);
-    //     if (newTimingRef.current) {
-    //         newTimingRef.current.focus();
-    //     }
-    // }
-
     return (
         <TimingFormContainer>
+            <h3>Timing Editor</h3>
             <form onSubmit={onSubmit} id={formId}>
                 <div className="row g-3 mb-1">
                     <div className="col-sm col-12">
@@ -190,4 +151,4 @@ const SelectedTimingForm: React.FC = () => {
         </TimingFormContainer>
     )
 }
-export default SelectedTimingForm;
+export default StepTimingForm;

@@ -30,7 +30,7 @@ export const loadOperationCode = createAsyncThunk<OperationCodeResponse | null, 
         if (!arg) {
             return null;
         }
-        //@TODO: implement on glAccounts.list reducer, routing.detail reducer
+        //@TODO: implement on glAccounts.data reducer, routing.detail reducer
         return await fetchOperationCode(arg);
     }, {
         condition: (_, {getState}) => {

@@ -1,14 +1,15 @@
 import type {SortableTableField} from "@chumsinc/sortable-tables";
 import type {DLCode} from "chums-types";
 import {Link} from "react-router";
-import {dlCodePath} from "@/app/routerPaths";
-import NumericTableValue from "@/components/NumericTableValue";
-import {activityCodePath} from "@/ducks/activity-codes/utils";
+import {dlCodePath} from "@/app/routerPaths.ts";
+import NumericTableValue from "@/components/NumericTableValue.tsx";
+import {activityCodePath} from "@/ducks/activity-codes/utils.ts";
 import classNames from "classnames";
 import Decimal from "decimal.js";
 import numeral from "numeral";
+import LaborScalingQty from "@/components/direct-labor-codes/list/LaborScalingQty.tsx";
 
-export const dlCodesFields: SortableTableField<DLCode>[] = [
+export const mainDLCodesFields: SortableTableField<DLCode>[] = [
     {
         field: 'workCenter',
         title: 'Work Center',
@@ -25,7 +26,6 @@ export const dlCodesFields: SortableTableField<DLCode>[] = [
                   onClick={(ev) => ev.stopPropagation()}>{row.activityCode ?? row.operationCode}</Link>
         )
     },
-    {field: 'description', title: 'Description', sortable: true},
     {
         field: 'StdRatePiece',
         title: 'Sage Cost',
@@ -40,7 +40,7 @@ export const dlCodesFields: SortableTableField<DLCode>[] = [
         field: 'templates',
         title: 'Templates',
         sortable: true,
-        align: 'end',
+        align: 'center',
         render: (row: DLCode) => (row.templates ?? []).length
     },
     {
@@ -48,6 +48,25 @@ export const dlCodesFields: SortableTableField<DLCode>[] = [
         title: 'D/L Act. Code',
         sortable: true,
         render: (row: DLCode) => <Link to={dlCodePath(row.id)}>{row.dlCode}</Link>
+    },
+    {field: 'description', title: 'Description', sortable: true},
+    {field: 'directLaborCost', title: 'Labor Scaling Qty',
+        align: 'end',
+        render: (row) => <LaborScalingQty directLaborCost={row.directLaborCost} workCenter={row.workCenter} />
+    },
+    {
+        field: 'laborBudget',
+        title: 'Labor Cost',
+        sortable: true,
+        align: 'end',
+        render: (row: DLCode) => <NumericTableValue value={row.laborBudget} format="$0,0.0000"/>
+    },
+    {
+        field: 'fixedCosts',
+        title: 'Fixed Cost',
+        sortable: true,
+        align: 'end',
+        render: (row: DLCode) => <NumericTableValue value={row.fixedCosts} format="$0,0.0000"/>
     },
     {
         field: 'directLaborCost',

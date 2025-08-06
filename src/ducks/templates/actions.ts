@@ -5,7 +5,7 @@ import {selectCurrentTemplateStatus, selectTemplateListStatus} from "./selectors
 import {fetchWorkTemplate, fetchWorkTemplates} from "./api";
 
 export const loadTemplateList = createAsyncThunk<WorkTemplate[]>(
-    'templates/list/load',
+    'templates/data/load',
     async () => {
         return fetchWorkTemplates();
     },
@@ -31,5 +31,5 @@ export const loadTemplate = createAsyncThunk<WorkTemplate | null, Pick<WorkTempl
     }
 )
 
-export const setTemplatesSort = createAction<SortProps<WorkTemplate>>('templates/list/setSort');
-export const setTemplatesSearch = createAction<string>('templates/list/setSearch');
+export const setTemplatesSort = createAction<SortProps<WorkTemplate>>('templates/data/setSort');
+export const setTemplatesSearch = createAction<string>('templates/data/setSearch');

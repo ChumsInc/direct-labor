@@ -5,11 +5,11 @@ import {type RootState} from "@/app/configureStore";
 import {selectActivityCodesStatus, selectCurrentActivityCodeStatus} from "./selectors";
 import type {LoadActivityCodeResponse} from "../types";
 
-export const setActivityCodeSort = createAction<SortProps<ActivityCode>>('activityCodes/list/setSort');
-export const setActivityCodeSearch = createAction<string>('activityCodes/list/filter/search');
-export const setActivityCodesWorkCenter = createAction<string>('activityCodes/list/filter/workCenter');
-export const toggleUnratedWorkCenters = createAction<boolean|undefined>('activityCodes/list/filter/toggleUnratedWorkCenters');
-export const toggleActivityCodesWOTemplates = createAction<boolean|undefined>('activityCodes/list/filter/toggleActivityCodesWOTemplates');
+export const setActivityCodeSort = createAction<SortProps<ActivityCode>>('activityCodes/data/setSort');
+export const setActivityCodeSearch = createAction<string>('activityCodes/data/filter/search');
+export const setActivityCodesWorkCenter = createAction<string>('activityCodes/data/filter/workCenter');
+export const toggleUnratedWorkCenters = createAction<boolean|undefined>('activityCodes/data/filter/toggleUnratedWorkCenters');
+export const toggleActivityCodesWOTemplates = createAction<boolean|undefined>('activityCodes/data/filter/toggleActivityCodesWOTemplates');
 
 export const setACTemplateStepsSort = createAction<SortProps<WorkTemplateStep>>('activityCodes/current/setStepsSort');
 

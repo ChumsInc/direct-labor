@@ -1,5 +1,5 @@
 import {type ChangeEvent, useState} from 'react';
-import StepSelect from "@/ducks/dlSteps/StepSelect";
+import StepSelect from "@/components/direct-labor-steps/StepSelect.tsx";
 import type {DLStep} from "chums-types";
 import {addDLStep} from "@/ducks/dlCodes/actions";
 import {newDLStep} from "@/ducks/dlSteps/utils";

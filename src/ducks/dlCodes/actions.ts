@@ -23,7 +23,7 @@ export const setPage = createAction<number>('dlCodes/setPage');
 export const setRowsPerPage = createAction<number>('dlCodes/setRowsPerPage');
 export const setSort = createAction<SortProps<DLCode>>('dlCodes/setSort');
 export const loadDLCodes = createAsyncThunk<DLCode[]>(
-    'dlCodes/list/load',
+    'dlCodes/data/load',
     async () => {
         return await fetchDLCodeList() ?? {};
     },

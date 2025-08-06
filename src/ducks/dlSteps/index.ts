@@ -147,7 +147,7 @@ const stepsSlice = createSlice({
                 if (action.payload) {
                     stepsAdapter.setOne(state, action.payload);
                 }
-                // state.whereUsed = status.payload?.whereUsed?.sort(dlCodeSorter({field: 'id', ascending: true}));
+                // state.whereUsed = status.payload?.whereUsed?.currentSort(dlCodeSorter({field: 'id', ascending: true}));
             })
             .addCase(saveDLStep.rejected, (state) => {
                 state.current.status = 'idle';

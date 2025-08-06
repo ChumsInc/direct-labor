@@ -1,6 +1,6 @@
-import {useAppDispatch, useAppSelector} from "@/app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore.ts";
 import {selectCurrentStep, selectCurrentStepStatus} from "@/ducks/dlSteps";
-import {applyTiming} from "./actions";
+import {applyTiming} from "@/ducks/timings/actions.ts";
 import type {StepTiming} from "chums-types";
 import {Button, type ButtonProps} from "react-bootstrap";
 

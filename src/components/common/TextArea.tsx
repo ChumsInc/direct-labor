@@ -6,7 +6,6 @@ const ScrollArea = styled.div`
     width: 100%;
     overflow-y: auto;
     box-sizing: border-box;
-    margin-bottom: 0.375rem;
     
     &:focus-within {
         color: var(--bs-body-color);
@@ -57,7 +56,7 @@ export default function TextArea({maxHeight, minHeight, minRows, maxRows, ...pro
         maxHeight = `${maxRows * 21}px`;
     }
     return (
-        <ScrollArea className="form-control form-control-sm mb-1" style={{maxHeight, minHeight}}>
+        <ScrollArea className="form-control form-control-sm" style={{maxHeight, minHeight}}>
             <ScrollContent>
                 <StyledTextArea {...props} />
             </ScrollContent>

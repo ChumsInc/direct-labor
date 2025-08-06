@@ -1,20 +1,20 @@
 import {type ChangeEvent, type FormEvent, useEffect, useId, useState} from "react";
 import {Link, useParams} from 'react-router';
 import {useSelector} from "react-redux";
-import {selectCurrentChanged, selectCurrentDLCodeStatus, selectCurrentHeader, selectCurrentSteps} from "./selectors";
-import {loadDLCode, rebuildDLCode, removeDLCode, saveDLCode} from "./actions";
+import {selectCurrentChanged, selectCurrentDLCodeStatus, selectCurrentHeader, selectCurrentSteps} from "@/ducks/dlCodes/selectors.ts";
+import {loadDLCode, rebuildDLCode, removeDLCode, saveDLCode} from "@/ducks/dlCodes/actions.ts";
 import {Alert, Col, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
 import type {ActivityCode, DLCode, Editable, WorkCenter} from 'chums-types'
-import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import SelectedStepsList from "./SelectedStepsList";
-import {newDLCode} from "./utils";
+import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect.tsx";
+import SelectedStepsList from "@/ducks/dlCodes/SelectedStepsList.tsx";
+import {newDLCode} from "@/ducks/dlCodes/utils.ts";
 import numeral from "numeral";
-import {useAppDispatch, useAppSelector} from "@/app/configureStore";
-import DLCodeSageRate from "./DLCodeSageRate";
-import CurrentDLCodeTemplates from "./CurrentDLCodeTemplates";
-import ActivityCodeSelect from "@/components/activity-codes/ActivityCodeSelect";
-import SpinnerButton from "@/components/common/SpinnerButton";
-import DocumentTitle from "@/components/common/DocumentTitle";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore.ts";
+import DLCodeSageRate from "@/ducks/dlCodes/DLCodeSageRate.tsx";
+import CurrentDLCodeTemplates from "@/ducks/dlCodes/CurrentDLCodeTemplates.tsx";
+import ActivityCodeSelect from "@/components/activity-codes/ActivityCodeSelect.tsx";
+import SpinnerButton from "@/components/common/SpinnerButton.tsx";
+import DocumentTitle from "@/components/common/DocumentTitle.tsx";
 
 
 const CurrentDLCode = () => {

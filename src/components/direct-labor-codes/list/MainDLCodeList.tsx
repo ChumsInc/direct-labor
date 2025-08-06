@@ -1,16 +1,23 @@
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentHeader, selectDLCodesStatus, selectLoaded, selectSort, selectSortedList} from "./selectors";
-import {loadDLCodes, setSort} from "./actions";
+import {
+    selectCurrentHeader,
+    selectDLCodesStatus,
+    selectLoaded,
+    selectSort,
+    selectSortedList
+} from "@/ducks/dlCodes/selectors.ts";
+import {loadDLCodes, setSort} from "@/ducks/dlCodes/actions.ts";
 import type {DLCode} from "chums-types";
-import DLCodeList from "./DLCodeList";
 import {useNavigate} from "react-router";
 import {dlCodePath} from "@/app/routerPaths.ts";
-import {useAppDispatch} from "@/app/configureStore";
-import {TablePagination} from "@chumsinc/sortable-tables";
-import AppErrorBoundary from "@/components/AppErrorBoundary";
-import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
-import {getPreference, localStorageKeys, setPreference} from "@/api/preferences";
+import {useAppDispatch} from "@/app/configureStore.ts";
+import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import AppErrorBoundary from "@/components/AppErrorBoundary.tsx";
+import AnimatedLoadingBar from "../../AnimatedLoadingBar.tsx";
+import {getPreference, localStorageKeys, setPreference} from "@/api/preferences.ts";
+import {mainDLCodesFields} from "@/components/direct-labor-codes/list/mainDLCodeListFields.tsx";
+import classNames from "classnames";
 
 const MainDLCodeList = () => {
     const navigate = useNavigate();
@@ -27,7 +34,7 @@ const MainDLCodeList = () => {
         if (!loaded && status === 'idle') {
             dispatch(loadDLCodes());
         }
-    }, [])
+    }, [dispatch, loaded, status])
 
     useEffect(() => {
         setPage(0);
@@ -46,9 +53,11 @@ const MainDLCodeList = () => {
     return (
         <AppErrorBoundary>
             <AnimatedLoadingBar loading={status === 'loading'}/>
-            <DLCodeList list={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                        sort={sort} onChangeSort={sort => dispatch(setSort(sort))}
-                        selected={selected} onSelectDLCode={onSelectDLCode}/>
+            <SortableTable fields={mainDLCodesFields} keyField="id"
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                           rowClassName={(row) => classNames({'table-warning': !row.active})}
+                           currentSort={sort} onChangeSort={sort => dispatch(setSort(sort))}
+                           selected={selected?.id} onSelectRow={onSelectDLCode}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                              size="sm" count={list.length} showFirst showLast/>

@@ -23,7 +23,7 @@ const TimeInput = forwardRef(function TimeInputElement({
     }
     return (
         <input type="text" className="form-control dl-timing--timing-entry" required={required}
-               value={value} onChange={changeHandler} pattern="^\d+\.*\d*"
+               value={value} onChange={changeHandler} pattern="^\d*\.*\d*"
                {...inputProps}
                ref={ref}/>
     )
