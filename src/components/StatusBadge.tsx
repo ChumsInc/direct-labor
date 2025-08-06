@@ -1,6 +1,5 @@
-import React from "react";
 import Badge from "react-bootstrap/Badge";
-import {Variant} from "react-bootstrap/types";
+import {type Variant} from "react-bootstrap/types";
 
 interface StatusBadgeProps {
     status: boolean,

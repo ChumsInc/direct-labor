@@ -1,9 +1,9 @@
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchActivityCode, fetchActivityCodes} from "./api";
-import {ActivityCode, SortProps, WorkTemplateStep} from "chums-types";
-import {RootState} from "@/app/configureStore";
+import type {ActivityCode, SortProps, WorkTemplateStep} from "chums-types";
+import {type RootState} from "@/app/configureStore";
 import {selectActivityCodesStatus, selectCurrentActivityCodeStatus} from "./selectors";
-import {LoadActivityCodeResponse} from "../types";
+import type {LoadActivityCodeResponse} from "../types";
 
 export const setActivityCodeSort = createAction<SortProps<ActivityCode>>('activityCodes/list/setSort');
 export const setActivityCodeSearch = createAction<string>('activityCodes/list/filter/search');

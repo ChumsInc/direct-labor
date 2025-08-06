@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchVersion} from "./api";
-import {RootState} from "../../app/configureStore";
+import type {RootState} from "@/app/configureStore.ts";
 import {selectVersionLoading} from "./selectors";
 
 export const loadVersion = createAsyncThunk<string|null>(
@@ -9,7 +9,7 @@ export const loadVersion = createAsyncThunk<string|null>(
         return await fetchVersion();
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectVersionLoading(state);
         }

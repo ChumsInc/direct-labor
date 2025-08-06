@@ -1,7 +1,6 @@
-import {SortProps, StepTiming} from "chums-types";
-import {TimeValue} from "./types";
+import type {SortProps, StepTiming} from "chums-types";
+import type {TimeValue} from "./types";
 import Decimal from "decimal.js";
-import TimeInput from "./TimeInput";
 
 export const timingsSorter = (sort: SortProps<StepTiming>) => (a: StepTiming, b: StepTiming) => {
     const sortMod = sort.ascending ? 1 : -1;
@@ -19,13 +18,13 @@ export const timingsSorter = (sort: SortProps<StepTiming>) => (a: StepTiming, b:
     }
 }
 
-export const isTimeValue = (value:string|number|null|TimeValue|unknown):value is TimeValue => {
+export const isTimeValue = (value: string | number | null | TimeValue | unknown): value is TimeValue => {
     return value !== null
-        && !['number','string', 'undefined'].includes(typeof value)
+        && !['number', 'string', 'undefined'].includes(typeof value)
         && (value as TimeValue).minutes !== undefined;
 }
 
-export const numberToTime = (value:string|number|null|TimeValue|TimeEntry):TimeValue => {
+export const numberToTime = (value: string | number | null | TimeValue | TimeEntry): TimeValue => {
     if (value instanceof TimeEntry) {
         return value.valueOf();
     }
@@ -47,7 +46,7 @@ export const numberToTime = (value:string|number|null|TimeValue|TimeEntry):TimeV
     }
 }
 
-export const timeToNumber = (time:TimeValue|string|number|null):number => {
+export const timeToNumber = (time: TimeValue | string | number | null): number => {
     if (!isTimeValue(time)) {
         return new Decimal(time ?? 0).toNumber();
     }
@@ -91,11 +90,25 @@ export class TimeEntry {
     #minutes: number = 0;
     #seconds: number = 0;
 
-    constructor(value?:TimeEntry|TimeValue|string|number|null) {
+    constructor(value?: TimeEntry | TimeValue | string | number | null) {
         this.setValue(value ?? 0);
     }
 
-    setValue(value: TimeEntry|TimeValue|number|string|null) {
+    static numberToTime(value: number): TimeValue {
+        const entry = new TimeEntry(value);
+        return entry.toTimeValue()
+    }
+
+    static toNumber(value: TimeValue | TimeEntry | number | string) {
+        const entry = new TimeEntry(value);
+        return entry.#value;
+    }
+
+    static timeToNumber(time: TimeValue): number {
+        return new Decimal(time.seconds).div(60).add(time.minutes).toDecimalPlaces(4).toNumber()
+    }
+
+    setValue(value: TimeEntry | TimeValue | number | string | null) {
         if (value instanceof TimeEntry) {
             this.#value = value.#value;
             this.#minutes = value.#minutes;
@@ -120,7 +133,7 @@ export class TimeEntry {
         this.#seconds = new Decimal(this.#value).sub(this.#minutes).times(60).toNumber();
     }
 
-    toTimeValue():TimeValue {
+    toTimeValue(): TimeValue {
         return {
             value: this.#value,
             minutes: this.#minutes,
@@ -128,22 +141,8 @@ export class TimeEntry {
         }
     }
 
-    valueOf():TimeValue {
+    valueOf(): TimeValue {
         return this.toTimeValue();
-    }
-
-    static numberToTime(value: number):TimeValue {
-        const entry = new TimeEntry(value);
-        return entry.toTimeValue()
-    }
-
-    static toNumber(value:TimeValue|TimeEntry|number|string) {
-        const entry = new TimeEntry(value);
-        return entry.#value;
-    }
-
-    static timeToNumber(time:TimeValue):number {
-        return new Decimal(time.seconds).div(60).add(time.minutes).toDecimalPlaces(4).toNumber()
     }
 
     setMinutes(value: number) {

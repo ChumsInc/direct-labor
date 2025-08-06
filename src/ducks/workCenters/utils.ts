@@ -1,4 +1,4 @@
-import {SortProps, WorkCenter} from "chums-types";
+import type {SortProps, WorkCenter} from "chums-types";
 import Decimal from "decimal.js";
 
 

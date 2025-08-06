@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FormEvent, useEffect, useId, useState} from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useId, useState} from "react";
 import {useSelector} from "react-redux";
 import {
     selectActivityCodeChanges,

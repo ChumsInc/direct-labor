@@ -1,9 +1,8 @@
-import React from 'react';
 import {useAppSelector} from "../../app/configureStore";
 import {selectCurrentTemplateSteps} from "./selectors";
-import {DataTable, DataTableField} from "@chumsinc/sortable-tables";
+import {DataTable, type DataTableField} from "@chumsinc/sortable-tables";
 import {calculateStepLaborCost, templateStepKey} from "./utils";
-import {WorkTemplateStep} from "chums-types";
+import type {WorkTemplateStep} from "chums-types";
 import {activityCodePath} from "../activity-codes/utils";
 import {Link} from "react-router";
 import NumericTableValue from "../../components/NumericTableValue";

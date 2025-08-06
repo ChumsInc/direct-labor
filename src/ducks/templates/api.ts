@@ -1,12 +1,12 @@
-import {WorkTemplate, WorkTemplateStep} from "chums-types";
+import type {WorkTemplate} from "chums-types";
 import {fetchJSON} from "@chumsinc/ui-utils";
 
-export async function fetchWorkTemplates():Promise<WorkTemplate[]> {
+export async function fetchWorkTemplates(): Promise<WorkTemplate[]> {
     try {
         const url = '/api/operations/production/pm/templates.json';
-        const res = await fetchJSON<{templates:WorkTemplate[]}>(url, {cache: 'no-cache'});
+        const res = await fetchJSON<{ templates: WorkTemplate[] }>(url, {cache: 'no-cache'});
         return res?.templates ?? [];
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchWorkTemplates()", err.message);
             return Promise.reject(err);
@@ -16,16 +16,16 @@ export async function fetchWorkTemplates():Promise<WorkTemplate[]> {
     }
 }
 
-export async function fetchWorkTemplate(arg:Pick<WorkTemplate, 'TemplateNo'|'RevisionNo'>):Promise<WorkTemplate|null> {
+export async function fetchWorkTemplate(arg: Pick<WorkTemplate, 'TemplateNo' | 'RevisionNo'>): Promise<WorkTemplate | null> {
     try {
         const params = new URLSearchParams();
         params.set('revisionNo', arg.RevisionNo);
 
         const url = `/api/operations/production/pm/templates/:templateNo.json?${params.toString()}`
             .replace(':templateNo', encodeURIComponent(arg.TemplateNo));
-        const res = await fetchJSON<{template:WorkTemplate|null}>(url, {cache: 'no-cache'});
+        const res = await fetchJSON<{ template: WorkTemplate | null }>(url, {cache: 'no-cache'});
         return res?.template ?? null;
-    } catch(err:unknown) {
+    } catch (err: unknown) {
         if (err instanceof Error) {
             console.debug("fetchWorkTemplate()", err.message);
             return Promise.reject(err);

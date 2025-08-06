@@ -1,6 +1,5 @@
-import {SortProps, WorkTemplate, WorkTemplateStep} from "chums-types";
+import type {SortProps, WorkTemplate, WorkTemplateStep} from "chums-types";
 import Decimal from "decimal.js";
-import numeral from "numeral";
 import {generatePath} from "react-router";
 
 
@@ -41,16 +40,16 @@ export const TemplateStepSorter = ({
         }
     }
 
-export const templateKey = (arg:Pick<WorkTemplate, 'TemplateNo'|'RevisionNo'>) => `${arg.TemplateNo}:${arg.RevisionNo}`
-export const templateKeyComparator = (a:WorkTemplate, b:WorkTemplate):number => {
+export const templateKey = (arg: Pick<WorkTemplate, 'TemplateNo' | 'RevisionNo'>) => `${arg.TemplateNo}:${arg.RevisionNo}`
+export const templateKeyComparator = (a: WorkTemplate, b: WorkTemplate): number => {
     return templateKey(a) === templateKey(b) ? 1 : -1;
 }
 
-export const isTemplateStepCount = (arg:number|WorkTemplateStep[]): arg is number => {
+export const isTemplateStepCount = (arg: number | WorkTemplateStep[]): arg is number => {
     return typeof arg === 'number';
 }
 
-export const templateStepCount = (arg:WorkTemplate):number => {
+export const templateStepCount = (arg: WorkTemplate): number => {
     return isTemplateStepCount(arg.Steps) ? arg.Steps : arg.Steps.length;
 }
 
@@ -79,7 +78,7 @@ export const templateSorter = ({field, ascending}: SortProps<WorkTemplate>) => (
         case 'TemplateCost':
             return (
                 new Decimal(a[field]).eq(b[field])
-                ? templateKeyComparator(a, b)
+                    ? templateKeyComparator(a, b)
                     : new Decimal(a[field]).sub(b[field]).toNumber()
             ) * sortMod;
         default:
@@ -105,7 +104,7 @@ export const calculateStepLaborCost = (arg: Pick<WorkTemplateStep, 'ScalingMetho
     }
 }
 
-export const templatePath = (arg:WorkTemplate) => {
+export const templatePath = (arg: WorkTemplate) => {
     return generatePath('/templates/:templateNo/:revisionNo', {
         templateNo: arg.TemplateNo,
         revisionNo: arg.RevisionNo,

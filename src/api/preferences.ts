@@ -1,7 +1,7 @@
 const reLocal = /^local/;
 
-const sessionStoragePrefix:string = 'session/direct-labor';
-const localStoragePrefix:string = 'local/direct-labor';
+export const sessionStoragePrefix:string = 'session/direct-labor';
+export const localStoragePrefix:string = 'local/direct-labor';
 
 
 export const sessionStorageKeys = {

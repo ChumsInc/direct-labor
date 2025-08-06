@@ -1,4 +1,4 @@
-import {DLStep, StepTiming} from "chums-types";
+import type {DLStep, StepTiming} from "chums-types";
 
 
 export interface SaveTimingResponse {

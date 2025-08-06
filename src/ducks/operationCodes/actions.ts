@@ -1,8 +1,8 @@
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {OperationCode, OperationCodeKey, SortProps} from "chums-types";
-import {OperationCodeResponse} from "./types";
+import type {OperationCode, OperationCodeKey, SortProps} from "chums-types";
+import type {OperationCodeResponse} from "./types";
 import {fetchOperationCode, fetchOperationCodes} from "./api";
-import {RootState} from "../../app/configureStore";
+import type {RootState} from "../../app/configureStore";
 import {selectCurrentLoading, selectLoading} from "./selectors";
 
 export const setSearch = createAction<string>('operationCodes/filter/setSearch')
@@ -17,7 +17,7 @@ export const loadOperationCodes = createAsyncThunk<OperationCodeResponse | null>
         return await fetchOperationCodes();
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectLoading(state);
         }
@@ -33,7 +33,7 @@ export const loadOperationCode = createAsyncThunk<OperationCodeResponse | null, 
         //@TODO: implement on glAccounts.list reducer, routing.detail reducer
         return await fetchOperationCode(arg);
     }, {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectCurrentLoading(state);
         }

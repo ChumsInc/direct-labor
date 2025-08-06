@@ -1,12 +1,11 @@
-import {SaveTimingResponse, StepTimingId, TimingEntry} from "./types";
+import type {SaveTimingResponse, StepTimingId, TimingEntry} from "./types";
 import {selectCurrentTimingStatus} from "./selectors";
-import {setTimingSort} from "./actionTypes";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {DLStep, SortProps, StepTiming} from "chums-types";
+import type {DLStep, SortProps, StepTiming} from "chums-types";
 import {fetchTiming, postApplyTiming, postTiming} from "./api";
-import {RootState} from "../../app/configureStore";
+import type {RootState} from "@/app/configureStore";
 
-export const timingSortChangedAction = createAction<SortProps<StepTiming>>(setTimingSort);
+export const timingSortChangedAction = createAction<SortProps<StepTiming>>('timings/setSort');
 export const setCurrentTiming = createAction<StepTiming|null>('timings/current/set');
 export const updateCurrentTiming = createAction<Partial<StepTiming>>('timings/current/update');
 export const updateTimingEntry = createAction<TimingEntry>('timings/current/updateEntry');

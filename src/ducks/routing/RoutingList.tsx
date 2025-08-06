@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
+import {useEffect} from "react";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 import {
     selectCurrentHeader,
@@ -10,7 +10,7 @@ import {
     selectRowsPerPage,
     selectSortedRoutingList,
 } from "./selectors";
-import {RoutingHeader, SortProps} from "chums-types";
+import type {RoutingHeader, SortProps} from "chums-types";
 import numeral from "numeral";
 import classNames from "classnames";
 import {useNavigate} from "react-router";
@@ -65,14 +65,23 @@ const RoutingList = () => {
         if (!loaded && !loading) {
             dispatch(loadRoutings());
         }
-    }, []);
+    }, [dispatch, loaded, loading]);
 
     const onSelect = (header: RoutingHeader) => {
         navigate(selectedRoutingPath(header.RoutingNo));
     }
-    const onChangeSort = (sort: SortProps) => dispatch(setSort(sort));
-    const pageChangeHandler = (page: number) => dispatch(setPage(page));
-    const rowsPerPageChangeHandler = (page: number) => dispatch(setRowsPerPage(page));
+
+    const onChangeSort = (sort: SortProps<RoutingHeader>) => {
+        dispatch(setSort(sort));
+    }
+
+    const pageChangeHandler = (page: number) => {
+        dispatch(setPage(page));
+    }
+
+    const rowsPerPageChangeHandler = (page: number) => {
+        dispatch(setRowsPerPage(page));
+    }
 
     return (
         <AppErrorBoundary>

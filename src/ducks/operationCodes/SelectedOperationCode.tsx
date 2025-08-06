@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useSelector} from "react-redux";
 import {selectCurrentLoading, selectCurrentOperationCode, selectWhereUsed} from "./selectors";
 import GLAccountElement from "../glAccounts/GLAccountElement";
@@ -26,7 +26,7 @@ const SelectedOperationCode = () => {
         if (operationCode && workCenter) {
             dispatch(loadOperationCode({OperationCode: operationCode, WorkCenter: workCenter}));
         }
-    }, [params])
+    }, [dispatch, params])
 
     if (!operationCode) {
         return null;

@@ -1,6 +1,6 @@
-import {RoutingResponse} from "../types";
+import type {RoutingResponse} from "../types";
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {RoutingHeader} from "chums-types";
+import type {RoutingHeader} from "chums-types";
 
 export async function fetchRouting(arg:string):Promise<RoutingResponse|null> {
     try {

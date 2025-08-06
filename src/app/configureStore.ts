@@ -8,7 +8,7 @@ import {default as dlCodesReducer} from '../ducks/dlCodes';
 import {default as dlStepsSlice} from '../ducks/dlSteps';
 import {default as timingsReducer} from '../ducks/timings';
 import {configureStore} from "@reduxjs/toolkit";
-import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
+import {type TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import versionReducer from "../ducks/version";
 import activityCodesReducer from "../ducks/activity-codes";
 import templatesReducer from "../ducks/templates";

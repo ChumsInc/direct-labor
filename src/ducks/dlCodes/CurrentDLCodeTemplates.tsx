@@ -1,9 +1,8 @@
-import React from 'react';
 import {useSelector} from "react-redux";
 import {selectCurrentDLCodeTemplates, selectCurrentDLSageRate} from "./selectors";
 import numeral from "numeral";
-import {DLCodeWorkTemplate} from "chums-types";
-import {useAppSelector} from "../../app/configureStore";
+import type {DLCodeWorkTemplate} from "chums-types";
+import {useAppSelector} from "@/app/configureStore";
 import classNames from "classnames";
 import Decimal from "decimal.js";
 

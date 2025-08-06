@@ -1,4 +1,11 @@
-import {DLBasicStep, DLStep, SortProps, StepTiming} from "chums-types";
+import type {DLBasicStep, DLStep, SortProps, StepTiming} from "chums-types";
+
+
+export const tabIDMap:Record<string, string> = {
+    settings: 'settings',
+    timings: 'timings',
+    whereUsed: 'where-used',
+}
 
 export const newDLStep: DLStep = {
     id: 0,

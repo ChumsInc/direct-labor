@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {selectLoaded, selectLoading} from "./selectors";
 import {loadOperationCodes} from "./actions";
@@ -13,11 +13,12 @@ const OperationCodesPage = () => {
     const dispatch = useAppDispatch();
     const loaded = useSelector(selectLoaded);
     const loading = useSelector(selectLoading);
+
     useEffect(() => {
         if (!loaded && !loading) {
             dispatch(loadOperationCodes());
         }
-    }, [])
+    }, [dispatch, loaded, loading])
 
     return (
         <>

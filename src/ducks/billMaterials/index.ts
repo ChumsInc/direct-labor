@@ -6,13 +6,12 @@ import {
     defaultBillOptionSort,
     defaultBillSort
 } from "./utils";
-import {RootState} from "@/app/configureStore";
+import {type RootState} from "@/app/configureStore";
 import {setCurrentRouting} from "../routing/actions";
 
-import {BillHeader, BillOptionHeader} from "chums-types";
-import {SortProps} from "chums-types";
+import type {BillHeader, BillOptionHeader, SortProps} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
-import {BillHeaderList, BillOptionHeaderList} from "../types";
+import type {BillHeaderList, BillOptionHeaderList} from "../types";
 
 export interface BOMState {
     headerList: BillHeaderList;

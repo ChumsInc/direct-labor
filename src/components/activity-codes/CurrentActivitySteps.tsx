@@ -1,8 +1,7 @@
-import React from 'react';
 import {useAppSelector} from "@/app/configureStore";
 import {selectCurrentActivityCodeSteps} from "@/ducks/activity-codes/selectors";
-import {DataTable, SortableTableField} from "@chumsinc/sortable-tables";
-import {WorkTemplateStep} from "chums-types";
+import {DataTable, type SortableTableField} from "@chumsinc/sortable-tables";
+import type {WorkTemplateStep} from "chums-types";
 import {calculateStepLaborCost, templateStepKey} from "@/ducks/templates/utils";
 import numeral from "numeral";
 

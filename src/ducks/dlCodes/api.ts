@@ -1,7 +1,7 @@
-import {AddDLStepArg, DLCodeResponse} from "./types";
+import type {AddDLStepArg, DLCodeResponse} from "./types";
 import {fetchJSON} from "@chumsinc/ui-utils";
 import {dlCodeStepSorter} from "./utils";
-import {DLCode, DLCodeStep} from "chums-types";
+import type {DLCode, DLCodeStep} from "chums-types";
 
 export async function deleteStep(arg: DLCodeStep): Promise<DLCodeResponse | null> {
     try {

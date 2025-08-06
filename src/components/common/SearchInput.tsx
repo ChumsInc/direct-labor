@@ -1,6 +1,6 @@
-import React, {ChangeEvent, useEffect, useId, useState} from "react";
+import {type ChangeEvent, useEffect, useId, useState} from "react";
 import classNames from "classnames";
-import {FormControl, FormControlProps, InputGroup} from "react-bootstrap";
+import {FormControl, type FormControlProps, InputGroup} from "react-bootstrap";
 import {useDebounceValue} from "usehooks-ts";
 
 export interface SearchInputProps extends Omit<FormControlProps, 'onChange'> {
@@ -24,22 +24,22 @@ const SearchInput = ({
                      }: SearchInputProps) => {
     const [valid, setValid] = useState(true);
     const [debouncedValue, setValue] = useDebounceValue(value, 350);
-    const _id = id ?? useId();
+    const __id = useId();
+    const _id = id ?? __id;
 
     useEffect(() => {
         onChange(debouncedValue);
-    }, [debouncedValue]);
+    }, [onChange, debouncedValue]);
 
     const inputClassName = {
         'is-invalid': !valid
     }
     const changeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
         let valid = true;
+
         try {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const re = new RegExp(ev.target.value, 'i');
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (err: unknown) {
+            new RegExp(ev.target.value, 'i');
+        } catch {
             valid = false;
         }
         setValid(valid);

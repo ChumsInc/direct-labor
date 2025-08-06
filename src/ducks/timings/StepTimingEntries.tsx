@@ -1,5 +1,5 @@
-import React, {FormEvent, useId, useRef, useState, FocusEvent} from 'react';
-import {useAppDispatch} from "../../app/configureStore";
+import {type FormEvent, useId, useRef, useState, type FocusEvent} from 'react';
+import {useAppDispatch} from "@/app/configureStore.ts";
 import {useSelector} from "react-redux";
 import {selectCurrentTiming} from "./selectors";
 import {updateTimingEntry} from "./actions";

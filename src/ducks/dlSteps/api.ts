@@ -1,6 +1,6 @@
-import {LoadDLStepResponse, LoadDLStepsResponse} from "./types";
+import type {LoadDLStepResponse, LoadDLStepsResponse} from "./types";
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {DLCode, DLStep} from "chums-types";
+import type {DLCode, DLStep} from "chums-types";
 
 export async function fetchDLSteps(): Promise<LoadDLStepsResponse> {
     try {

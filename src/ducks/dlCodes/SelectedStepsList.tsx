@@ -1,65 +1,48 @@
-import React, {useEffect, useState} from "react";
-import {DLStepTotal} from "../types";
+import {useEffect, useState} from "react";
+import type {DLStepTotal} from "../types";
 import numeral from "numeral";
 import {selectCurrentHeader, selectCurrentSteps} from "./selectors";
 import {useSelector} from "react-redux";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import DraggableTR from "./DraggableTR";
-import DeleteStepButton from "./DeleteStepButton";
 import {saveDLStepSort} from "./actions";
 import {stepTotalReducer} from "./utils";
-import {Link} from "react-router";
-import {dlStepPath} from "../../routerPaths";
 import classNames from "classnames";
 import {useAppDispatch} from "@/app/configureStore";
-import {SortableTableField} from "@chumsinc/sortable-tables";
-import {DLCodeStep} from "chums-types";
 import AddDLStepForm from "@/ducks/dlCodes/AddDLStepForm";
+import {stepsListFields} from "@/ducks/dlCodes/stepsListFields.tsx";
+import styled from "@emotion/styled";
+import type {DLCodeStep} from "chums-types";
 
-
-export const stepsListFields: SortableTableField<DLCodeStep>[] = [
-    {field: 'stepOrder', title: 'Step', render: ({stepOrder}: DLCodeStep) => String(stepOrder + 1)},
-    {
-        field: 'stepCode',
-        title: 'Step Code',
-        render: (row: DLCodeStep) => (<Link to={dlStepPath(row.stepId)}>{row.stepCode}</Link>)
-    },
-    {field: 'description', title: 'Description'},
-    {field: 'workCenter', title: 'Work Center'},
-    {field: 'machine', title: 'Machine'},
-    {
-        field: 'standardAllowedMinutes',
-        title: 'SAM',
-        className: 'text-end',
-        render: ({standardAllowedMinutes}: DLCodeStep) => numeral(standardAllowedMinutes).format('0,0.0000')
-    },
-    {
-        field: 'fixedCosts',
-        title: 'Fixed Costs',
-        className: 'text-end',
-        render: ({fixedCosts}: DLCodeStep) => numeral(fixedCosts).format('0,0.0000')
-    },
-    {
-        field: 'stepCost',
-        title: 'Step Cost',
-        className: 'text-end',
-        render: ({stepCost}: DLCodeStep) => numeral(stepCost).format('0,0.0000')
-    },
-    {field: 'id', title: '-', className: 'text-center', render: (row: DLCodeStep) => <DeleteStepButton step={row}/>},
-]
+const StepsContainer = styled.div`
+    .draggable-tr {
+        padding: 0.5rem 1rem;
+        margin-bottom: .5rem;
+        cursor: move;
+        opacity: 1;
+        &.is-dragging {
+            opacity: 0;
+        }
+    }
+`
+const stepsKey = (steps:DLCodeStep[]):string => {
+    return steps.map(step => step.id).join(':');
+}
 
 const SelectedStepsList = () => {
     const dispatch = useAppDispatch();
     const selected = useSelector(selectCurrentHeader);
     const steps = useSelector(selectCurrentSteps);
-    const stepKeys = steps.map(step => step.id).join(':');
+    
     const total: DLStepTotal = stepTotalReducer(steps);
     const [list, setList] = useState(steps ?? []);
 
     useEffect(() => {
-        setList(steps);
-    }, [stepKeys])
+        if (stepsKey(steps) !== stepsKey(list)) {
+            setList(steps);    
+        }
+    }, [list, steps])
 
     const onMoveStep = (dragIndex: number, hoverIndex: number) => {
         console.log(list, dragIndex, hoverIndex);
@@ -80,7 +63,7 @@ const SelectedStepsList = () => {
     }
     // return null;
     return (
-        <div>
+        <StepsContainer>
             <table className="table table-xs table-hover">
                 <thead>
                 <tr>
@@ -116,7 +99,7 @@ const SelectedStepsList = () => {
                 </tfoot>
             </table>
             <AddDLStepForm/>
-        </div>
+        </StepsContainer>
     )
 
 }

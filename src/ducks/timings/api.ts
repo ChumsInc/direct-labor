@@ -1,6 +1,6 @@
-import {DLStep, StepTiming} from "chums-types";
+import type {DLStep, StepTiming} from "chums-types";
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {SaveTimingResponse, StepTimingId} from "./types";
+import type {SaveTimingResponse, StepTimingId} from "./types";
 
 
 export async function postTiming(arg: StepTiming): Promise<SaveTimingResponse|null> {
@@ -9,7 +9,7 @@ export async function postTiming(arg: StepTiming): Promise<SaveTimingResponse|nu
             .replace(':stepId', encodeURIComponent(arg.idSteps))
             .replace(':timingId', encodeURIComponent(arg.id))
             .replace('/0.json', '.json');
-        const method = !!arg.id ? 'PUT' : 'POST';
+        const method = arg.id ? 'PUT' : 'POST';
         const res = await fetchJSON<SaveTimingResponse>(url, {method, body: JSON.stringify(arg)});
         return res ?? null;
     } catch (err: unknown) {

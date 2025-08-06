@@ -1,10 +1,9 @@
-import React, {useRef} from "react";
-import {DataTableRow, DataTableRowProps} from "@chumsinc/sortable-tables";
-import {DLCodeStep} from "chums-types";
+import {useRef} from "react";
+import {DataTableRow, type DataTableRowProps} from "@chumsinc/sortable-tables";
+import type {DLCodeStep} from "chums-types";
 import {useDrag, useDrop} from "react-dnd";
-import "./DraggableTR.scss";
 import classNames from "classnames";
-import {Identifier} from "dnd-core";
+import {type Identifier} from "dnd-core";
 
 export interface DraggableTRProps<T = DLCodeStep> extends DataTableRowProps<T> {
     row: T,
@@ -25,11 +24,10 @@ export default function DraggableTR<T = DLCodeStep>({
                                                         className,
                                                         index,
                                                         moveItem,
-                                                        onDrop
                                                     }: DraggableTRProps<T>) {
     const ref = useRef<HTMLTableRowElement>(null);
 
-    const [{handlerId}, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
+    const [, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
         accept: 'item',
         collect(monitor) {
             return {

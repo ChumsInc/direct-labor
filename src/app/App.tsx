@@ -1,28 +1,27 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {HashRouter, Route, Routes} from 'react-router';
-import RoutingPage from "../ducks/routing/RoutingPage";
-import WorkCenterPage from "../ducks/workCenters/WorkCenterPage";
-import OperationCodesPage from "../ducks/operationCodes/OperationCodesPage";
-import DirectLaborCodesPage from "../ducks/dlCodes/DirectLaborCodesPage";
-import DirectLaborStepsPage from "../ducks/dlSteps/DirectLaborStepsPage";
-import MainOutlet from "./MainOutlet";
-import SelectedDLStep from "../ducks/dlSteps/SelectedDLStep";
-import CurrentDLCode from "../ducks/dlCodes/CurrentDLCode";
-import RoutingInfo from "../ducks/routing/RoutingInfo";
-import WorkCenterForm from "../ducks/workCenters/WorkCenterForm";
-import SelectedOperationCode from "../ducks/operationCodes/SelectedOperationCode";
-import ActivityCodesPage from "./activity-codes/ActivityCodesPage";
-import CurrentActivityCode from "./activity-codes/CurrentActivityCode";
+import RoutingPage from "@/ducks/routing/RoutingPage";
+import WorkCenterPage from "@/ducks/workCenters/WorkCenterPage";
+import OperationCodesPage from "@/ducks/operationCodes/OperationCodesPage";
+import DirectLaborCodesPage from "@/ducks/dlCodes/DirectLaborCodesPage";
+import DirectLaborStepsPage from "@/ducks/dlSteps/DirectLaborStepsPage";
+import MainOutlet from "@/components/MainOutlet";
+import SelectedDLStep from "@/ducks/dlSteps/SelectedDLStep";
+import CurrentDLCode from "@/ducks/dlCodes/CurrentDLCode";
+import RoutingInfo from "@/ducks/routing/RoutingInfo";
+import WorkCenterForm from "@/ducks/workCenters/WorkCenterForm";
+import SelectedOperationCode from "@/ducks/operationCodes/SelectedOperationCode";
+import ActivityCodesPage from "@/components/activity-codes/ActivityCodesPage";
+import CurrentActivityCode from "@/components/activity-codes/CurrentActivityCode";
 import {useAppDispatch} from "@/app/configureStore";
 import {loadWorkCenters} from "@/ducks/workCenters/actions";
 import {loadActivityCodes} from "@/ducks/activity-codes/actions";
 import {loadDLCodes} from "@/ducks/dlCodes/actions";
 import {loadDLSteps} from "@/ducks/dlSteps/actions";
-import TemplatesPage from "./TemplatesPage";
-import CurrentTemplate from "../ducks/templates/CurrentTemplate";
+import TemplatesPage from "@/components/TemplatesPage";
+import CurrentTemplate from "@/ducks/templates/CurrentTemplate";
 import Alert from "react-bootstrap/Alert";
 import Redirect from "@/components/common/Redirect";
-import "./app-styles.scss"
 
 const App = () => {
     const dispatch = useAppDispatch();
@@ -31,7 +30,7 @@ const App = () => {
         dispatch(loadActivityCodes());
         dispatch(loadDLCodes());
         dispatch(loadDLSteps());
-    }, []);
+    }, [dispatch]);
 
     return (
         <HashRouter>

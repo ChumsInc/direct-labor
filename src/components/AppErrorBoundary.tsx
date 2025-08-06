@@ -1,6 +1,6 @@
 import React from 'react';
 import {Alert} from "react-bootstrap";
-import {ErrorBoundary as ReactErrorBoundary, FallbackProps} from 'react-error-boundary';
+import {ErrorBoundary as ReactErrorBoundary, type FallbackProps} from 'react-error-boundary';
 
 function ErrorFallback({error, resetErrorBoundary}: FallbackProps) {
     console.trace(error);

@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {SortableTable, SortableTableField} from "@chumsinc/sortable-tables";
+import {useState} from "react";
+import {SortableTable, type SortableTableField} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 
 import classNames from "classnames";
@@ -7,7 +7,7 @@ import numeral from "numeral";
 import MultiLineField from "../../components/MultiLineField";
 import {billOptionHeaderKey, billOptionHeaderSorter, defaultBillOptionSort} from "./utils";
 import {billOptionHeaderSelector} from "./selectors";
-import {BillOptionHeader, SortProps} from "chums-types";
+import type {BillOptionHeader, SortProps} from "chums-types";
 
 const detailTableFields: SortableTableField<BillOptionHeader>[] = [
     {field: 'BillNo', title: 'Bill No', sortable: true},
@@ -24,7 +24,7 @@ const detailTableFields: SortableTableField<BillOptionHeader>[] = [
         field: 'DateLastUsed',
         title: 'Last Used',
         sortable: true,
-        render: (row) => !!row.DateLastUsed ? new Date(row.DateLastUsed).toLocaleDateString() : 'N/A'
+        render: (row) => row.DateLastUsed ? new Date(row.DateLastUsed).toLocaleDateString() : 'N/A'
     },
     {field: 'WorkOrderStepNo', title: 'W/O Step No'},
     {field: 'OptionPrice', title: 'Option Price', render: row => numeral(row.OptionPrice).format('0,0.0000')},

@@ -1,6 +1,4 @@
-import React, {ButtonHTMLAttributes, ChangeEvent, forwardRef, InputHTMLAttributes} from 'react';
-import Decimal from "decimal.js";
-import {regexpMinSec} from "../../utils/math";
+import React, {type ButtonHTMLAttributes, type ChangeEvent, forwardRef, type InputHTMLAttributes} from 'react';
 
 export interface TimeInputProps {
     value: number | string;

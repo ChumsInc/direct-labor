@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useId} from "react";
+import {type ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {
@@ -10,7 +10,7 @@ import {
     setStepWCFilter,
     toggleShowInactive
 } from "./index";
-import {WorkCenter} from "chums-types";
+import type {WorkCenter} from "chums-types";
 import {loadDLSteps} from "./actions";
 import SearchInput from "@/components/common/SearchInput";
 import {useAppDispatch} from "@/app/configureStore";

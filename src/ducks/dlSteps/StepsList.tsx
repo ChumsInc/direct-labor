@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentStep, selectFilteredList, selectStepsLoaded, selectStepsSort, setStepSort} from "./index";
 import {loadDLSteps} from "./actions";
-import {DLBasicStep, DLStep, SortProps} from "chums-types";
+import type {DLBasicStep, DLStep, SortProps} from "chums-types";
 import {dlStepKey} from "./utils";
 import {stepsListFields} from "./StepsListFields";
 import {useNavigate} from "react-router";
@@ -40,8 +40,8 @@ const StepsList = () => {
         navigate(dlStepPath(row.id));
     }
 
-    const sortChangeHandler = (sort:unknown) => {
-        dispatch(setStepSort(sort as SortProps<DLBasicStep|DLStep>));
+    const sortChangeHandler = (sort: unknown) => {
+        dispatch(setStepSort(sort as SortProps<DLBasicStep | DLStep>));
     }
 
     const rowsPerPageChangeHandler = (rpp: number) => {

@@ -1,4 +1,4 @@
-import {SortProps, StepTiming} from "chums-types";
+import type {SortProps, StepTiming} from "chums-types";
 import {loadDLStep} from "../dlSteps/actions";
 import {createReducer} from "@reduxjs/toolkit";
 import {loadTiming, saveTiming, setCurrentTiming, updateCurrentTiming, updateTimingEntry} from "./actions";

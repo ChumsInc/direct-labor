@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useId} from "react";
+import {type ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
 import {loadRoutings, setSearch, toggleShowInactive} from "./actions";
 import {selectSearch, selectShowInactive,} from './selectors';
@@ -8,7 +8,7 @@ import {useAppDispatch} from "../../app/configureStore";
 import AppErrorBoundary from "@/components/AppErrorBoundary";
 
 
-const RoutingFilter: React.FC = () => {
+const RoutingFilter = () => {
     const dispatch = useAppDispatch();
     const filter = useSelector(selectSearch);
     const showInactive = useSelector(selectShowInactive);

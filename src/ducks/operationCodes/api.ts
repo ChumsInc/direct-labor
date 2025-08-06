@@ -1,6 +1,6 @@
-import {OperationCodeKey} from "chums-types";
+import type {OperationCodeKey} from "chums-types";
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {OperationCodeResponse} from "./types";
+import type {OperationCodeResponse} from "./types";
 
 export async function fetchOperationCodes(): Promise<OperationCodeResponse> {
     try {

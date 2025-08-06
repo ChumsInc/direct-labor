@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {selectCurrentActivityCode} from "@/ducks/activity-codes/selectors";
 import {useParams} from "react-router";

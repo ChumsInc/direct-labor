@@ -1,6 +1,6 @@
-import React, {ChangeEvent, useEffect} from 'react';
-import {FormSelect, FormSelectProps} from "react-bootstrap";
-import {ActivityCode} from "chums-types";
+import {type ChangeEvent, useEffect, useState} from 'react';
+import {FormSelect, type FormSelectProps} from "react-bootstrap";
+import type {ActivityCode} from "chums-types";
 import {useAppSelector} from "@/app/configureStore";
 import {selectActivityCodes} from "@/ducks/activity-codes/selectors";
 import {activityCodeSorter} from "@/ducks/activity-codes/utils";
@@ -24,8 +24,8 @@ export interface ActivityCodeSelectProps extends Omit<FormSelectProps, 'onChange
 }
 export default function ActivityCodeSelect({workCenter, value, onChange, ...rest}: ActivityCodeSelectProps) {
     const activityCodes = useAppSelector(selectActivityCodes);
-    const [values, setValues] = React.useState<ActivityCode[]>(activityCodeList(activityCodes, workCenter));
-    const [workCenters, setWorkCenters] = React.useState<string[]>(workCenterList(activityCodes));
+    const [values, setValues] = useState<ActivityCode[]>(activityCodeList(activityCodes, workCenter));
+    const [workCenters, setWorkCenters] = useState<string[]>(workCenterList(activityCodes));
 
     useEffect(() => {
         const list = activityCodeList(activityCodes, workCenter);

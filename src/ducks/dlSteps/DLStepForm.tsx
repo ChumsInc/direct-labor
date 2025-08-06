@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FormEvent, useId} from 'react';
+import {type ChangeEvent, type FormEvent, useId} from 'react';
 import Alert from "react-bootstrap/Alert";
 import numeral from "numeral";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
@@ -13,7 +13,7 @@ import {
 } from "./index";
 import {loadDLStep, saveDLStep} from "./actions";
 
-import {DLStep, WorkCenter} from "chums-types";
+import type {DLStep, WorkCenter} from "chums-types";
 import {useAppDispatch} from "@/app/configureStore";
 import Decimal from "decimal.js";
 import {Button, Col, Form, FormControl, InputGroup, ProgressBar, Row} from "react-bootstrap";

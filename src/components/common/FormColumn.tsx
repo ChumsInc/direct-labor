@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import React, {ReactNode, useId} from "react";
-import {Col, FormLabel, FormLabelProps, Row,} from "react-bootstrap";
+import {type ReactNode, useId} from "react";
+import {Col, FormLabel, type FormLabelProps, Row,} from "react-bootstrap";
 
 export interface FormColumnProps {
     id?: string;
@@ -21,7 +21,8 @@ const FormColumn = ({
                         align = 'baseline',
                         children
                     }: FormColumnProps) => {
-    const id = labelProps?.htmlFor ? undefined : useId();
+    const _id = useId();
+    const id = labelProps?.htmlFor ?? _id;
     const labelWidth = 12 - (width ?? 8);
     const parentClassName = {
         [`align-items-${align}`]: !className?.includes('align-items') && !!align,

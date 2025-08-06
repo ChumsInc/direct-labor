@@ -1,5 +1,5 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
-import {DLStep} from "chums-types";
+import {type ChangeEvent, useEffect, useState} from "react";
+import type {DLStep} from "chums-types";
 import {useSelector} from "react-redux";
 import {selectStepsLoaded, selectStepsLoading, selectSortedStepsList} from "./index";
 import {dlStepSorter, newDLStep} from "./utils";

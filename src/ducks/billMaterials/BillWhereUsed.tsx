@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {useSelector} from "react-redux";
 
 import classNames from "classnames";
@@ -6,8 +6,8 @@ import MultiLineField from "../../components/MultiLineField";
 import {billHeaderKey, billHeaderSorter, defaultBillSort} from "./utils";
 import {billHeaderSelector} from "./selectors";
 import StatusBadge from "../../components/StatusBadge";
-import {BillHeader, BillType, SortProps} from "chums-types";
-import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
+import type {BillHeader, BillType, SortProps} from "chums-types";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {BillTypeDesc} from "../types";
 
 const detailTableFields: SortableTableField<BillHeader>[] = [

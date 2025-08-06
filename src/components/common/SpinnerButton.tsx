@@ -1,10 +1,10 @@
-import React from 'react';
-import {Button, ButtonProps, Spinner, SpinnerProps} from "react-bootstrap";
+import {type ReactNode} from 'react';
+import {Button, type ButtonProps, Spinner, type SpinnerProps} from "react-bootstrap";
 
 export interface SpinnerButtonProps extends ButtonProps {
     spinnerProps?: SpinnerProps;
     spinning?: boolean;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 export default function SpinnerButton({spinnerProps, spinning, children, ...props}: SpinnerButtonProps) {

@@ -1,4 +1,4 @@
-import {DLCode, DLStep} from "chums-types";
+import type {DLCode, DLStep} from "chums-types";
 
 export interface LoadDLStepsResponse {
     steps: DLStep[];

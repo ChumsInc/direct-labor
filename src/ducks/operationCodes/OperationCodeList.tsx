@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
-import {OperationCode, SortProps} from "chums-types";
+import {useState} from "react";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
+import type {OperationCode, SortProps} from "chums-types";
 import {operationCodeKey} from "./utils";
 import {useSelector} from "react-redux";
 import numeral from "numeral";
@@ -43,7 +43,10 @@ const OperationCodeList = () => {
         navigate(operationCodesOperationPath(oc.WorkCenter, oc.OperationCode));
     }
 
-    const sortChangeHandler = (sort: SortProps) => dispatch(setSort(sort));
+    const sortChangeHandler = (sort: SortProps<OperationCode>) => {
+        dispatch(setSort(sort));
+    }
+
     const rowsPerPageChangeHandler = (rpp: number) => {
         setPreference<number>(localStorageKeys.dlCodesRowsPerPage, rpp);
         setRowsPerPage(rpp);

@@ -1,9 +1,8 @@
-import React from 'react';
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
-import {selectCurrentStep, selectCurrentStepStatus} from "../dlSteps/index";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
+import {selectCurrentStep, selectCurrentStepStatus} from "@/ducks/dlSteps";
 import {applyTiming} from "./actions";
-import {StepTiming} from "chums-types";
-import {Button, ButtonProps} from "react-bootstrap";
+import type {StepTiming} from "chums-types";
+import {Button, type ButtonProps} from "react-bootstrap";
 
 export interface CurrentTimingButtonProps extends Omit<ButtonProps, 'onClick'> {
     timing: StepTiming;

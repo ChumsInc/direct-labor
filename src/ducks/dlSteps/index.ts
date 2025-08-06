@@ -1,5 +1,5 @@
-import {DLBasicStep, DLCode, DLStep, SortProps} from "chums-types";
-import {createEntityAdapter, createSelector, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import type {DLBasicStep, DLCode, DLStep, SortProps} from "chums-types";
+import {createEntityAdapter, createSelector, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import {LocalStore} from "@chumsinc/ui-utils";
 import {filterInactiveStepsKey} from "@/utils/preferences";
 import {loadDLStep, loadDLSteps, loadDLStepWhereUsed, saveDLStep, setCurrentStep} from "./actions";

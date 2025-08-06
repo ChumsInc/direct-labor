@@ -1,6 +1,6 @@
-import React, {ChangeEvent, useState} from 'react';
+import {type ChangeEvent, useState} from 'react';
 import StepSelect from "@/ducks/dlSteps/StepSelect";
-import {DLStep} from "chums-types";
+import type {DLStep} from "chums-types";
 import {addDLStep} from "@/ducks/dlCodes/actions";
 import {newDLStep} from "@/ducks/dlSteps/utils";
 import {useAppDispatch} from "@/app/configureStore";

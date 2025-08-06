@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import {loadTemplateWhereUsed} from "@/ducks/where-used/actions";
 
 interface WhereUsedState {

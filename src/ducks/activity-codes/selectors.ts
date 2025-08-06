@@ -1,9 +1,9 @@
-import {RootState} from "@/app/configureStore";
+import {type RootState} from "@/app/configureStore";
 import {createSelector} from "@reduxjs/toolkit";
 import {activityCodeSorter} from "./utils";
 import {TemplateStepSorter} from "../templates/utils";
 import {selectDLCodesList} from "../dlCodes/selectors";
-import {DLCode} from "chums-types";
+import type {DLCode} from "chums-types";
 import {getPreference, localStorageKeys} from "@/api/preferences";
 
 export const selectActivityCodes = (state: RootState) => state.activityCodes.list.activityCodes;

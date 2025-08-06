@@ -1,4 +1,3 @@
-import React from "react";
 import RoutingList from "./RoutingList";
 import RoutingFilter from "./RoutingFilter";
 import {Link, Outlet} from "react-router";

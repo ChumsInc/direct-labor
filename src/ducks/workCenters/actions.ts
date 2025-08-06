@@ -1,9 +1,9 @@
 import {selectLoading,} from "./selectors";
-import {WorkCenterList} from "../types";
+import type {WorkCenterList} from "../types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
 import {fetchActivityCodeChanges, fetchTemplateChanges, fetchWorkCenters, postWorkCenterRate} from "./api";
-import {SortProps, WorkCenter} from "chums-types";
-import {RootState} from "../../app/configureStore";
+import type {SortProps, WorkCenter} from "chums-types";
+import type {RootState} from "@/app/configureStore";
 
 export const setCurrentWorkCenter = createAction<string>('workCenters/setCurrent');
 export const setWorkCenterRate = createAction<number>('workCenters/setCurrentRate');
@@ -18,7 +18,7 @@ export const loadWorkCenters = createAsyncThunk<WorkCenterList>(
     async () => {
         return await fetchWorkCenters();
     }, {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectLoading(state);
         }
@@ -31,7 +31,7 @@ export const saveWorkCenter = createAsyncThunk<WorkCenter | null, WorkCenter>(
         return await postWorkCenterRate(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectLoading(state);
         }
@@ -44,7 +44,7 @@ export const loadTemplateChanges = createAsyncThunk<number, string>(
         return await fetchTemplateChanges(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectLoading(state);
         }
@@ -57,7 +57,7 @@ export const loadActivityCodeChanges = createAsyncThunk<number, string>(
         return await fetchActivityCodeChanges(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectLoading(state);
         }

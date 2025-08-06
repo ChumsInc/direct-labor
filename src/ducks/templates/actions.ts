@@ -1,6 +1,6 @@
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {SortProps, WorkTemplate} from "chums-types";
-import {RootState} from "../../app/configureStore";
+import type {SortProps, WorkTemplate} from "chums-types";
+import type {RootState} from "../../app/configureStore";
 import {selectCurrentTemplateStatus, selectTemplateListStatus} from "./selectors";
 import {fetchWorkTemplate, fetchWorkTemplates} from "./api";
 
@@ -10,7 +10,7 @@ export const loadTemplateList = createAsyncThunk<WorkTemplate[]>(
         return fetchWorkTemplates();
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectTemplateListStatus(state) === 'idle';
         }
@@ -23,7 +23,7 @@ export const loadTemplate = createAsyncThunk<WorkTemplate | null, Pick<WorkTempl
         return fetchWorkTemplate(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectCurrentTemplateStatus(state) === 'idle';
 

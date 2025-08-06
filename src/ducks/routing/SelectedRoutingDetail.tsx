@@ -1,4 +1,3 @@
-import React from "react";
 import {selectCurrentDetail} from "./selectors";
 import classNames from "classnames";
 import numeral from "numeral";

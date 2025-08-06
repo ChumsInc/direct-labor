@@ -1,8 +1,7 @@
-import React from 'react';
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/app/configureStore";
 import ContextAlert from "./ContextAlert";
-import {dismissAlert, selectAllAlerts, StyledErrorAlert} from "@chumsinc/alert-list";
+import {dismissAlert, selectAllAlerts, type StyledErrorAlert} from "@chumsinc/alert-list";
 
 const AlertList = () => {
     const dispatch = useAppDispatch();

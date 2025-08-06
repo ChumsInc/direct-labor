@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useId, useState} from 'react';
+import {type ChangeEvent, useEffect, useId, useState} from 'react';
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {LocalStore} from "@chumsinc/ui-utils";
 import {localStorageKeys} from "@/api/preferences";
@@ -28,12 +28,13 @@ export default function WhereUsed({templateNo}: {
 
     useEffect(() => {
         dispatch(loadTemplateWhereUsed(templateNo));
-    }, [templateNo]);
+    }, [dispatch, templateNo]);
 
     const rowsPerPageChangeHandler = (rpp: number) => {
         LocalStore.setItem(localStorageKeys.templateWURowsPerPage, rpp);
         setRowsPerPage(rpp);
     }
+
     const searchChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
         dispatch(setSearch(ev.target.value));
     }
@@ -72,8 +73,8 @@ export default function WhereUsed({templateNo}: {
                 </Col>
             </Row>
             {status === 'loading' && <ProgressBar now={100} animated />}
-            <WhereUsedBillHeaderList rowsPerPage={rowsPerPage}/>
-            <WhereUsedBillOptionHeaderList  rowsPerPage={rowsPerPage}/>
+            <WhereUsedBillHeaderList rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}/>
+            <WhereUsedBillOptionHeaderList  rowsPerPage={rowsPerPage}  rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}/>
         </AppErrorBoundary>
     )
 }

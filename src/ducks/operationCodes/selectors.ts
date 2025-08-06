@@ -1,4 +1,4 @@
-import {RootState} from "../../app/configureStore";
+import type {RootState} from "../../app/configureStore";
 import {operationCodeDefaultSort, operationCodeKey, operationCodeSorter} from "./utils";
 import {createSelector} from "@reduxjs/toolkit";
 
@@ -11,7 +11,7 @@ export const selectLoading = (state: RootState) => state.operationCodes.list.sta
 export const selectLoaded = (state: RootState) => state.operationCodes.list.loaded;
 export const selectCurrentLoading = (state: RootState) => state.operationCodes.current.status === 'loading';
 export const selectWhereUsed = (state: RootState) => state.operationCodes.current.whereUsed;
-const _selectWCFilterOption = (state: RootState, workCenter: string, operationCode: string): string => operationCodeKey({
+const _selectWCFilterOption = (_:RootState, workCenter: string, operationCode: string): string => operationCodeKey({
     WorkCenter: workCenter,
     OperationCode: operationCode
 })
@@ -22,6 +22,7 @@ export const selectSearchRegex = createSelector(
     (search) => {
         try {
             return new RegExp(search, 'i');
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             return /^/;
         }

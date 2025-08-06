@@ -1,5 +1,4 @@
-import React from 'react';
-import {ProgressBar, ProgressBarProps} from "react-bootstrap";
+import {ProgressBar, type ProgressBarProps} from "react-bootstrap";
 
 export interface AnimatedLoadingBarProps extends ProgressBarProps {
     loading?: boolean;

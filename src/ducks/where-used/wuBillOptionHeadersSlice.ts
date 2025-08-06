@@ -1,7 +1,7 @@
-import {createEntityAdapter, createSelector, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {TemplateBillOptionHeader} from "@/ducks/types";
+import {createEntityAdapter, createSelector, createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import type {TemplateBillOptionHeader} from "@/ducks/types";
 import {billOptionHeaderSorter} from "@/ducks/where-used/utils";
-import {SortProps} from "chums-types";
+import type {SortProps} from "chums-types";
 import {selectWhereUsedSearch, selectWhereUsedShowInactive} from "@/ducks/where-used/index";
 import {loadTemplateWhereUsed} from "@/ducks/where-used/actions";
 

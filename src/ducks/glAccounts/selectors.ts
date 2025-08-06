@@ -1,5 +1,5 @@
-import {RootState} from "../../app/configureStore";
-import {GLAccount} from "chums-types";
+import type {RootState} from "@/app/configureStore";
+import type {GLAccount} from "chums-types";
 import {createSelector} from "@reduxjs/toolkit";
 
 export const accountListSelector = (keys: string[]) => (state: RootState): GLAccount[] => {

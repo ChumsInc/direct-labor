@@ -1,4 +1,4 @@
-import {GLAccount, OperationCode, RoutingDetail} from "chums-types";
+import type {GLAccount, OperationCode, RoutingDetail} from "chums-types";
 
 export interface OperationCodeResponse {
     operationCodes: OperationCode[];

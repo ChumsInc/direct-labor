@@ -1,6 +1,6 @@
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {ActivityCode, WorkTemplateStep} from "chums-types";
-import {LoadActivityCodeResponse} from "../types";
+import type {ActivityCode, WorkTemplateStep} from "chums-types";
+import type {LoadActivityCodeResponse} from "../types";
 
 export async function fetchActivityCodes():Promise<ActivityCode[]> {
     try {

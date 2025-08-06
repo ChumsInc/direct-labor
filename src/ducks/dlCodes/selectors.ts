@@ -1,6 +1,6 @@
 import {dlCodeSorter} from "./utils";
-import {DLCodeStep, DLCodeWorkTemplate} from "chums-types";
-import {RootState} from "../../app/configureStore";
+import type {DLCodeStep, DLCodeWorkTemplate} from "chums-types";
+import {type RootState} from "@/app/configureStore";
 import {createSelector} from "@reduxjs/toolkit";
 import {selectWorkCentersList} from "../workCenters/selectors";
 import Decimal from "decimal.js";
@@ -43,7 +43,7 @@ export const selectCurrentDLSageRate = createSelector(
         const workCenter = workCenters[header?.workCenter ?? ''] ?? null;
         const averageHourlyRate = workCenter?.averageHourlyRate ?? 0;
         const directLaborCost = header?.directLaborCost ?? null;
-        const scalingFactorLabor = !!directLaborCost
+        const scalingFactorLabor = directLaborCost !== null
             ? new Decimal(averageHourlyRate).div(directLaborCost).toDecimalPlaces(3).toString()
             : null;
         return {averageHourlyRate, scalingFactorLabor}

@@ -1,9 +1,9 @@
-import React, {ChangeEvent, useEffect} from "react";
+import {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {loadOperationCodes, setSearch, setWorkCenter} from "./actions";
-import {selectLoading, selectSearch, selectWorkCenter} from "./selectors";
+import {selectSearch, selectWorkCenter} from "./selectors";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
-import {WorkCenter} from "chums-types";
+import type {WorkCenter} from "chums-types";
 import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
 import SearchInput from "@/components/common/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
@@ -20,14 +20,13 @@ const OperationCodeFilter = () => {
 
     const search = useSelector(selectSearch);
     const workCenterFilter = useSelector(selectWorkCenter);
-    const loading = useSelector(selectLoading);
 
     const onSelectWorkCenter = (wc: WorkCenter | null) => {
         dispatch(setWorkCenter(wc?.workCenter ?? ''));
         setPreference(currentOCWorkCenterKey, wc?.workCenter ?? '');
     }
 
-    const onChangeSearch = (value:string) => dispatch(setSearch(value));
+    const onChangeSearch = (value: string) => dispatch(setSearch(value));
     const onReload = () => dispatch(loadOperationCodes());
 
 

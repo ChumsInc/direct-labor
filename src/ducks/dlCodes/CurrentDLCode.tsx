@@ -1,10 +1,10 @@
-import React, {ChangeEvent, FormEvent, useEffect, useId, useState} from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useId, useState} from "react";
 import {Link, useParams} from 'react-router';
 import {useSelector} from "react-redux";
 import {selectCurrentChanged, selectCurrentDLCodeStatus, selectCurrentHeader, selectCurrentSteps} from "./selectors";
 import {loadDLCode, rebuildDLCode, removeDLCode, saveDLCode} from "./actions";
 import {Alert, Col, Form, FormCheck, FormControl, InputGroup, Row} from "react-bootstrap";
-import {ActivityCode, DLCode, Editable, WorkCenter} from 'chums-types'
+import type {ActivityCode, DLCode, Editable, WorkCenter} from 'chums-types'
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import SelectedStepsList from "./SelectedStepsList";
 import {newDLCode} from "./utils";
@@ -40,7 +40,7 @@ const CurrentDLCode = () => {
             return;
         }
         dispatch(loadDLCode(params.id));
-    }, [params])
+    }, [dispatch, params])
 
     useEffect(() => {
         if (selected) {

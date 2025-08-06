@@ -1,18 +1,12 @@
-import {LoadDLStepsResponse} from "./types";
-import {DLBasicStep, DLCode, DLStep, SortProps, StepTiming} from "chums-types";
-import {stepTimingChanged} from "./actionTypes";
+import type {LoadDLStepsResponse} from "./types";
+import type {DLCode, DLStep} from "chums-types";
 import {selectCurrentStepId, selectCurrentStepStatus, selectStepsLoading} from "./index";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {RootState} from "../../app/configureStore";
+import type {RootState} from "@/app/configureStore";
 import {fetchDLStep, fetchDLSteps, fetchDLStepWhereUsed, postDLStep} from "./api";
 
 export const changeDLStep = createAction<Partial<DLStep>>('steps/current/change');
-export const setStepSort = createAction<SortProps<DLStep | DLBasicStep>>('steps/setSort');
-export const setStepWCFilter = createAction<string>('steps/setWCFilter');
-export const setStepFilter = createAction<string>('steps/setFilter');
 export const toggleShowInactive = createAction<boolean | undefined>('steps/showInactive');
-export const setCurrentStepTiming = createAction<StepTiming | null>('steps/current/setTiming');
-export const dlStepChangeTimingAction = (timing: StepTiming) => ({type: stepTimingChanged, payload: {timing}});
 
 export const setCurrentStep = createAction<DLStep>('steps/setCurrentStep');
 
@@ -22,7 +16,7 @@ export const loadDLSteps = createAsyncThunk<LoadDLStepsResponse, void>(
         return await fetchDLSteps();
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectStepsLoading(state);
         }
@@ -64,7 +58,7 @@ export const saveDLStep = createAsyncThunk<DLStep | null, DLStep>(
         return await postDLStep(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectCurrentStepStatus(state) === 'idle';
         }

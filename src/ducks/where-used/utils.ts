@@ -1,5 +1,5 @@
-import {TemplateBillHeader, TemplateBillOption, TemplateBillOptionHeader} from "@/ducks/types";
-import {SortProps} from "chums-types";
+import type {TemplateBillHeader, TemplateBillOption, TemplateBillOptionHeader} from "@/ducks/types";
+import type {SortProps} from "chums-types";
 
 type SortFunction<T = unknown> = (sort: SortProps<T>) => (a:T, b:T) => number;
 

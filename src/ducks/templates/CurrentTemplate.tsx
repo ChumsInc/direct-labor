@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
-import {selectCurrentTemplate, selectCurrentTemplateStatus, selectCurrentTemplateSteps} from "./selectors";
+import {selectCurrentTemplate, selectCurrentTemplateStatus} from "./selectors";
 import AnimatedLoadingBar from "@/components/AnimatedLoadingBar";
 import {useParams} from "react-router";
 import {loadTemplate} from "./actions";
@@ -16,7 +16,6 @@ import AppErrorBoundary from "@/components/AppErrorBoundary";
 const CurrentTemplate = () => {
     const dispatch = useAppDispatch();
     const template = useAppSelector(selectCurrentTemplate);
-    const steps = useAppSelector(selectCurrentTemplateSteps)
     const loading = useAppSelector(selectCurrentTemplateStatus);
     const params = useParams<'templateNo' | 'revisionNo'>();
 
@@ -27,7 +26,7 @@ const CurrentTemplate = () => {
                 RevisionNo: params.revisionNo ?? '',
             }))
         }
-    }, [params]);
+    }, [dispatch, params, template]);
 
     if (!template) {
         return null;
@@ -54,7 +53,7 @@ const CurrentTemplate = () => {
                 </div>
             </div>
             <CurrentTemplateSteps/>
-            <WhereUsed templateNo={template.TemplateNo} />
+            <WhereUsed templateNo={template.TemplateNo}/>
         </AppErrorBoundary>
     )
 }

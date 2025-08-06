@@ -1,7 +1,7 @@
-import {WorkCenterList} from "../types";
+import type {WorkCenterList} from "../types";
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {WorkCenter} from "chums-types";
-import {localStorageKeys, setPreference} from "../../api/preferences";
+import type {WorkCenter} from "chums-types";
+import {localStorageKeys, setPreference} from "@/api/preferences";
 
 export async function fetchWorkCenter(arg:string):Promise<WorkCenter|null> {
     try {

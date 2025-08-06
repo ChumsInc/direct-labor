@@ -1,8 +1,8 @@
-import React, {ChangeEvent, useEffect, useId, useState} from "react";
+import React, {type ChangeEvent, useEffect, useId, useState} from "react";
 import {
     SortableTable,
-    SortableTableField,
-    SortProps,
+    type SortableTableField,
+    type SortProps,
     TablePagination
 } from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
@@ -19,7 +19,7 @@ import {workCenterKey} from "./utils";
 import numeral from "numeral";
 import {useNavigate} from "react-router";
 import {selectedWorkCenterPath} from "../../routerPaths";
-import {WorkCenter} from "chums-types";
+import type {WorkCenter} from "chums-types";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import Decimal from "decimal.js";
 import {FormCheck} from "react-bootstrap";
@@ -63,7 +63,7 @@ const WorkCenterList: React.FC = () => {
         if (!loaded && !loading) {
             dispatch(loadWorkCenters());
         }
-    }, [])
+    }, [dispatch, loaded, loading])
 
     useEffect(() => {
         setPage(0);

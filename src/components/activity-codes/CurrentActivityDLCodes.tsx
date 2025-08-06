@@ -1,9 +1,8 @@
-import React from 'react';
 import {Link} from "react-router";
 import {useAppSelector} from "@/app/configureStore";
 import {selectCurrentActivityDLCodes} from "@/ducks/activity-codes/selectors";
-import {DataTable, SortableTableField} from "@chumsinc/sortable-tables";
-import {DLCode} from "chums-types";
+import {DataTable, type SortableTableField} from "@chumsinc/sortable-tables";
+import type {DLCode} from "chums-types";
 import numeral from "numeral";
 import NumericTableValue from "../NumericTableValue";
 import classNames from "classnames";

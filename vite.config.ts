@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react';
 import path from "node:path";
 import process from "node:process";
 
+// https://vite.dev/config/
 export default defineConfig({
+    plugins: [react()],
     resolve: {
         alias: {
             "@/": path.resolve(process.cwd(), 'src'),
@@ -17,7 +19,20 @@ export default defineConfig({
             "@/utils": path.resolve(process.cwd(), 'src/utils'),
         }
     },
-    plugins: [react()],
+    base: "/apps/direct-labor-admin/",
+    build: {
+        manifest: true,
+        sourcemap: true,
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return 'vendor'
+                    }
+                }
+            }
+        }
+    },
     server: {
         port: 8080,
         host: 'localhost',

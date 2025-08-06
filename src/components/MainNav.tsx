@@ -1,84 +1,21 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {currentMenuCollapseKey, getPreference, setPreference} from "@/utils/preferences";
-import {
-    dlCodesNavId,
-    dlCodesPath,
-    dlStepsNavId,
-    dlStepsPath,
-    operationCodesNavId,
-    operationCodesPath,
-    routingNavId,
-    routingPath,
-    workCentersNavId,
-    workCentersPath
-} from "../routerPaths";
-import {
-    activityCodeIcon,
-    dlCodeIcon,
-    dlStepIcon,
-    routingIcon,
-    sageOperationCodeIcon,
-    templatesIcon,
-    workCenterIcon
-} from "@/utils/icons";
 import classNames from "classnames";
 import AppErrorBoundary from "./AppErrorBoundary";
 import {NavLink} from 'react-router';
 import Nav from "react-bootstrap/Nav";
-import {NavLinkProps} from 'react-bootstrap/NavLink'
+import {type NavLinkProps} from 'react-bootstrap/NavLink'
 import styled from "@emotion/styled";
+import {mainTabs} from "@/components/main-tabs.ts";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 export interface MainNavLinkProps extends NavLinkProps {
     id: string;
     title: string;
     to: string;
-    icon?: string;
+    icon: string;
 }
 
-export const mainTabs: MainNavLinkProps[] = [
-    {
-        id: dlStepsNavId,
-        title: 'D/L Steps',
-        icon: dlStepIcon,
-        to: dlStepsPath,
-    },
-    {
-        id: dlCodesNavId,
-        title: 'D/L Codes',
-        icon: dlCodeIcon,
-        to: dlCodesPath,
-    },
-    {
-        id: workCentersNavId,
-        title: 'Work Centers',
-        icon: workCenterIcon,
-        to: workCentersPath
-    },
-    {
-        id: 'activity-codes',
-        title: 'Activity Codes',
-        icon: activityCodeIcon,
-        to: "/activity-codes",
-    },
-    {
-        id: 'templates',
-        title: 'W/T Templates',
-        icon: templatesIcon,
-        to: "/templates",
-    },
-    {
-        id: routingNavId,
-        title: 'Routing',
-        to: routingPath,
-        icon: routingIcon
-    },
-    {
-        id: operationCodesNavId,
-        title: 'W/O Ops',
-        icon: sageOperationCodeIcon,
-        to: operationCodesPath
-    },
-]
 
 const CollapsingNav = styled.div`
     .nav-link.active {
@@ -137,9 +74,18 @@ const MainNav = () => {
                     {mainTabs.map(tab => (
                         <Nav.Item key={tab.id}>
                             <Nav.Link as={NavLink} to={tab.to} aria-label={tab.title}>
-                                {tab.icon &&
-                                    <span className={classNames('nav-item-icon', tab.icon)} aria-hidden="true"/>}
-                                <span className="nav-item-text" aria-hidden="true">{tab.title}</span>
+                                {collapsed && (
+                                    <OverlayTrigger overlay={<Tooltip>{tab.title}</Tooltip>} trigger={["hover", "focus"]}
+                                                    delay={500}>
+                                        <span className={classNames('nav-item-icon', tab.icon)} aria-hidden="true"/>
+                                    </OverlayTrigger>
+                                )}
+                                {!collapsed && (
+                                    <>
+                                        <span className={classNames('nav-item-icon', tab.icon)} aria-hidden="true"/>
+                                        <span className="nav-item-text" aria-hidden="true">{tab.title}</span>
+                                    </>
+                                )}
                             </Nav.Link>
                         </Nav.Item>
                     ))}

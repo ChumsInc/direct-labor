@@ -1,4 +1,4 @@
-import {ActivityCode, SortProps} from "chums-types";
+import type {ActivityCode, SortProps} from "chums-types";
 import Decimal from "decimal.js";
 import {generatePath} from "react-router";
 

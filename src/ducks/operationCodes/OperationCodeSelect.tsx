@@ -1,6 +1,6 @@
-import React, {ChangeEvent, useEffect, useId} from 'react';
+import {type ChangeEvent, useEffect, useId} from 'react';
 import {useSelector} from "react-redux";
-import {OperationCode} from "chums-types";
+import type {OperationCode} from "chums-types";
 import {FormSelect, InputGroup} from "react-bootstrap";
 import {loadOperationCodes} from "./actions";
 import {selectLoaded, selectOperationCodeList} from "./selectors";

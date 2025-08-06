@@ -1,8 +1,7 @@
-import React from 'react';
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
-import {SortableTable, SortableTableField} from "@chumsinc/sortable-tables";
-import {selectCurrentStep} from "../dlSteps/index";
+import {SortableTable, type SortableTableField} from "@chumsinc/sortable-tables";
+import {selectCurrentStep} from "@/ducks/dlSteps";
 import {
     selectCurrentLoading,
     selectCurrentSaving,
@@ -13,8 +12,8 @@ import {
 import {setCurrentTiming, timingSortChangedAction} from "./actions";
 import SelectedTimingForm from "./SelectedTimingForm";
 import {newTiming} from "./utils";
-import {useAppDispatch} from "../../app/configureStore";
-import {SortProps, StepTiming} from "chums-types";
+import {useAppDispatch} from "@/app/configureStore";
+import type {SortProps, StepTiming} from "chums-types";
 import CurrentTimingButton from "./CurrentTimingButton";
 
 export interface TimingButtonProps {
@@ -69,7 +68,9 @@ const SelectedStepTimings = () => {
         // dispatch(applyTiming());
     }
 
-    const onChangeSort = (sort: SortProps) => dispatch(timingSortChangedAction(sort));
+    const onChangeSort = (sort: SortProps<StepTiming>) => {
+        dispatch(timingSortChangedAction(sort));
+    }
 
     return (
         <div>

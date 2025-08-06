@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {SortableTable, SortableTableField, TablePagination, TablePaginationProps} from "@chumsinc/sortable-tables";
-import {TemplateBillHeader} from "@/ducks/types";
+import {useEffect, useState} from 'react';
+import {SortableTable, type SortableTableField, TablePagination, type TablePaginationProps} from "@chumsinc/sortable-tables";
+import type {TemplateBillHeader} from "@/ducks/types";
 import dayjs from "dayjs";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {selectBillHeadersSort, selectFilteredTemplateBillHeaders, setSort} from "@/ducks/where-used/wuBillHeadersSlice";
-import {SortProps} from "chums-types";
+import type {SortProps} from "chums-types";
 import classNames from "classnames";
 import {templateBillHeaderKey} from "@/ducks/where-used/utils";
 

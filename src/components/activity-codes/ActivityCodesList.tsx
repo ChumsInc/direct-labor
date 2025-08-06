@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
+import {useEffect, useState} from 'react';
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {
     selectActivityCodesLoaded,
@@ -8,7 +8,7 @@ import {
     selectCurrentActivityCode,
     selectSortedActivityCodes
 } from "@/ducks/activity-codes/selectors";
-import {ActivityCode, SortProps} from "chums-types";
+import type {ActivityCode, SortProps} from "chums-types";
 import {loadActivityCodes, setActivityCodeSort} from "@/ducks/activity-codes/actions";
 import {activityCodeKey, activityCodePath} from "@/ducks/activity-codes/utils";
 import {useNavigate} from "react-router";
@@ -66,7 +66,7 @@ const ActivityCodesList = () => {
         setPage(0);
     }, [list, sort]);
 
-    const sortChangeHandler = (sort: SortProps) => {
+    const sortChangeHandler = (sort: SortProps<ActivityCode>) => {
         dispatch(setActivityCodeSort(sort));
     }
 
@@ -90,7 +90,7 @@ const ActivityCodesList = () => {
                            size="sm" className="mt-3"
                            selected={current ? activityCodeKey(current) : undefined}
                            onSelectRow={onSelectActivityCode}/>
-            <TablePagination page={page} onChangePage={setPage} rowsPerPage={rowsPerPage}
+            <TablePagination page={page} onChangePage={setPage} rowsPerPage={rowsPerPage} size="sm"
                              rowsPerPageProps={{onChange: onChangeRowsPerPage}}
                              showFirst showLast
                              count={list.length}/>

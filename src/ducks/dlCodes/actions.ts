@@ -1,7 +1,7 @@
 import {selectCurrentDLCodeStatus, selectCurrentHeader, selectDLCodesStatus,} from "./selectors";
-import {AddDLStepArg, DLCodeResponse} from "./types";
+import type {AddDLStepArg, DLCodeResponse} from "./types";
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {DLCode, DLCodeStep, SortProps} from "chums-types";
+import type {DLCode, DLCodeStep, SortProps} from "chums-types";
 import {
     deleteDLCode,
     deleteStep,
@@ -13,7 +13,7 @@ import {
     postRecalculateDLCodes,
     postStepSort
 } from "./api";
-import {RootState} from "../../app/configureStore";
+import {type RootState} from "../../app/configureStore";
 import {newDLCode} from "./utils";
 
 export const setWorkCenterFilter = createAction<string>('dlCodes/filter/workCenter');
@@ -28,7 +28,7 @@ export const loadDLCodes = createAsyncThunk<DLCode[]>(
         return await fetchDLCodeList() ?? {};
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectDLCodesStatus(state) === 'idle';
         }
@@ -47,7 +47,7 @@ export const loadDLCode = createAsyncThunk<DLCodeResponse | null, number | strin
         return await fetchDLCode(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectCurrentDLCodeStatus(state) === 'idle';
         }
@@ -60,7 +60,7 @@ export const saveDLCode = createAsyncThunk<DLCodeResponse | null, DLCode>(
         return await postDLCode(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectCurrentDLCodeStatus(state) === 'idle';
         }
@@ -118,7 +118,7 @@ export const recalculateDLCodes = createAsyncThunk<DLCode[]>(
         return await postRecalculateDLCodes();
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectDLCodesStatus(state) === 'idle';
         }

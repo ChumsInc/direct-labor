@@ -1,5 +1,5 @@
 import {routingDetailKey} from "../routing/utils";
-import {OperationCode, SortProps,} from "chums-types";
+import type {OperationCode, SortProps,} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {operationCodeDefaultSort, operationCodeKey} from "./utils";
 import {loadOperationCode, loadOperationCodes, setSearch, setSort, setWorkCenter} from "./actions";

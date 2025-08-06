@@ -1,8 +1,8 @@
-import React, {ChangeEvent, useId} from "react";
+import React, {type ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import {selectFilter, selectShowInactive, selectWorkCenterFilter} from "./selectors";
-import {WorkCenter} from "chums-types";
+import type {WorkCenter} from "chums-types";
 import {loadDLCodes, setSearch, setWorkCenterFilter, toggleShowInactive} from "./actions";
 import SearchInput from "@/components/common/SearchInput";
 import {Button, Col, FormCheck, Row} from "react-bootstrap";

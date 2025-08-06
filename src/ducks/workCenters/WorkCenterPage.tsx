@@ -1,4 +1,3 @@
-import React from "react";
 import WorkCenterList from "./WorkCenterList";
 import AppErrorBoundary from "@/components/AppErrorBoundary";
 import {Outlet} from "react-router";
@@ -9,7 +8,7 @@ const WorkCenterPage = () => {
     return (
         <>
             <DocumentTitle>D/L Work Centers</DocumentTitle>
-            <div className="row g-3">
+            <div className="row g-5">
                 <div className="col-8">
                     <AppErrorBoundary>
                         <WorkCenterList/>

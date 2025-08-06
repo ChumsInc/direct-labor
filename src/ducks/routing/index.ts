@@ -1,5 +1,5 @@
-import {RoutingDetailList, RoutingHeaderList} from "../types";
-import {RoutingDetail, RoutingHeader, SortProps} from "chums-types";
+import type {RoutingDetailList, RoutingHeaderList} from "../types";
+import type {RoutingDetail, RoutingHeader, SortProps} from "chums-types";
 import {getPreference, localStorageKeys} from "../../api/preferences";
 import {createReducer} from "@reduxjs/toolkit";
 import {routingDetailKey} from "./utils";

@@ -1,8 +1,8 @@
 import {createAction, createAsyncThunk} from "@reduxjs/toolkit";
-import {RoutingHeader, SortProps} from "chums-types";
+import type {RoutingHeader, SortProps} from "chums-types";
 import {fetchRouting, fetchRoutings} from "./api";
-import {RootState} from "../../app/configureStore";
-import {RoutingResponse} from "../types";
+import type {RootState} from "../../app/configureStore";
+import type {RoutingResponse} from "../types";
 import {selectCurrentLoading, selectLoading} from "./selectors";
 
 export const setSearch = createAction<string>('routing/filter/setSearch');
@@ -17,7 +17,7 @@ export const loadRoutings = createAsyncThunk<RoutingHeader[]>(
         return await fetchRoutings()
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return !selectLoading(state);
         }
@@ -30,7 +30,7 @@ export const setCurrentRouting = createAsyncThunk<RoutingResponse | null, string
         return await fetchRouting(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState() as RootState;
             return selectCurrentLoading(state) === 'idle';
         }

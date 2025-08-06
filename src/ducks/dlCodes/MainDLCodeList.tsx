@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentHeader, selectDLCodesStatus, selectLoaded, selectSort, selectSortedList} from "./selectors";
 import {loadDLCodes, setSort} from "./actions";
-import {DLCode} from "chums-types";
+import type {DLCode} from "chums-types";
 import DLCodeList from "./DLCodeList";
 import {useNavigate} from "react-router";
 import {dlCodePath} from "../../routerPaths";

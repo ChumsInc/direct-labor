@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectCurrentStep, selectCurrentStepStatus} from "./index";
 import {loadDLStep, loadDLStepWhereUsed, setCurrentStep} from "./actions";
@@ -37,10 +37,10 @@ const SelectedDLStep = () => {
         }
         dispatch(loadDLStep(params.id))
         dispatch(loadDLStepWhereUsed(params.id));
-    }, [params]);
+    }, [dispatch, params]);
 
     return (
-        <div>
+        <div data-component="SelectedDLStep">
             <DocumentTitle>{`D/L Step: ${step?.stepCode ?? 'new'}`}</DocumentTitle>
             <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
             {step?.description && <h3>{step?.description}</h3>}

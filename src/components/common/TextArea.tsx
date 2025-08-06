@@ -1,4 +1,4 @@
-import React, {TextareaHTMLAttributes} from 'react';
+import {type TextareaHTMLAttributes} from 'react';
 import styled from "@emotion/styled";
 
 const ScrollArea = styled.div`

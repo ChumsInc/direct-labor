@@ -1,7 +1,7 @@
-import {TemplateWhereUsedResponse} from "@/ducks/types";
+import type {TemplateWhereUsedResponse} from "@/ducks/types";
 import {fetchJSON} from "@chumsinc/ui-utils";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {RootState} from "@/app/configureStore";
+import type {RootState} from "@/app/configureStore";
 import {selectWhereUsedStatus} from "@/ducks/where-used/index";
 
 async function fetchTemplateWhereUsed(arg:string):Promise<TemplateWhereUsedResponse|null> {
@@ -26,7 +26,7 @@ export const loadTemplateWhereUsed = createAsyncThunk<TemplateWhereUsedResponse|
         return fetchTemplateWhereUsed(arg);
     },
     {
-        condition: (arg, {getState}) => {
+        condition: (_, {getState}) => {
             const state = getState();
             return selectWhereUsedStatus(state) === 'idle';
         }

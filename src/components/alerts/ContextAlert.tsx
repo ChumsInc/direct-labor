@@ -1,6 +1,5 @@
 import React from 'react';
-import {AlertProps} from "react-bootstrap";
-import Alert from "react-bootstrap/Alert";
+import Alert, {type AlertProps} from "react-bootstrap/Alert";
 import Badge from "react-bootstrap/Badge";
 
 

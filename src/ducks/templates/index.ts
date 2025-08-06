@@ -1,4 +1,4 @@
-import {SortProps, WorkTemplate, WorkTemplateStep} from "chums-types";
+import type {SortProps, WorkTemplate, WorkTemplateStep} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {loadTemplate, loadTemplateList, setTemplatesSearch, setTemplatesSort} from "./actions";
 import {isTemplateStepCount, templateKey, templateSorter} from "./utils";

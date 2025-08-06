@@ -1,5 +1,5 @@
 import {dlStepTimingSorter} from "./utils";
-import {RootState} from "../../app/configureStore";
+import type {RootState} from "../../app/configureStore";
 import {createSelector} from "@reduxjs/toolkit";
 
 export const selectTimingList = (state: RootState) => state.timings.list;

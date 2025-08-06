@@ -1,10 +1,10 @@
-import {RootState} from "../../app/configureStore";
-import {RoutingDetail, RoutingHeader, SortProps} from "chums-types";
+import type {RootState} from "../../app/configureStore";
+import type {RoutingHeader} from "chums-types";
 import {routingDetailSorter, routingHeaderSorter} from "./utils";
-import {RoutingDetailList} from "../types";
+import type {RoutingDetailList} from "../types";
 import {createSelector} from "@reduxjs/toolkit";
 
-export const selectRoutingsList = (state:RootState) => state.routing.list.routings;
+export const selectRoutingsList = (state: RootState) => state.routing.list.routings;
 export const selectPage = (state: RootState) => state.routing.list.page;
 export const selectRowsPerPage = (state: RootState) => state.routing.list.rowsPerPage;
 export const selectSearch = (state: RootState): string => state.routing.list.search;
@@ -15,7 +15,7 @@ export const selectLoaded = (state: RootState): boolean => state.routing.list.lo
 export const selectCurrentLoading = (state: RootState) => state.routing.current.loading;
 export const selectCurrentRoutingNo = (state: RootState) => state.routing.current.routingNo;
 export const selectCurrentHeader = (state: RootState): RoutingHeader | null => state.routing.current.header;
-export const selectCurrentRoutingDetail = (state:RootState) => state.routing.current.detail ?? [];
+export const selectCurrentRoutingDetail = (state: RootState) => state.routing.current.detail ?? [];
 export const selectRoutingDetailList = (state: RootState): RoutingDetailList => state.routing.detailList;
 
 export const selectRoutings = createSelector(
@@ -24,12 +24,12 @@ export const selectRoutings = createSelector(
 )
 
 export const selectRoutingHeaderByKey = createSelector(
-    [selectRoutingsList, (_, routingNo:string) => routingNo],
+    [selectRoutingsList, (_, routingNo: string) => routingNo],
     (list, routingNo) => list[routingNo] ?? null
 )
 
 export const selectWhereUsedByRoutingKeys = createSelector(
-    [selectRoutingDetailList, (_, keyList:string[]) => keyList],
+    [selectRoutingDetailList, (_, keyList: string[]) => keyList],
     (detailList, keyList) => {
         return keyList.filter(key => !!detailList[key]).map(key => detailList[key]);
     }
@@ -50,7 +50,9 @@ export const selectSortedRoutingList = createSelector(
             if (search) {
                 regEx = new RegExp(search, 'i');
             }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err: unknown) {
+            regEx = /^/i;
         }
         return list
             .filter(row => showInactive || (row.BillStatus && row.ItemStatus))

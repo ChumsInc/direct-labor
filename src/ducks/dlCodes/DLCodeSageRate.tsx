@@ -1,6 +1,6 @@
-import React, {useId} from 'react';
+import {useId} from 'react';
 import {Col, FormControl, InputGroup} from "react-bootstrap";
-import {useAppSelector} from "../../app/configureStore";
+import {useAppSelector} from "@/app/configureStore";
 import {selectCurrentDLSageRate} from "./selectors";
 
 export default function DLCodeSageRate() {

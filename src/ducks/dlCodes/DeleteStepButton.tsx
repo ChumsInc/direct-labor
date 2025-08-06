@@ -1,8 +1,8 @@
 import React from "react";
 import {removeDLStep} from "./actions";
-import {DLCodeStep} from "chums-types";
+import type {DLCodeStep} from "chums-types";
 import {selectCurrentDLCodeStatus} from "./selectors";
-import {useAppDispatch, useAppSelector} from "../../app/configureStore";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 
 export interface DeleteStepButtonProps {
     step: DLCodeStep,

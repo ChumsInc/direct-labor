@@ -1,30 +1,45 @@
-import React, {ChangeEvent, FormEvent, useId, useState} from "react";
+import React, {type ChangeEvent, type FormEvent, useId} from "react";
 import {useSelector} from "react-redux";
-import {selectCurrentLoading, selectCurrentTiming, selectCurrentTimingActionStatus} from "./selectors";
+import {selectCurrentTiming, selectCurrentTimingActionStatus} from "./selectors";
 import {saveTiming, setCurrentTiming, updateCurrentTiming} from "./actions";
-import {StepTiming} from "chums-types";
+import type {StepTiming} from "chums-types";
 import numeral from "numeral";
-import {calcStandardAllowedMinutes, unitsPerHour} from "../../utils/math";
-import "./timingForm.scss";
-import {useAppDispatch} from "../../app/configureStore";
+import {unitsPerHour} from "@/utils/math.ts";
+import {useAppDispatch} from "@/app/configureStore.ts";
 import Decimal from "decimal.js";
 import dayjs from "dayjs";
 import StepTimingEntries from "./StepTimingEntries";
 import CurrentTimingButton from "./CurrentTimingButton";
 import SpinnerButton from "@/components/common/SpinnerButton";
 import TextArea from "@/components/common/TextArea";
+import styled from "@emotion/styled";
 
 const formId = 'selected-stepTiming-edit';
+
+const TimingFormContainer = styled.div`
+    input.dl-timing--timing-entry {
+        min-width: 5em;
+        max-width: 7em;
+        text-align: end;
+        margin-bottom: 0.25rem;
+    }
+
+    .input-group {
+        input.dl-timing--timing-entry {
+            margin-bottom: 0;
+        }
+    }
+`
 
 const SelectedTimingForm: React.FC = () => {
     const dispatch = useAppDispatch();
     const stepTiming = useSelector(selectCurrentTiming);
     const actionStatus = useSelector(selectCurrentTimingActionStatus);
-    const loading = useSelector(selectCurrentLoading);
-    const [newEntry, setNewEntry] = useState(0);
+    // const loading = useSelector(selectCurrentLoading);
+    // const [newEntry, setNewEntry] = useState(0);
     const id = useId();
 
-    const newTimingRef = React.useRef<HTMLInputElement>(null);
+    // const newTimingRef = React.useRef<HTMLInputElement>(null);
 
     if (!stepTiming) {
         return null;
@@ -46,22 +61,22 @@ const SelectedTimingForm: React.FC = () => {
     const onChangeNumeric = (field: keyof StepTiming) =>
         (ev: ChangeEvent<HTMLInputElement>) => dispatch(updateCurrentTiming({[field]: Number(ev.target.value || 0)}));
 
-    const changeTimingHandler = (time: number | string, index: number) => {
-        const {entries, quantityPerTiming, efficiency} = stepTiming;
-        if (index < 0) {
-            entries.push(time);
-        } else {
-            entries[index] = time;
-        }
-        const avgTiming = entries.length === 0 ? '0' : Decimal.sum(...entries).div(entries.length).toString();
-        const standardAllowedMinutes = calcStandardAllowedMinutes(entries, quantityPerTiming, efficiency);
-        dispatch(updateCurrentTiming({entries: entries, avgTiming, standardAllowedMinutes}));
-    }
+    // const changeTimingHandler = (time: number | string, index: number) => {
+    //     const {entries, quantityPerTiming, efficiency} = stepTiming;
+    //     if (index < 0) {
+    //         entries.push(time);
+    //     } else {
+    //         entries[index] = time;
+    //     }
+    //     const avgTiming = entries.length === 0 ? '0' : Decimal.sum(...entries).div(entries.length).toString();
+    //     const standardAllowedMinutes = calcStandardAllowedMinutes(entries, quantityPerTiming, efficiency);
+    //     dispatch(updateCurrentTiming({entries: entries, avgTiming, standardAllowedMinutes}));
+    // }
 
-    const onChangeTiming = (index: number) => (ev: ChangeEvent<HTMLInputElement>) => {
-        const time = Number(ev.target.value || 0);
-        changeTimingHandler(time, index);
-    }
+    // const onChangeTiming = (index: number) => (ev: ChangeEvent<HTMLInputElement>) => {
+    //     const time = Number(ev.target.value || 0);
+    //     changeTimingHandler(time, index);
+    // }
 
     const onCancel = () => dispatch(setCurrentTiming(null));
 
@@ -70,27 +85,27 @@ const SelectedTimingForm: React.FC = () => {
         dispatch(saveTiming(stepTiming));
     }
 
-    const onChangeNewEntry = (ev: ChangeEvent<HTMLInputElement>) => {
-        setNewEntry(Number(ev.target.value || 0));
-    }
+    // const onChangeNewEntry = (ev: ChangeEvent<HTMLInputElement>) => {
+    //     setNewEntry(Number(ev.target.value || 0));
+    // }
 
-    const onAddNewEntry = (ev: FormEvent) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        const time = newEntry;
-        if (time === 0) {
-            return;
-        }
-        changeTimingHandler(time, -1);
-        setNewEntry(0);
-        if (newTimingRef.current) {
-            newTimingRef.current.focus();
-        }
-    }
+    // const onAddNewEntry = (ev: FormEvent) => {
+    //     ev.preventDefault();
+    //     ev.stopPropagation();
+    //
+    //     const time = newEntry;
+    //     if (time === 0) {
+    //         return;
+    //     }
+    //     changeTimingHandler(time, -1);
+    //     setNewEntry(0);
+    //     if (newTimingRef.current) {
+    //         newTimingRef.current.focus();
+    //     }
+    // }
 
     return (
-        <div>
+        <TimingFormContainer>
             <form onSubmit={onSubmit} id={formId}>
                 <div className="row g-3 mb-1">
                     <div className="col-sm col-12">
@@ -172,7 +187,7 @@ const SelectedTimingForm: React.FC = () => {
                     </SpinnerButton>
                 </div>
             </div>
-        </div>
+        </TimingFormContainer>
     )
 }
 export default SelectedTimingForm;

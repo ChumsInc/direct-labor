@@ -1,11 +1,9 @@
-import React from "react";
-
 export interface MultiLineFieldProps {
     line1: string,
-    line2: string|null,
+    line2: string | null,
 }
 
-const MultiLineField:React.FC<MultiLineFieldProps> = ({line1, line2}) => {
+const MultiLineField = ({line1, line2}: MultiLineFieldProps) => {
     return (
         <>
             <div>{line1}</div>

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import SelectedRoutingHeader from "./SelectedRoutingHeader";
 import {selectCurrentLoading, selectCurrentRoutingNo} from "./selectors";
 import {useParams} from "react-router";
@@ -20,7 +20,7 @@ const RoutingInfo = () => {
         if (routingNo && routingNo !== currentRoutingNo) {
             dispatch(setCurrentRouting(routingNo));
         }
-    }, [routingNo]);
+    }, [dispatch, routingNo, currentRoutingNo]);
 
     return (
         <div>

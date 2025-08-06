@@ -1,4 +1,4 @@
-import {ActivityCode, Editable, SortProps, WorkTemplateStep} from "chums-types";
+import type {ActivityCode, Editable, SortProps, WorkTemplateStep} from "chums-types";
 import {createReducer} from "@reduxjs/toolkit";
 import {
     loadActivityCodes,

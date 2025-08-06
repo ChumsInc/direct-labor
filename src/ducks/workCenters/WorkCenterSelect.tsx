@@ -1,11 +1,11 @@
-import React, {ChangeEvent, useEffect, useId} from "react";
+import React, {type ChangeEvent, useEffect, useId} from "react";
 import {useSelector} from "react-redux";
 import {loadWorkCenters} from "./actions";
 import {workCenterIcon} from "@/utils/icons";
-import {WorkCenter} from "chums-types";
-import {useAppDispatch} from "../../app/configureStore";
+import type {WorkCenter} from "chums-types";
+import {useAppDispatch} from "@/app/configureStore";
 import {selectWorkCenters, selectWorkCentersLoaded} from "./selectors";
-import {FormSelect, FormSelectProps, InputGroup} from "react-bootstrap";
+import {FormSelect, type FormSelectProps, InputGroup} from "react-bootstrap";
 
 export interface WorkCenterSelectProps extends FormSelectProps {
     value: string,
@@ -32,7 +32,7 @@ const WorkCenterSelect = ({
         if (!loaded) {
             dispatch(loadWorkCenters());
         }
-    }, [])
+    }, [dispatch, loaded])
 
     const changeHandler = (ev: ChangeEvent<HTMLSelectElement>) => {
         const [wc] = list.filter(wc => wc.workCenter === ev.target.value);

@@ -1,5 +1,5 @@
-import {DLCodeSteps, DLStepTotal} from "../types";
-import {DLCode, DLCodeStep, SortProps} from "chums-types";
+import type {DLCodeSteps, DLStepTotal} from "../types";
+import type {DLCode, DLCodeStep, SortProps} from "chums-types";
 import Decimal from "decimal.js";
 
 export const dlStepList = (list: DLCodeStep[]): DLCodeSteps => {
@@ -13,7 +13,7 @@ export const dlStepList = (list: DLCodeStep[]): DLCodeSteps => {
 const stepTotalInitialValue: DLStepTotal = {standardAllowedMinutes: 0, fixedCosts: 0, stepCost: 0};
 
 export const stepTotalReducer = (steps: DLCodeStep[],): DLStepTotal =>
-    steps.reduce((previousValue, step, {}) => ({
+    steps.reduce((previousValue, step) => ({
         standardAllowedMinutes: new Decimal(previousValue.standardAllowedMinutes).add(step.standardAllowedMinutes).toNumber(),
         fixedCosts: new Decimal(previousValue.fixedCosts).add(step.fixedCosts).toNumber(),
         stepCost: new Decimal(previousValue.stepCost).add(step.stepCost).toNumber(),

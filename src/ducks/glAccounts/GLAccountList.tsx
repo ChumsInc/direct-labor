@@ -1,13 +1,11 @@
-import React from "react";
-
 interface GLAccountListProps {
     tableKey: string,
     accountKeys: string[]
 }
 
-const GLAccountList:React.FC<GLAccountListProps> = ({tableKey, accountKeys}) => {
+const GLAccountList = ({tableKey, accountKeys}: GLAccountListProps) => {
     return (
-        <div>{accountKeys.join(';')}</div>
+        <div data-table-key={tableKey}>{accountKeys.join(';')}</div>
     )
 }
 
