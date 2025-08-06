@@ -6,7 +6,7 @@ import type {DLBasicStep, DLStep, SortProps} from "chums-types";
 import {dlStepKey} from "./utils";
 import {stepsListFields} from "./StepsListFields";
 import {useNavigate} from "react-router";
-import {dlStepPath} from "../../routerPaths";
+import {dlStepPath} from "@/app/routerPaths.ts";
 import {useAppDispatch} from "@/app/configureStore";
 import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import classNames from "classnames";

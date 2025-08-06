@@ -3,7 +3,7 @@ import MainNav from "./MainNav";
 import {Outlet} from "react-router";
 import VersionInfo from "../ducks/version/VersionInfo";
 import styled from "@emotion/styled";
-import {Stack} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 
 const MainOutletContainer = styled.div`
     @media (prefers-color-scheme: dark) {
@@ -27,14 +27,16 @@ const MainOutlet = () => {
 
     return (
         <MainOutletContainer>
-            <Stack direction="horizontal" gap={3} className="align-items-start">
-                <MainNav />
-                <div>
-                    <AlertList />
-                    <Outlet />
-                    <VersionInfo />
-                </div>
-            </Stack>
+            <Row className="g-3">
+                <Col xs="auto">
+                    <MainNav/>
+                </Col>
+                <Col>
+                    <AlertList/>
+                    <Outlet/>
+                    <VersionInfo/>
+                </Col>
+            </Row>
         </MainOutletContainer>
     )
 }

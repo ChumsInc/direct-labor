@@ -18,7 +18,7 @@ import {
 import {workCenterKey} from "./utils";
 import numeral from "numeral";
 import {useNavigate} from "react-router";
-import {selectedWorkCenterPath} from "../../routerPaths";
+import {selectedWorkCenterPath} from "@/app/routerPaths.ts";
 import type {WorkCenter} from "chums-types";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import Decimal from "decimal.js";

@@ -5,7 +5,7 @@ import {operationCodeKey} from "./utils";
 import {useSelector} from "react-redux";
 import numeral from "numeral";
 import {useNavigate} from "react-router";
-import {operationCodesOperationPath} from "../../routerPaths";
+import {operationCodesOperationPath} from "@/app/routerPaths.ts";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
 import {selectCurrentOperationCode, selectFilteredOpCodeList, selectLoading, selectSort} from "./selectors";
 import {loadOperationCode, setSort} from "./actions";

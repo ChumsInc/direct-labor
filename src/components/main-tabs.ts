@@ -9,7 +9,7 @@ import {
     routingPath,
     workCentersNavId,
     workCentersPath
-} from "../routerPaths";
+} from "@/app/routerPaths.ts";
 
 import {
     activityCodeIcon,
@@ -25,15 +25,21 @@ import type {MainNavLinkProps} from "@/components/MainNav.tsx";
 export const mainTabs: MainNavLinkProps[] = [
     {
         id: dlStepsNavId,
-        title: 'D/L Steps',
+        title: 'Timed Steps',
         icon: dlStepIcon,
         to: dlStepsPath,
     },
     {
         id: dlCodesNavId,
-        title: 'D/L Codes',
+        title: 'D/L Activity Codes',
         icon: dlCodeIcon,
         to: dlCodesPath,
+    },
+    {
+        id: 'templates',
+        title: 'W/T Templates',
+        icon: templatesIcon,
+        to: "/templates",
     },
     {
         id: workCentersNavId,
@@ -43,19 +49,13 @@ export const mainTabs: MainNavLinkProps[] = [
     },
     {
         id: 'activity-codes',
-        title: 'Activity Codes',
+        title: 'W/T Activity Codes',
         icon: activityCodeIcon,
         to: "/activity-codes",
     },
     {
-        id: 'templates',
-        title: 'W/T Templates',
-        icon: templatesIcon,
-        to: "/templates",
-    },
-    {
         id: routingNavId,
-        title: 'Routing',
+        title: 'W/O Routing',
         to: routingPath,
         icon: routingIcon
     },

@@ -1,7 +1,7 @@
 import {type SortableTableField} from "@chumsinc/sortable-tables";
 import type {DLCodeStep} from "chums-types";
 import {Link} from "react-router";
-import {dlStepPath} from "../../routerPaths";
+import {dlStepPath} from "@/app/routerPaths.ts";
 import DeleteStepButton from "./DeleteStepButton";
 import numeral from "numeral";
 

@@ -5,8 +5,8 @@ import DocumentTitle from "@/components/common/DocumentTitle";
 
 const DirectLaborCodesPage = () => {
     return (
-        <>
-            <DocumentTitle>D/L Codes</DocumentTitle>
+        <div data-component="DirectLaborCodesPage">
+            <DocumentTitle>D/L Activity Codes</DocumentTitle>
             <div className="row g-5">
                 <div className="col-6">
                     <DLCodeFilter/>
@@ -16,7 +16,7 @@ const DirectLaborCodesPage = () => {
                     <Outlet/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

@@ -7,7 +7,7 @@ import numeral from "numeral";
 import NumericTableValue from "../NumericTableValue";
 import classNames from "classnames";
 import Decimal from "decimal.js";
-import {dlCodePath} from "../../routerPaths";
+import {dlCodePath} from "@/app/routerPaths.ts";
 import {dlCodeKey} from "@/ducks/dlCodes/utils";
 
 const fields: SortableTableField<DLCode>[] = [

@@ -14,7 +14,7 @@ import type {RoutingHeader, SortProps} from "chums-types";
 import numeral from "numeral";
 import classNames from "classnames";
 import {useNavigate} from "react-router";
-import {selectedRoutingPath} from "../../routerPaths";
+import {selectedRoutingPath} from "@/app/routerPaths.ts";
 import StatusBadge from "../../components/StatusBadge";
 import {useAppDispatch} from "../../app/configureStore";
 import {loadRoutings, setPage, setRowsPerPage, setSort} from "./actions";

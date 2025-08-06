@@ -5,7 +5,7 @@ import {loadDLCodes, setSort} from "./actions";
 import type {DLCode} from "chums-types";
 import DLCodeList from "./DLCodeList";
 import {useNavigate} from "react-router";
-import {dlCodePath} from "../../routerPaths";
+import {dlCodePath} from "@/app/routerPaths.ts";
 import {useAppDispatch} from "@/app/configureStore";
 import {TablePagination} from "@chumsinc/sortable-tables";
 import AppErrorBoundary from "@/components/AppErrorBoundary";

@@ -1,7 +1,7 @@
 import {Link} from 'react-router';
 import type {DLBasicStep} from "chums-types";
 import numeral from "numeral";
-import {dlStepPath} from "../../routerPaths";
+import {dlStepPath} from "@/app/routerPaths.ts";
 import {type SortableTableField} from "@chumsinc/sortable-tables";
 
 

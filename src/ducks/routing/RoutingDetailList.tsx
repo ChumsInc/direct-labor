@@ -3,7 +3,7 @@ import type {RoutingDetail} from "chums-types";
 import {Link} from 'react-router';
 import {selectLoaded, selectLoading} from "./selectors";
 import numeral from "numeral";
-import {operationCodesOperationPath, selectedRoutingPath, selectedWorkCenterPath} from "../../routerPaths";
+import {operationCodesOperationPath, selectedRoutingPath, selectedWorkCenterPath} from "@/app/routerPaths.ts";
 import {useAppDispatch} from "../../app/configureStore";
 import {useSelector} from "react-redux";
 import {routingDetailKey} from "./utils";
