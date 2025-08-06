@@ -1,6 +1,6 @@
 {
   "name": "direct-labor",
-  "version": "4.2.3",
+  "version": "4.2.4",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
