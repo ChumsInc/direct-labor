@@ -24,7 +24,7 @@ export default function AddNewTimingEntry() {
     }
 
     return (
-        <Form as={Row} className="g-3 align-content-center" onSubmit={onAddValue}>
+        <Row as={Form} className="g-3 align-content-center" onSubmit={onAddValue}>
             <Form.Label column={true} xs={3} htmlFor={id}>New Entry</Form.Label>
             <Col xs="auto">
                 <InputGroup>
@@ -38,6 +38,6 @@ export default function AddNewTimingEntry() {
                     </Button>
                 </InputGroup>
             </Col>
-        </Form>
+        </Row>
     )
 }

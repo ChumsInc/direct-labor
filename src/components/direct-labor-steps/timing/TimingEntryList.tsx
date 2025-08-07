@@ -20,11 +20,14 @@ export default function TimingEntryList() {
     }
 
     const iconClassName = (value: string | number) => {
-        const outside20Pct = new Decimal(timing?.avgTiming ?? 0).sub(value).abs().times(5);
+        const pct = new Decimal(timing?.avgTiming ?? 0).eq(0)
+            ? new Decimal(0)
+            : new Decimal(timing?.avgTiming ?? 0).sub(value).div(timing?.avgTiming ?? 1);
         return classNames(
             {
-                'bi-exclamation-triangle-fill text-warning': outside20Pct.gt(timing?.avgTiming ?? 0),
-                'bi-check-lg text-success': outside20Pct.lte(timing?.avgTiming ?? 0),
+                'bi-exclamation-triangle-fill text-warning': pct.abs().greaterThanOrEqualTo(0.25),
+                'bi-check-lg text-success': pct.abs().lt(0.25),
+                [`pct--${pct.abs().toDecimalPlaces(3)}`]: true,
             }
         )
     }

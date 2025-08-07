@@ -123,31 +123,31 @@ const StepTimingForm: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className="mb-1">
+                <div className="my-3">
                     <label htmlFor={`${id}-timing-notes`}>Notes</label>
                     <TextArea className="form-control" id={`${id}-timing-notes`} value={stepTiming.notes || ''}
                               placeholder="Timing notes" onChange={onChange('notes')}/>
                 </div>
+                <div className="row g-3 mt-3">
+                    <div className="col"></div>
+                    <div className="col-auto">
+                        <button type="button" onClick={onCancel} className="btn btn-outline-secondary"
+                                form={formId}>
+                            Close
+                        </button>
+                    </div>
+                    <div className="col-auto">
+                        <CurrentTimingButton timing={stepTiming}/>
+                    </div>
+                    <div className="col-auto">
+                        <SpinnerButton type="submit" variant="primary" form={formId}
+                                       spinning={actionStatus === 'saving'} disabled={actionStatus !== 'idle'}>
+                            Save
+                        </SpinnerButton>
+                    </div>
+                </div>
             </form>
             <StepTimingEntries/>
-            <div className="row g-3 mt-3">
-                <div className="col"></div>
-                <div className="col-auto">
-                    <button type="button" onClick={onCancel} className="btn btn-outline-secondary"
-                            form={formId}>
-                        Close
-                    </button>
-                </div>
-                <div className="col-auto">
-                    <CurrentTimingButton timing={stepTiming}/>
-                </div>
-                <div className="col-auto">
-                    <SpinnerButton type="submit" variant="primary" form={formId}
-                                   spinning={actionStatus === 'saving'} disabled={actionStatus !== 'idle'}>
-                        Save
-                    </SpinnerButton>
-                </div>
-            </div>
         </TimingFormContainer>
     )
 }
