@@ -2,7 +2,7 @@ import {type ChangeEvent, useId} from "react";
 import {useSelector} from "react-redux";
 import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect.tsx";
 import {
-    selectFilterInactive,
+    selectShowInactive,
     selectStepsFilter,
     selectStepsLoading,
     selectWCFilter,
@@ -24,11 +24,11 @@ const DLCodeFilter = () => {
     const filter = useSelector(selectStepsFilter);
     const wcFilter = useSelector(selectWCFilter);
     const loading = useSelector(selectStepsLoading);
-    const filterInactive = useSelector(selectFilterInactive);
+    const showInactive = useSelector(selectShowInactive);
     const idShowInactive = useId();
 
     const onSelectWC = (wc: WorkCenter | null) => dispatch(setStepWCFilter(wc?.workCenter ?? ''));
-    const onChangeSearch = (search:string) => dispatch(setStepFilter(search));
+    const onChangeSearch = (search: string) => dispatch(setStepFilter(search));
     const onReloadList = () => dispatch(loadDLSteps());
     const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
 
@@ -46,7 +46,7 @@ const DLCodeFilter = () => {
             </Col>
             <Col xs="auto">
                 <FormCheck label="Show Inactive" id={idShowInactive}
-                           checked={filterInactive} onChange={onToggleShowInactive}
+                           checked={showInactive} onChange={onToggleShowInactive}
                            type="checkbox"/>
             </Col>
             <Col xs="auto">

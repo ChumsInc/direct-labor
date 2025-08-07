@@ -2,7 +2,7 @@ const localStoragePrefix:string = 'com.chums.intranet.direct-labor';
 export const currentTabStorageKey: string = `${localStoragePrefix}.current-tab`;
 export const currentOCWorkCenterKey: string = `${localStoragePrefix}.current-operation-work-center`;
 export const currentMenuCollapseKey: string = `${localStoragePrefix}.current-menu-collapse`;
-export const filterInactiveStepsKey: string = `${localStoragePrefix}.filter-inactive-steps`;
+export const showInactiveStepsKey: string = `${localStoragePrefix}.show-inactive-steps`;
 export const filterInactiveCodesKey: string = `${localStoragePrefix}.filter-inactive-codes`;
 
 export const setPreference = (key:string, value:unknown) => {

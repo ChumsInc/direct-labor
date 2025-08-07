@@ -1,7 +1,7 @@
 import type {DLBasicStep, DLCode, DLStep, SortProps} from "chums-types";
 import {createEntityAdapter, createSelector, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import {LocalStore} from "@chumsinc/ui-utils";
-import {filterInactiveStepsKey} from "@/utils/preferences";
+import {showInactiveStepsKey} from "@/utils/preferences";
 import {loadDLStep, loadDLSteps, loadDLStepWhereUsed, saveDLStep, setCurrentStep} from "./actions";
 import {dismissAlert} from "@chumsinc/alert-list";
 import {applyTiming, saveTiming} from "../timings/actions";
@@ -33,7 +33,7 @@ export interface DLStepsState {
     loaded: boolean;
     filter: string;
     wcFilter: string;
-    filterInactive: boolean;
+    showInactive: boolean;
     sort: SortProps<DLStep | DLBasicStep>;
 }
 
@@ -54,7 +54,7 @@ export const initialStepsState = (): DLStepsState => ({
     loaded: false,
     filter: '',
     wcFilter: '',
-    filterInactive: LocalStore.getItem<boolean>(filterInactiveStepsKey, true) ?? true,
+    showInactive: LocalStore.getItem<boolean>(showInactiveStepsKey, true) ?? true,
     sort: {field: 'stepCode', ascending: true}
 })
 
@@ -78,7 +78,7 @@ const stepsSlice = createSlice({
             state.filter = action.payload;
         },
         toggleShowInactive: (state, action: PayloadAction<boolean | undefined>) => {
-            state.filterInactive = action.payload ?? !state.filterInactive;
+            state.showInactive = action.payload ?? !state.showInactive;
         }
     },
     extraReducers: builder => {
@@ -196,7 +196,7 @@ const stepsSlice = createSlice({
         selectStepsLoaded: (state) => state.loaded,
         selectStepsFilter: (state): string => state.filter,
         selectWCFilter: (state): string => state.wcFilter,
-        selectFilterInactive: (state): boolean => state.filterInactive,
+        selectShowInactive: (state): boolean => state.showInactive,
         selectStepsWhereUsed: (state) => state.whereUsed.list,
     }
 });
@@ -213,7 +213,7 @@ export const {
     selectCurrentStepId,
     selectStepsWhereUsed,
     selectWCFilter,
-    selectFilterInactive,
+    selectShowInactive,
     selectStepsSort,
     selectedChangedSelector,
     selectedSavingSelector,
@@ -227,8 +227,8 @@ export const selectSortedStepsList = createSelector(
     }
 )
 export const selectFilteredList = createSelector(
-    [selectSteps, selectStepsSort, selectStepsFilter, selectWCFilter, selectFilterInactive],
-    (list, sort, filter, wcFilter, filterInactive) => {
+    [selectSteps, selectStepsSort, selectStepsFilter, selectWCFilter, selectShowInactive],
+    (list, sort, filter, wcFilter, showInactive) => {
         let re = /^/;
         try {
             re = new RegExp(filter, 'i');
@@ -238,7 +238,7 @@ export const selectFilteredList = createSelector(
         }
 
         return list
-            .filter(dl => !filterInactive || dl.active)
+            .filter(dl => showInactive || dl.active)
             .filter(dl => !wcFilter || dl.workCenter === wcFilter)
             .filter(dl => re.test(dl.stepCode) || re.test(dl.description) || re.test(dl.machine))
             .sort(dlStepSorter(sort));
