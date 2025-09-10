@@ -17,6 +17,8 @@ import {useAppDispatch} from "@/app/configureStore.ts";
 import {useNavigate} from "react-router";
 import {Button, Col, FormCheck, Row} from "react-bootstrap";
 import SpinnerButton from "@/components/common/SpinnerButton.tsx";
+import {LocalStore} from "@chumsinc/ui-utils";
+import {filterWorkCenterKey, showInactiveStepsKey} from "@/utils/preferences.ts";
 
 const DLCodeFilter = () => {
     const dispatch = useAppDispatch();
@@ -27,10 +29,16 @@ const DLCodeFilter = () => {
     const showInactive = useSelector(selectShowInactive);
     const idShowInactive = useId();
 
-    const onSelectWC = (wc: WorkCenter | null) => dispatch(setStepWCFilter(wc?.workCenter ?? ''));
+    const onSelectWC = (wc: WorkCenter | null) => {
+        LocalStore.setItem<string>(filterWorkCenterKey, wc?.workCenter ?? '');
+        dispatch(setStepWCFilter(wc?.workCenter ?? ''));
+    }
     const onChangeSearch = (search: string) => dispatch(setStepFilter(search));
     const onReloadList = () => dispatch(loadDLSteps());
-    const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => dispatch(toggleShowInactive(ev.target.checked));
+    const onToggleShowInactive = (ev: ChangeEvent<HTMLInputElement>) => {
+        LocalStore.setItem<boolean>(showInactiveStepsKey, ev.target.checked);
+        dispatch(toggleShowInactive(ev.target.checked));
+    }
 
     const newButtonHandler = () => {
         navigate('/dl-steps/0');

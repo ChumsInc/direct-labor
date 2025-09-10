@@ -9,12 +9,14 @@ import {
     selectTimingList,
     selectTimingsSort
 } from "@/ducks/timings/selectors.ts";
-import {setCurrentTiming, timingSortChangedAction} from "@/ducks/timings/actions.ts";
+import {applyTiming, setCurrentTiming, timingSortChangedAction} from "@/ducks/timings/actions.ts";
 import StepTimingForm from "./StepTimingForm.tsx";
 import {newTiming} from "@/ducks/timings/utils.ts";
-import {useAppDispatch} from "@/app/configureStore.ts";
+import {useAppDispatch, useAppSelector} from "@/app/configureStore.ts";
 import type {SortProps, StepTiming} from "chums-types";
 import CurrentTimingButton from "./CurrentTimingButton.tsx";
+import {Button, Col, Row} from "react-bootstrap";
+import {selectCurrentChanged} from "@/ducks/dlCodes/selectors.ts";
 
 export interface TimingButtonProps {
     timing: StepTiming,
@@ -53,6 +55,7 @@ const SelectedStepTimings = () => {
     const current = useSelector(selectCurrentTiming);
     const step = useSelector(selectCurrentStep);
     const sort = useSelector(selectTimingsSort);
+    const stepChanged = useAppSelector(selectCurrentChanged);
 
     const onClickNewTiming = () => {
         if (!step?.id) {
@@ -61,11 +64,11 @@ const SelectedStepTimings = () => {
         dispatch(setCurrentTiming({...newTiming, timingDate: new Date().toISOString(), idSteps: step.id}));
     }
 
-    const onApplyTiming = () => {
+    const onSetUntimed = () => {
         if (!step?.id) {
             return;
         }
-        // dispatch(applyTiming());
+        dispatch(applyTiming({...newTiming, idSteps: step.id}));
     }
 
     const onChangeSort = (sort: SortProps<StepTiming>) => {
@@ -77,23 +80,24 @@ const SelectedStepTimings = () => {
             {current && (<StepTimingForm/>)}
             {!current && (
                 <>
-                    <SortableTable keyField="id" fields={fields} data={timings || []} currentSort={sort}
+                    <SortableTable keyField="id" size="sm"
+                                   fields={fields} data={timings || []} currentSort={sort}
                                    onChangeSort={onChangeSort}/>
-                    <div className="row g-3">
-                        <div className="col-auto">
-                            <button type="button" className="btn btn-sm btn-outline-primary"
-                                    disabled={loading || saving || step?.id === 0} onClick={onApplyTiming}>
-                                Set Current Timing
-                            </button>
-                        </div>
-                        <div className="col-auto">
-                            <button type="button" className="btn btn-sm btn-outline-secondary"
-                                    disabled={loading || saving || step?.id === 0}
+                    <Row className="g-3">
+                        <Col xs="auto">
+                            <Button type="button" size="sm" variant="outline-secondary"
+                                    disabled={loading || saving || !step || step?.id === 0}
                                     onClick={onClickNewTiming}>
                                 New Timing
-                            </button>
-                        </div>
-                    </div>
+                            </Button>
+                        </Col>
+                        <Col xs="auto">
+                            <Button type="button" size="sm" variant="outline-primary"
+                                    disabled={loading || saving || !step || step?.id === 0 || stepChanged} onClick={onSetUntimed}>
+                                Remove Step Timing
+                            </Button>
+                        </Col>
+                    </Row>
                 </>
             )}
         </div>

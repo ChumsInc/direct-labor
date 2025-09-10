@@ -30,7 +30,7 @@ const StepsList = () => {
         if (!loaded) {
             dispatch(loadDLSteps());
         }
-    }, []);
+    }, [loaded, dispatch]);
 
     useEffect(() => {
         setPage(0);

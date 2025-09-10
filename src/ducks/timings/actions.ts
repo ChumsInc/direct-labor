@@ -47,7 +47,7 @@ export const applyTiming = createAsyncThunk<DLStep | null, StepTiming>(
     {
         condition: (arg, {getState}) => {
             const state = getState() as RootState;
-            return !!arg.idSteps && !!arg.id && selectCurrentTimingStatus(state) === 'idle';
+            return !!arg.idSteps && selectCurrentTimingStatus(state) === 'idle';
         }
     }
 )

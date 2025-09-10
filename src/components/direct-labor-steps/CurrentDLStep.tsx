@@ -9,6 +9,7 @@ import {useParams} from "react-router";
 import {newDLStep} from "@/ducks/dlSteps/utils.ts";
 import {Col, ProgressBar, Row, Stack} from "react-bootstrap";
 import DocumentTitle from "@/components/common/DocumentTitle.tsx";
+import AppErrorBoundary from "@/components/AppErrorBoundary.tsx";
 
 
 export default function CurrentDLStep() {
@@ -32,26 +33,27 @@ export default function CurrentDLStep() {
 
     return (
         <div>
-            <DocumentTitle>{`D/L Step: ${step?.stepCode ?? 'new'}`}</DocumentTitle>
-            <Stack gap={5} direction="horizontal" className="align-items-baseline">
-                <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
-                <div className="text-secondary">
-                    {step?.description && <h3>{step?.description}</h3>}
-                </div>
-            </Stack>
-            <Row className="g-5">
-                <Col xs="6">
-                    <div style={{height: '5px'}}>
-                        {status !== 'idle' && <ProgressBar animated striped now={100} style={{height: '100%'}}/>}
+            <AppErrorBoundary>
+                <DocumentTitle>{`D/L Step: ${step?.stepCode ?? 'new'}`}</DocumentTitle>
+                <Stack gap={5} direction="horizontal" className="align-items-baseline">
+                    <h2>Step Editor: <strong>{step?.stepCode}</strong></h2>
+                    <div className="text-secondary">
+                        {step?.description && <h3>{step?.description}</h3>}
                     </div>
-                    <DLStepForm/>
-                </Col>
-                <Col xs="6">
-                    <h3>Step Timings</h3>
-                    <SelectedStepTimings/>
-                </Col>
-            </Row>
-
+                </Stack>
+                <Row className="g-5">
+                    <Col xs="6">
+                        <div style={{height: '5px'}}>
+                            {status !== 'idle' && <ProgressBar animated striped now={100} style={{height: '100%'}}/>}
+                        </div>
+                        <DLStepForm/>
+                    </Col>
+                    <Col xs="6">
+                        <h3>Step Timings</h3>
+                        <SelectedStepTimings/>
+                    </Col>
+                </Row>
+            </AppErrorBoundary>
         </div>
     )
 }

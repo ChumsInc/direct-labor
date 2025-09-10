@@ -1,7 +1,7 @@
 import type {DLBasicStep, DLCode, DLStep, SortProps} from "chums-types";
 import {createEntityAdapter, createSelector, createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import {LocalStore} from "@chumsinc/ui-utils";
-import {showInactiveStepsKey} from "@/utils/preferences";
+import {filterWorkCenterKey, showInactiveStepsKey} from "@/utils/preferences";
 import {loadDLStep, loadDLSteps, loadDLStepWhereUsed, saveDLStep, setCurrentStep} from "./actions";
 import {dismissAlert} from "@chumsinc/alert-list";
 import {applyTiming, saveTiming} from "../timings/actions";
@@ -53,7 +53,7 @@ export const initialStepsState = (): DLStepsState => ({
     loading: false,
     loaded: false,
     filter: '',
-    wcFilter: '',
+    wcFilter: LocalStore.getItem<string>(filterWorkCenterKey, '') ?? '',
     showInactive: LocalStore.getItem<boolean>(showInactiveStepsKey, true) ?? true,
     sort: {field: 'stepCode', ascending: true}
 })

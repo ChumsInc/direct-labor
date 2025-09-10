@@ -1,4 +1,4 @@
-import {Link} from 'react-router';
+import {NavLink} from 'react-router';
 import type {DLBasicStep} from "chums-types";
 import numeral from "numeral";
 import {dlStepPath} from "@/app/routerPaths.ts";
@@ -14,7 +14,7 @@ export const stepsListFields: SortableTableField<(DLBasicStep)>[] = [
         field: 'stepCode',
         title: 'Step Code',
         sortable: true,
-        render: (row: DLBasicStep) => <Link to={dlStepPath(row.id)}>{row.stepCode}</Link>,
+        render: (row: DLBasicStep) => <NavLink to={dlStepPath(row.id)}>{row.stepCode}</NavLink>,
     },
     {field: 'description', title: 'Description', sortable: true,},
     {field: 'machine', title: 'Machine', sortable: true},
