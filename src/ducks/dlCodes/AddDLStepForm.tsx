@@ -1,4 +1,4 @@
-import {type ChangeEvent, useState} from 'react';
+import {type ChangeEvent, type ReactNode, useState} from 'react';
 import StepSelect from "@/components/direct-labor-steps/StepSelect.tsx";
 import type {DLStep} from "chums-types";
 import {addDLStep} from "@/ducks/dlCodes/actions";
@@ -9,7 +9,10 @@ import {selectCurrentHeader} from "@/ducks/dlCodes/selectors";
 import {Button, Col, Row} from "react-bootstrap";
 import WorkCenterSelect from "@/ducks/workCenters/WorkCenterSelect";
 
-export default function AddDLStepForm() {
+export interface AddDLStepFormProps {
+    saveButtonSlot?: ReactNode;
+}
+export default function AddDLStepForm({saveButtonSlot}:AddDLStepFormProps) {
     const dispatch = useAppDispatch();
     const dlCode = useSelector(selectCurrentHeader);
     const [workCenter, setWorkCenter] = useState<string>('');
@@ -44,6 +47,7 @@ export default function AddDLStepForm() {
                     Add Step
                 </Button>
             </Col>
+            {saveButtonSlot}
         </Row>
     )
 }

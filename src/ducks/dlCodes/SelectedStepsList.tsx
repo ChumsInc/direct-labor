@@ -49,18 +49,12 @@ const SelectedStepsList = () => {
         <div>
             <SortableDLSteps list={list} onSortChange={onSortChange}/>
             <DLStepItemsTotal total={total}/>
-            <div className="row g-3 mt-1">
-                <div className="col text-warning">
-                    {sorted !== savedSort && (
-                        <div><span className="bi-exclamation-triangle-fill me-3"/>Sort order changed.</div>
-                    )}
-                </div>
+            <AddDLStepForm saveButtonSlot={
                 <div className="col-auto">
                     <Button size="sm" variant={sorted === savedSort ? 'outline-secondary' : 'warning'} type="button"
                             onClick={saveHandler}>Save Step Order</Button>
                 </div>
-            </div>
-            <AddDLStepForm/>
+            }/>
         </div>
     )
 
