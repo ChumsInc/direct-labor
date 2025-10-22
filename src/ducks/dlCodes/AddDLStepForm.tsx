@@ -32,7 +32,7 @@ export default function AddDLStepForm() {
     }
 
     return (
-        <Row className="row g-3">
+        <Row className="row g-3 mt-1">
             <Col xs={4}>
                 <WorkCenterSelect value={workCenter} onChange={wcChangeHandler} size="sm" />
             </Col>
