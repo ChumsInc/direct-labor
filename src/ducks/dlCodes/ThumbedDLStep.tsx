@@ -21,6 +21,7 @@ const SortableDLStepContainer = styled.div`
     }
     &:focus-within {}
     & > .btn.drag-thumb {
+        text-align: center;
         border-left: none;
         border-top: none;
         border-bottom: none;
@@ -40,8 +41,7 @@ export default function ThumbedDLStep({step, active, setActivatorNodeRef, listen
         <SortableDLStepContainer className={classNames('sortable-item', {active: active ? 'active' : ''})}
                                  ref={setActivatorNodeRef}>
             <Button size="sm" variant="outline-secondary" className="drag-thumb" {...listeners} ref={setActivatorNodeRef}>
-                <span className="bi-arrow-down-up me-3" aria-label="Drag to sort" />
-                {step.stepOrder}
+                <span className="bi-arrow-down-up" aria-label="Drag to sort" />
             </Button>
             <DLStepItem step={step} />
         </SortableDLStepContainer>

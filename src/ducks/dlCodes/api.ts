@@ -1,6 +1,5 @@
 import type {AddDLStepArg, DLCodeResponse} from "./types";
 import {fetchJSON} from "@chumsinc/ui-utils";
-import {dlCodeStepSorter} from "./utils";
 import type {DLCode, DLCodeStep} from "chums-types";
 
 export async function deleteStep(arg: DLCodeStep): Promise<DLCodeResponse | null> {
@@ -24,7 +23,7 @@ export async function postStepSort(id: number, steps: DLCodeStep[]): Promise<DLC
         const url = `/api/operations/production/dl/codes/:id/steps/sort.json`
             .replace(':id', encodeURIComponent(id))
         const body = JSON.stringify({
-            steps: steps.sort(dlCodeStepSorter).map(step => step.id)
+            steps: steps.map(step => step.id)
         });
         return await fetchJSON<DLCodeResponse>(url, {method: 'POST', body});
     } catch (err: unknown) {

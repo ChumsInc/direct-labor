@@ -27,11 +27,9 @@ const SelectedStepsList = () => {
     const [savedSort, setSaveSort] = useState(stepsKey(steps));
 
     useEffect(() => {
-        if (stepsKey(steps) !== stepsKey(list)) {
-            setList(steps);
-            setSorted(stepsKey(steps));
-            setSaveSort(stepsKey(steps));
-        }
+        setList(steps);
+        setSorted(stepsKey(steps));
+        setSaveSort(stepsKey(steps));
     }, [steps])
 
     const onSortChange = useCallback((items: DLCodeStep[]) => {
