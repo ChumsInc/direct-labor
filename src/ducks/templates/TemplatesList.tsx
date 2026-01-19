@@ -8,7 +8,7 @@ import {
 } from "./selectors";
 import {loadTemplateList, setTemplatesSort} from "./actions";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
-import {type SortableTableField, StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {templateKey, templatePath, templateStepCount} from "./utils";
 import type {SortProps, WorkTemplate} from "chums-types";
 import {Link, useNavigate} from "react-router";
@@ -79,10 +79,10 @@ const TemplatesList = () => {
     return (
         <div>
             <AnimatedLoadingBar loading={status !== 'idle'}/>
-            <StandaloneSortableTable currentSort={sort} onChangeSort={sortChangeHandler} fields={fields}
-                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)} size="xs"
-                                     rowClassName={rowClassName} onSelectRow={rowClickHandler}
-                                     keyField={templateKey}/>
+            <SortableTable currentSort={sort} onChangeSort={sortChangeHandler} fields={fields}
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)} size="xs"
+                           rowClassName={rowClassName} onSelectRow={rowClickHandler}
+                           keyField={templateKey}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rppChangeHandler}}
                              count={list.length}/>

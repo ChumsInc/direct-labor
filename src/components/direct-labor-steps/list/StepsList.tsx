@@ -8,7 +8,7 @@ import {stepsListFields} from "./stepsListFields.tsx";
 import {useNavigate} from "react-router";
 import {dlStepPath} from "@/app/routerPaths.ts";
 import {useAppDispatch} from "@/app/configureStore.ts";
-import {StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import classNames from "classnames";
 import {localStorageKeys} from "@/api/preferences.ts";
 import AppErrorBoundary from '@/components/AppErrorBoundary.tsx';
@@ -55,7 +55,7 @@ const StepsList = () => {
         <AppErrorBoundary>
             <DocumentTitle>Direct Labor Steps</DocumentTitle>
             <div className="mt-3">
-                <StandaloneSortableTable keyField={dlStepKey} fields={stepsListFields} size="sm"
+                <SortableTable keyField={dlStepKey} fields={stepsListFields} size="sm"
                                          currentSort={sort} onChangeSort={sortChangeHandler}
                                          data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                                          rowClassName={rowClassName}

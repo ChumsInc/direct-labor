@@ -1,10 +1,5 @@
 import React, {type ChangeEvent, useEffect, useId, useState} from "react";
-import {
-    type SortableTableField,
-    type SortProps,
-    StandaloneSortableTable,
-    TablePagination
-} from "@chumsinc/sortable-tables";
+import {SortableTable, type SortableTableField, type SortProps, TablePagination} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 import {loadWorkCenters, setSort, setWCSearch, toggleFilterRatedWC} from "./actions";
 import {
@@ -108,12 +103,12 @@ const WorkCenterList: React.FC = () => {
                     </SpinnerButton>
                 </div>
             </div>
-            <StandaloneSortableTable keyField={workCenterKey} fields={fields}
-                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                                     currentSort={sort} onChangeSort={onChangeSort}
-                                     size="sm"
-                                     selected={selected?.workCenter}
-                                     onSelectRow={onSelectWorkCenter}/>
+            <SortableTable keyField={workCenterKey} fields={fields}
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                           currentSort={sort} onChangeSort={onChangeSort}
+                           size="sm"
+                           selected={selected?.workCenter}
+                           onSelectRow={onSelectWorkCenter}/>
             <TablePagination page={page} onChangePage={onChangePage} rowsPerPage={rowsPerPage}
                              rowsPerPageProps={{onChange: onChangeRowsPerPage}} showFirst showLast
                              count={list.length}/>

@@ -1,6 +1,6 @@
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
-import {type SortableTableField, StandaloneSortableTable} from "@chumsinc/sortable-tables";
+import {SortableTable, type SortableTableField} from "@chumsinc/sortable-tables";
 import {selectCurrentStep} from "@/ducks/dlSteps";
 import {
     selectCurrentLoading,
@@ -80,7 +80,7 @@ const SelectedStepTimings = () => {
             {current && (<StepTimingForm/>)}
             {!current && (
                 <>
-                    <StandaloneSortableTable keyField="id" size="sm"
+                    <SortableTable keyField="id" size="sm"
                                              fields={fields} data={timings || []} currentSort={sort}
                                              onChangeSort={onChangeSort}/>
                     <Row className="g-3">

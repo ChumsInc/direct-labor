@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {type SortableTableField, StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 import {
     selectCurrentHeader,
@@ -86,12 +86,12 @@ const RoutingList = () => {
     return (
         <AppErrorBoundary>
             {loading && <ProgressBar striped animated now={100} style={{height: '5px'}}/>}
-            <StandaloneSortableTable keyField={"RoutingNo"} size="xs" fields={routingListFields}
-                                     data={pagedList}
-                                     currentSort={sort} onChangeSort={onChangeSort}
-                                     selected={selectedHeader?.RoutingNo}
-                                     rowClassName={rowClassName}
-                                     onSelectRow={onSelect}/>
+            <SortableTable keyField={"RoutingNo"} size="xs" fields={routingListFields}
+                           data={pagedList}
+                           currentSort={sort} onChangeSort={onChangeSort}
+                           selected={selectedHeader?.RoutingNo}
+                           rowClassName={rowClassName}
+                           onSelectRow={onSelect}/>
             <TablePagination page={page} onChangePage={pageChangeHandler}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                              showFirst showLast size="sm"

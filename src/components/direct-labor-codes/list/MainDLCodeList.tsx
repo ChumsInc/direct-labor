@@ -12,7 +12,7 @@ import type {DLCode} from "chums-types";
 import {useNavigate} from "react-router";
 import {dlCodePath} from "@/app/routerPaths.ts";
 import {useAppDispatch} from "@/app/configureStore.ts";
-import {StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import AppErrorBoundary from "@/components/AppErrorBoundary.tsx";
 import AnimatedLoadingBar from "../../AnimatedLoadingBar.tsx";
 import {getPreference, localStorageKeys, setPreference} from "@/api/preferences.ts";
@@ -53,7 +53,7 @@ const MainDLCodeList = () => {
     return (
         <AppErrorBoundary>
             <AnimatedLoadingBar loading={status === 'loading'}/>
-            <StandaloneSortableTable fields={mainDLCodesFields} keyField="id"
+            <SortableTable fields={mainDLCodesFields} keyField="id"
                                      data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                                      rowClassName={(row) => classNames({'table-warning': !row.active})}
                                      currentSort={sort} onChangeSort={sort => dispatch(setSort(sort))}

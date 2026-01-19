@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {type SortableTableField, StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import type {OperationCode, SortProps} from "chums-types";
 import {operationCodeKey} from "./utils";
 import {useSelector} from "react-redux";
@@ -56,10 +56,10 @@ const OperationCodeList = () => {
     return (
         <AppErrorBoundary>
             <AnimatedLoadingBar loading={loading}/>
-            <StandaloneSortableTable keyField={operationCodeKey} fields={fields}
-                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                                     size="sm" currentSort={sort} onChangeSort={sortChangeHandler}
-                                     onSelectRow={onSelectOperationCode} selected={operationCodeKey(selected)}/>
+            <SortableTable keyField={operationCodeKey} fields={fields}
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                           size="sm" currentSort={sort} onChangeSort={sortChangeHandler}
+                           onSelectRow={onSelectOperationCode} selected={operationCodeKey(selected)}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPageProps={{pageValues: [15, 25, 50, 100], onChange: rowsPerPageChangeHandler}}
                              rowsPerPage={rowsPerPage}

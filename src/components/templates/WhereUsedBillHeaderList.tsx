@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {
+    SortableTable,
     type SortableTableField,
-    StandaloneSortableTable,
     TablePagination,
     type TablePaginationProps
 } from "@chumsinc/sortable-tables";
@@ -77,10 +77,10 @@ export default function WhereUsedBillHeaderList({
     return (
         <div>
             <h4>Bills</h4>
-            <StandaloneSortableTable fields={fields} size="xs" keyField={templateBillHeaderKey}
-                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                                     rowClassName={rowClassName}
-                                     currentSort={sort} onChangeSort={sortChangeHandler}/>
+            <SortableTable fields={fields} size="xs" keyField={templateBillHeaderKey}
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                           rowClassName={rowClassName}
+                           currentSort={sort} onChangeSort={sortChangeHandler}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage}
                              count={list.length}

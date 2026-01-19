@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {type SortableTableField, StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
 import {
     selectActivityCodesLoaded,
@@ -84,7 +84,7 @@ const ActivityCodesList = () => {
         <div>
             <ActivityCodesFilter/>
             <AnimatedLoadingBar loading={actionStatus !== 'idle'}/>
-            <StandaloneSortableTable keyField={activityCodeKey} fields={fields}
+            <SortableTable keyField={activityCodeKey} fields={fields}
                                      data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                                      currentSort={sort} onChangeSort={sortChangeHandler}
                                      size="sm" className="mt-3"
