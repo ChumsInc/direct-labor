@@ -1,8 +1,8 @@
 import React, {type ChangeEvent, useEffect, useId, useState} from "react";
 import {
-    SortableTable,
     type SortableTableField,
     type SortProps,
+    StandaloneSortableTable,
     TablePagination
 } from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
@@ -11,7 +11,8 @@ import {
     selectCurrentWorkCenter,
     selectFilterRatedWC,
     selectLoading,
-    selectSortedWorkCenters, selectWorkCenterSearch,
+    selectSortedWorkCenters,
+    selectWorkCenterSearch,
     selectWorkCentersLoaded,
     selectWorkCenterSort
 } from "./selectors";
@@ -82,7 +83,7 @@ const WorkCenterList: React.FC = () => {
         setRowsPerPage(rpp);
     }
 
-    const searchChangeHandler = (ev:ChangeEvent<HTMLInputElement>) => {
+    const searchChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
         dispatch(setWCSearch(ev.target.value));
     }
 
@@ -107,12 +108,12 @@ const WorkCenterList: React.FC = () => {
                     </SpinnerButton>
                 </div>
             </div>
-            <SortableTable keyField={workCenterKey} fields={fields}
-                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                           currentSort={sort} onChangeSort={onChangeSort}
-                           size="sm"
-                           selected={selected?.workCenter}
-                           onSelectRow={onSelectWorkCenter}/>
+            <StandaloneSortableTable keyField={workCenterKey} fields={fields}
+                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                                     currentSort={sort} onChangeSort={onChangeSort}
+                                     size="sm"
+                                     selected={selected?.workCenter}
+                                     onSelectRow={onSelectWorkCenter}/>
             <TablePagination page={page} onChangePage={onChangePage} rowsPerPage={rowsPerPage}
                              rowsPerPageProps={{onChange: onChangeRowsPerPage}} showFirst showLast
                              count={list.length}/>

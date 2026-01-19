@@ -7,7 +7,7 @@ import {billHeaderKey, billHeaderSorter, defaultBillSort} from "./utils";
 import {billHeaderSelector} from "./selectors";
 import StatusBadge from "../../components/StatusBadge";
 import type {BillHeader, BillType, SortProps} from "chums-types";
-import {SortableTable, type SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
+import {type SortableTableField, StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import {BillTypeDesc} from "../types";
 
 const detailTableFields: SortableTableField<BillHeader>[] = [
@@ -55,10 +55,10 @@ const BillWhereUsed = ({className}: { className?: string }) => {
     return (
         <div className={classNames(className)}>
             <h4>Where Used</h4>
-            <SortableTable keyField={billHeaderKey} size="xs" fields={detailTableFields}
-                           currentSort={sort} onChangeSort={(sort) => setSort(sort as SortProps<BillHeader>)}
-                           rowClassName={rowClassName}
-                           data={[...list].sort(billHeaderSorter(sort)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
+            <StandaloneSortableTable keyField={billHeaderKey} size="xs" fields={detailTableFields}
+                                     currentSort={sort} onChangeSort={(sort) => setSort(sort as SortProps<BillHeader>)}
+                                     rowClassName={rowClassName}
+                                     data={[...list].sort(billHeaderSorter(sort)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: setRowsPerPage}}
                              count={list.length} size="sm"

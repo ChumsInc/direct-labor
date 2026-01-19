@@ -4,10 +4,18 @@ import {ErrorBoundary as ReactErrorBoundary, type FallbackProps} from 'react-err
 
 function ErrorFallback({error, resetErrorBoundary}: FallbackProps) {
     console.trace(error);
+    if (error instanceof Error) {
+        return (
+            <Alert variant="warning" dismissible={true} onClose={() => resetErrorBoundary()}>
+                <strong>Sorry! Something went wrong.</strong>
+                <div className="text-danger" style={{whiteSpace: 'pre-wrap'}}>{error.message}</div>
+            </Alert>
+        )
+    }
     return (
         <Alert variant="warning" dismissible={true} onClose={() => resetErrorBoundary()}>
             <strong>Sorry! Something went wrong.</strong>
-            <div className="text-danger" style={{whiteSpace: 'pre-wrap'}}>{error.message}</div>
+            <div className="text-danger" style={{whiteSpace: 'pre-wrap'}}>Unknown error</div>
         </Alert>
     )
 }

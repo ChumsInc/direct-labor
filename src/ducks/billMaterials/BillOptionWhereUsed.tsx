@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {SortableTable, type SortableTableField} from "@chumsinc/sortable-tables";
+import {type SortableTableField, StandaloneSortableTable} from "@chumsinc/sortable-tables";
 import {useSelector} from "react-redux";
 
 import classNames from "classnames";
@@ -47,9 +47,10 @@ const BillOptionWhereUsed = ({className}: { className?: string }) => {
     return (
         <div className={classNames(className)}>
             <h4>Where Used In Bill Options</h4>
-            <SortableTable keyField={billOptionHeaderKey} size="xs" fields={detailTableFields}
-                           currentSort={sort} onChangeSort={(sort) => setSort(sort as SortProps<BillOptionHeader>)}
-                           data={[...list].sort(billOptionHeaderSorter(sort))}/>
+            <StandaloneSortableTable keyField={billOptionHeaderKey} size="xs" fields={detailTableFields}
+                                     currentSort={sort}
+                                     onChangeSort={(sort) => setSort(sort as SortProps<BillOptionHeader>)}
+                                     data={[...list].sort(billOptionHeaderSorter(sort))}/>
         </div>
     )
 }

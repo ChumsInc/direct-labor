@@ -1,5 +1,10 @@
 import {useEffect, useState} from 'react';
-import {SortableTable, type SortableTableField, TablePagination, type TablePaginationProps} from "@chumsinc/sortable-tables";
+import {
+    type SortableTableField,
+    StandaloneSortableTable,
+    TablePagination,
+    type TablePaginationProps
+} from "@chumsinc/sortable-tables";
 import type {TemplateBillHeader} from "@/ducks/types";
 import dayjs from "dayjs";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
@@ -8,7 +13,7 @@ import type {SortProps} from "chums-types";
 import classNames from "classnames";
 import {templateBillHeaderKey} from "@/ducks/where-used/utils";
 
-const formatDate = (value:string|null) => {
+const formatDate = (value: string | null) => {
     if (!value || !dayjs(value).isValid()) {
         return 'N/A'
     }
@@ -46,7 +51,7 @@ const fields: SortableTableField<TemplateBillHeader>[] = [
     },
 ];
 
-const rowClassName = (row:TemplateBillHeader) => {
+const rowClassName = (row: TemplateBillHeader) => {
     return classNames({
         'table-danger': row.ProductType === 'D',
         'table-warning': row.ProductType !== 'D' && row.InactiveItem === 'Y'
@@ -72,10 +77,10 @@ export default function WhereUsedBillHeaderList({
     return (
         <div>
             <h4>Bills</h4>
-            <SortableTable fields={fields} size="xs" keyField={templateBillHeaderKey}
-                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                           rowClassName={rowClassName}
-                           currentSort={sort} onChangeSort={sortChangeHandler}/>
+            <StandaloneSortableTable fields={fields} size="xs" keyField={templateBillHeaderKey}
+                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                                     rowClassName={rowClassName}
+                                     currentSort={sort} onChangeSort={sortChangeHandler}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage}
                              count={list.length}

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectStepsWhereUsed} from "./index";
-import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import type {DLCode, SortProps} from "chums-types";
 import {dlCodeSorter} from "../dlCodes/utils";
 import {ErrorBoundary} from "react-error-boundary";
@@ -22,9 +22,9 @@ export default function WhereUsedDLCodeList() {
 
     return (
         <ErrorBoundary fallback={<Alert variant="danger">Oops, something went wrong.</Alert>}>
-            <SortableTable data={sortedList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                           fields={secondaryDLCodesFields} keyField="id"
-                           currentSort={sort} onChangeSort={setSort}/>
+            <StandaloneSortableTable data={sortedList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                                     fields={secondaryDLCodesFields} keyField="id"
+                                     currentSort={sort} onChangeSort={setSort}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: setRowsPerPage}}
                              count={list.length}/>

@@ -1,6 +1,6 @@
 import numeral from "numeral";
 import {useDispatch, useSelector} from "react-redux";
-import {SortableTable, type SortableTableField} from "@chumsinc/sortable-tables";
+import {type SortableTableField, StandaloneSortableTable} from "@chumsinc/sortable-tables";
 import {selectCurrentStep} from "@/ducks/dlSteps";
 import {
     selectCurrentLoading,
@@ -80,9 +80,9 @@ const SelectedStepTimings = () => {
             {current && (<StepTimingForm/>)}
             {!current && (
                 <>
-                    <SortableTable keyField="id" size="sm"
-                                   fields={fields} data={timings || []} currentSort={sort}
-                                   onChangeSort={onChangeSort}/>
+                    <StandaloneSortableTable keyField="id" size="sm"
+                                             fields={fields} data={timings || []} currentSort={sort}
+                                             onChangeSort={onChangeSort}/>
                     <Row className="g-3">
                         <Col xs="auto">
                             <Button type="button" size="sm" variant="outline-secondary"
@@ -93,7 +93,8 @@ const SelectedStepTimings = () => {
                         </Col>
                         <Col xs="auto">
                             <Button type="button" size="sm" variant="outline-primary"
-                                    disabled={loading || saving || !step || step?.id === 0 || stepChanged} onClick={onSetUntimed}>
+                                    disabled={loading || saving || !step || step?.id === 0 || stepChanged}
+                                    onClick={onSetUntimed}>
                                 Remove Step Timing
                             </Button>
                         </Col>

@@ -1,5 +1,10 @@
 import {useEffect, useState} from 'react';
-import {SortableTable, type SortableTableField, TablePagination, type TablePaginationProps} from "@chumsinc/sortable-tables";
+import {
+    type SortableTableField,
+    StandaloneSortableTable,
+    TablePagination,
+    type TablePaginationProps
+} from "@chumsinc/sortable-tables";
 import type {TemplateBillOptionHeader} from "@/ducks/types";
 import dayjs from "dayjs";
 import {useAppDispatch, useAppSelector} from "@/app/configureStore";
@@ -21,14 +26,15 @@ const formatDate = (value: string | null) => {
 
 const fields: SortableTableField<TemplateBillOptionHeader>[] = [
     {field: 'BillNo', title: "Bill Option No", sortable: true},
-    {field: "Options", title: 'Options', render: (row) => (
-        <div>
-            {row.Options.map(row => <div key={billOptionKey(row)}>
-                <strong className="me-3">{billOptionKey(row)}</strong>
-                <span>{row.OptionDesc1}</span>
-                {!!row.OptionDesc2 && <span className="ms-3">{row.OptionDesc2}</span>}
-            </div>)}
-        </div>
+    {
+        field: "Options", title: 'Options', render: (row) => (
+            <div>
+                {row.Options.map(row => <div key={billOptionKey(row)}>
+                    <strong className="me-3">{billOptionKey(row)}</strong>
+                    <span>{row.OptionDesc1}</span>
+                    {!!row.OptionDesc2 && <span className="ms-3">{row.OptionDesc2}</span>}
+                </div>)}
+            </div>
         )
     },
     // {
@@ -65,9 +71,9 @@ const rowClassName = (row: TemplateBillOptionHeader) => {
     })
 }
 export default function WhereUsedBillOptionHeaderList({
-                                                    rowsPerPage,
-                                                    rowsPerPageProps
-                                                }: Pick<TablePaginationProps, 'rowsPerPage' | 'rowsPerPageProps'>) {
+                                                          rowsPerPage,
+                                                          rowsPerPageProps
+                                                      }: Pick<TablePaginationProps, 'rowsPerPage' | 'rowsPerPageProps'>) {
     const dispatch = useAppDispatch();
     const list = useAppSelector(selectFilteredTemplateBillOptionHeaders);
     const sort = useAppSelector(selectSort);
@@ -84,7 +90,7 @@ export default function WhereUsedBillOptionHeaderList({
     return (
         <div>
             <h4>Option Bills</h4>
-            <SortableTable<TemplateBillOptionHeader>
+            <StandaloneSortableTable<TemplateBillOptionHeader>
                 fields={fields} size="xs"
                 keyField="BillNo"
                 data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}

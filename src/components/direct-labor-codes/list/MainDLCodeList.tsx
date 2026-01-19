@@ -12,7 +12,7 @@ import type {DLCode} from "chums-types";
 import {useNavigate} from "react-router";
 import {dlCodePath} from "@/app/routerPaths.ts";
 import {useAppDispatch} from "@/app/configureStore.ts";
-import {SortableTable, TablePagination} from "@chumsinc/sortable-tables";
+import {StandaloneSortableTable, TablePagination} from "@chumsinc/sortable-tables";
 import AppErrorBoundary from "@/components/AppErrorBoundary.tsx";
 import AnimatedLoadingBar from "../../AnimatedLoadingBar.tsx";
 import {getPreference, localStorageKeys, setPreference} from "@/api/preferences.ts";
@@ -53,11 +53,11 @@ const MainDLCodeList = () => {
     return (
         <AppErrorBoundary>
             <AnimatedLoadingBar loading={status === 'loading'}/>
-            <SortableTable fields={mainDLCodesFields} keyField="id"
-                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-                           rowClassName={(row) => classNames({'table-warning': !row.active})}
-                           currentSort={sort} onChangeSort={sort => dispatch(setSort(sort))}
-                           selected={selected?.id} onSelectRow={onSelectDLCode}/>
+            <StandaloneSortableTable fields={mainDLCodesFields} keyField="id"
+                                     data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+                                     rowClassName={(row) => classNames({'table-warning': !row.active})}
+                                     currentSort={sort} onChangeSort={sort => dispatch(setSort(sort))}
+                                     selected={selected?.id} onSelectRow={onSelectDLCode}/>
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
                              size="sm" count={list.length} showFirst showLast/>
