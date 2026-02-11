@@ -101,7 +101,7 @@ const WorkCenterForm = () => {
                    style={{display: 'block'}}>
                     Download Activity Code Changes ({activityCodeChanges})
                 </a>
-                <div className="text-secondary">Use VI Job: PM_ACTCODE_COST</div>
+                <div className="text-secondary">Use VI Job: PM_ACTCODE_RATE</div>
             </div>
             <div className="text-secondary mt-3">After recalculating the D/L Codes Costs, download the above files to
                 import to Sage.
