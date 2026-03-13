@@ -3,7 +3,7 @@ import {default as billMaterialsReducer} from "../ducks/billMaterials";
 import {default as routingReducer} from '../ducks/routing';
 import {default as workCentersReducer} from '../ducks/workCenters';
 import {default as operationCodesReducer} from '../ducks/operationCodes';
-import {default as glAccountsReducer} from '../ducks/glAccounts';
+import glAccountsSlice from '../ducks/glAccounts';
 import {default as dlCodesReducer} from '../ducks/dlCodes';
 import {default as dlStepsSlice} from '../ducks/dlSteps';
 import {default as timingsReducer} from '../ducks/timings';
@@ -16,6 +16,8 @@ import {alertsSlice} from "@chumsinc/alert-list";
 import whereUsedSlice from "@/ducks/where-used";
 import wuBillHeadersSlice from "@/ducks/where-used/wuBillHeadersSlice";
 import wuBillOptionHeadersSlice from "@/ducks/where-used/wuBillOptionHeadersSlice";
+import operationCodeListSlice from "@/ducks/operationCodes/operationCodeListSlice.ts";
+import operationCodeSlice from "@/ducks/operationCodes/operationCodeSlice.ts";
 
 export const rootReducer = combineReducers({
     activityCodes: activityCodesReducer,
@@ -23,8 +25,10 @@ export const rootReducer = combineReducers({
     billMaterials: billMaterialsReducer,
     dlCodes: dlCodesReducer,
     [dlStepsSlice.reducerPath]: dlStepsSlice.reducer,
-    glAccounts: glAccountsReducer,
+    [glAccountsSlice.reducerPath]: glAccountsSlice.reducer,
     operationCodes: operationCodesReducer,
+    [operationCodeListSlice.reducerPath]: operationCodeListSlice.reducer,
+    [operationCodeSlice.reducerPath]: operationCodeSlice.reducer,
     routing: routingReducer,
     templates: templatesReducer,
     timings: timingsReducer,

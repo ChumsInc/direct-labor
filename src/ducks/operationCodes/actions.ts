@@ -3,7 +3,8 @@ import type {OperationCode, OperationCodeKey, SortProps} from "chums-types";
 import type {OperationCodeResponse} from "./types";
 import {fetchOperationCode, fetchOperationCodes} from "./api";
 import type {RootState} from "../../app/configureStore";
-import {selectCurrentLoading, selectLoading} from "./selectors";
+import {selectOCListStatus} from "@/ducks/operationCodes/operationCodeListSlice.ts";
+import {selectCurrentOperationCodeStatus} from "@/ducks/operationCodes/operationCodeSlice.ts";
 
 export const setSearch = createAction<string>('operationCodes/filter/setSearch')
 export const setWorkCenter = createAction<string>('operationCodes/filter/setWorkCenter');
@@ -19,7 +20,7 @@ export const loadOperationCodes = createAsyncThunk<OperationCodeResponse | null>
     {
         condition: (_, {getState}) => {
             const state = getState() as RootState;
-            return !selectLoading(state);
+            return selectOCListStatus(state) === 'idle';
         }
     }
 )
@@ -35,7 +36,7 @@ export const loadOperationCode = createAsyncThunk<OperationCodeResponse | null, 
     }, {
         condition: (_, {getState}) => {
             const state = getState() as RootState;
-            return !selectCurrentLoading(state);
+            return selectCurrentOperationCodeStatus(state) === 'idle';
         }
     }
 )

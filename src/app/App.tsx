@@ -45,14 +45,14 @@ const App = () => {
                         <Route index element={<DirectLaborCodes/>}/>
                         <Route path=":id" element={<CurrentDLCode/>}/>
                     </Route>
+                    <Route path="templates" element={<TemplatesPage/>}>
+                        <Route path=":templateNo/:revisionNo" element={<CurrentTemplate/>}/>
+                    </Route>
                     <Route path="work-centers" element={<WorkCenterPage/>}>
                         <Route path=":workCenter" element={<WorkCenterForm/>}/>
                     </Route>
                     <Route path="activity-codes" element={<ActivityCodesPage/>}>
                         <Route path=":workCenter/:activityCode" element={<CurrentActivityCode/>}/>
-                    </Route>
-                    <Route path="templates" element={<TemplatesPage/>}>
-                        <Route path=":templateNo/:revisionNo" element={<CurrentTemplate/>}/>
                     </Route>
                     <Route path="routing" element={<RoutingPage/>}>
                         <Route path=":routingNo" element={<RoutingInfo/>}/>

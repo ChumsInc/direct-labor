@@ -1,6 +1,10 @@
 import {useEffect} from 'react';
 import {useSelector} from "react-redux";
-import {selectCurrentLoading, selectCurrentOperationCode, selectWhereUsed} from "./selectors";
+import {
+    selectCurrentOperationCode,
+    selectCurrentOperationCodeStatus,
+    selectCurrentOperationCodeWhereUsed
+} from "./operationCodeSlice.ts";
 import GLAccountElement from "../glAccounts/GLAccountElement";
 import RoutingDetailList from "../routing/RoutingDetailList";
 import {selectWhereUsedByRoutingKeys} from "../routing/selectors";
@@ -17,9 +21,9 @@ const SelectedOperationCode = () => {
     const dispatch = useAppDispatch();
     const params = useParams<{ operationCode: string; workCenter: string }>()
     const operationCode = useSelector(selectCurrentOperationCode);
-    const whereUsedKeys = useSelector(selectWhereUsed);
+    const whereUsedKeys = useSelector(selectCurrentOperationCodeWhereUsed);
     const whereUsed = useAppSelector((state) => selectWhereUsedByRoutingKeys(state, whereUsedKeys));
-    const loading = useSelector(selectCurrentLoading);
+    const status = useSelector(selectCurrentOperationCodeStatus);
 
     useEffect(() => {
         const {operationCode, workCenter} = params;
@@ -54,7 +58,7 @@ const SelectedOperationCode = () => {
             <FormColumn label={"Operation Code"}>
                 <h2 className="h3">{OperationCode}</h2>
             </FormColumn>
-            <AnimatedLoadingBar loading={loading}/>
+            <AnimatedLoadingBar loading={status === 'loading'}/>
             <hr/>
 
             <FormColumn label="Description">

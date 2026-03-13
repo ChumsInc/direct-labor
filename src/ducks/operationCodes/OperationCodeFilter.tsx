@@ -1,12 +1,17 @@
 import {useEffect} from "react";
 import {useSelector} from "react-redux";
-import {loadOperationCodes, setSearch, setWorkCenter} from "./actions";
-import {selectSearch, selectWorkCenter} from "./selectors";
+import {loadOperationCodes} from "./actions";
 import WorkCenterSelect from "../workCenters/WorkCenterSelect";
 import type {WorkCenter} from "chums-types";
 import {currentOCWorkCenterKey, getPreference, setPreference} from "../../utils/preferences";
 import SearchInput from "@/components/common/SearchInput";
 import {useAppDispatch} from "../../app/configureStore";
+import {
+    selectOCListSearch,
+    selectOCListWorkCenter,
+    setSearch,
+    setWorkCenter
+} from "@/ducks/operationCodes/operationCodeListSlice.ts";
 
 
 const OperationCodeFilter = () => {
@@ -18,8 +23,8 @@ const OperationCodeFilter = () => {
     }, [])
 
 
-    const search = useSelector(selectSearch);
-    const workCenterFilter = useSelector(selectWorkCenter);
+    const search = useSelector(selectOCListSearch);
+    const workCenterFilter = useSelector(selectOCListWorkCenter);
 
     const onSelectWorkCenter = (wc: WorkCenter | null) => {
         dispatch(setWorkCenter(wc?.workCenter ?? ''));

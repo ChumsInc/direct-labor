@@ -6,7 +6,7 @@ import DocumentTitle from "@/components/common/DocumentTitle";
 
 const WorkCenterPage = () => {
     return (
-        <>
+        <div className="container-fluid">
             <DocumentTitle>D/L Work Centers</DocumentTitle>
             <div className="row g-5">
                 <div className="col-8">
@@ -19,7 +19,7 @@ const WorkCenterPage = () => {
                     <DirectLaborRecalc/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 export default WorkCenterPage;

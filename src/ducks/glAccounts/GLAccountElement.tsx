@@ -1,5 +1,5 @@
-import {selectGLByAccountKey} from "./selectors";
 import {useAppSelector} from "@/app/configureStore";
+import {selectGLAccountById} from "@/ducks/glAccounts/index.ts";
 
 export interface GLAccountElementProps {
     accountKey: string,
@@ -7,7 +7,7 @@ export interface GLAccountElementProps {
 }
 
 const GLAccountElement = ({accountKey, showDescription}: GLAccountElementProps) => {
-    const glAccount = useAppSelector((state) => selectGLByAccountKey(state, accountKey));
+    const glAccount = useAppSelector((state) => selectGLAccountById(state, accountKey));
     if (!glAccount) {
         return null;
     }

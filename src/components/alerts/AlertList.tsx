@@ -10,6 +10,10 @@ const AlertList = () => {
     const dismissHandler = (alert:StyledErrorAlert) => {
         dispatch(dismissAlert(alert));
     }
+    if (!list.length) {
+        return null;
+    }
+
     return (
         <div>
             {list.map(alert => (

@@ -77,12 +77,12 @@ const MainNav = () => {
                                 {collapsed && (
                                     <OverlayTrigger overlay={<Tooltip>{tab.title}</Tooltip>} trigger={["hover", "focus"]}
                                                     delay={500}>
-                                        <span className={classNames('nav-item-icon', tab.icon)} aria-hidden="true"/>
+                                        <span className={tab.icon} aria-hidden="true"/>
                                     </OverlayTrigger>
                                 )}
                                 {!collapsed && (
                                     <>
-                                        <span className={classNames('nav-item-icon', tab.icon)} aria-hidden="true"/>
+                                        <span className={tab.icon} aria-hidden="true"/>
                                         <span className="nav-item-text" aria-hidden="true">{tab.title}</span>
                                     </>
                                 )}

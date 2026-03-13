@@ -6,7 +6,7 @@ import DocumentTitle from "@/components/common/DocumentTitle";
 
 const RoutingPage = () => {
     return (
-        <>
+        <div className="container-fluid">
             <DocumentTitle>D/L Routing</DocumentTitle>
             <Alert variant="danger">
                 <strong>Note:</strong> These values are for reference only. For current values see
@@ -21,7 +21,7 @@ const RoutingPage = () => {
                     <Outlet/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 export default RoutingPage;

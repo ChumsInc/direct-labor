@@ -1,6 +1,4 @@
 import {useEffect} from "react";
-import {useSelector} from "react-redux";
-import {selectLoaded, selectLoading} from "./selectors";
 import {loadOperationCodes} from "./actions";
 import OperationCodeFilter from "./OperationCodeFilter";
 import OperationCodeList from "./OperationCodeList";
@@ -11,17 +9,12 @@ import DocumentTitle from "@/components/common/DocumentTitle";
 
 const OperationCodesPage = () => {
     const dispatch = useAppDispatch();
-    const loaded = useSelector(selectLoaded);
-    const loading = useSelector(selectLoading);
-
     useEffect(() => {
-        if (!loaded && !loading) {
-            dispatch(loadOperationCodes());
-        }
-    }, [dispatch, loaded, loading])
+        dispatch(loadOperationCodes());
+    }, [dispatch])
 
     return (
-        <>
+        <div className="container-fluid">
             <DocumentTitle>D/L OpCodes</DocumentTitle>
             <Alert variant="danger">
                 <strong className="me-1">Note:</strong> These values are for reference only. For current values
@@ -36,7 +29,7 @@ const OperationCodesPage = () => {
                     <Outlet/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 export default OperationCodesPage;

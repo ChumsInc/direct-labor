@@ -7,11 +7,16 @@ import numeral from "numeral";
 import {useNavigate} from "react-router";
 import {operationCodesOperationPath} from "@/app/routerPaths.ts";
 import {useAppDispatch, useAppSelector} from "../../app/configureStore";
-import {selectCurrentOperationCode, selectFilteredOpCodeList, selectLoading, selectSort} from "./selectors";
+import {selectCurrentOperationCode} from "./operationCodeSlice.ts";
 import {loadOperationCode, setSort} from "./actions";
 import AppErrorBoundary from "@/components/AppErrorBoundary";
 import AnimatedLoadingBar from "../../components/AnimatedLoadingBar";
 import {getPreference, localStorageKeys, setPreference} from "../../api/preferences";
+import {
+    selectFilteredOpCodeList,
+    selectOCListSort,
+    selectOCListStatus
+} from "@/ducks/operationCodes/operationCodeListSlice.ts";
 
 const fields: SortableTableField<OperationCode>[] = [
     {field: 'WorkCenter', title: 'Work Center', sortable: true},
@@ -31,9 +36,9 @@ const OperationCodeList = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const list = useSelector(selectFilteredOpCodeList);
-    const sort = useAppSelector(selectSort);
+    const sort = useAppSelector(selectOCListSort);
     const selected = useSelector(selectCurrentOperationCode);
-    const loading = useSelector(selectLoading)
+    const status = useSelector(selectOCListStatus)
 
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(getPreference<number>(localStorageKeys.dlCodesRowsPerPage, 15));
@@ -55,7 +60,7 @@ const OperationCodeList = () => {
 
     return (
         <AppErrorBoundary>
-            <AnimatedLoadingBar loading={loading}/>
+            <AnimatedLoadingBar loading={status === 'loading'}/>
             <SortableTable keyField={operationCodeKey} fields={fields}
                            data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                            size="sm" currentSort={sort} onChangeSort={sortChangeHandler}

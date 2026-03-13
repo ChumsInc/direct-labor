@@ -4,7 +4,7 @@ import DocumentTitle from "@/components/common/DocumentTitle";
 
 const ActivityCodesPage = () => {
     return (
-        <>
+        <div className="container-fluid">
             <DocumentTitle>Activity Codes</DocumentTitle>
             <div className="row g-5">
                 <div className="col-6">
@@ -14,7 +14,7 @@ const ActivityCodesPage = () => {
                     <Outlet/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

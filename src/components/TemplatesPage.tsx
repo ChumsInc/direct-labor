@@ -5,14 +5,16 @@ import DocumentTitle from "@/components/common/DocumentTitle";
 
 const TemplatesPage = () => {
     return (
-        <div className="row g-5">
-            <DocumentTitle>W/T Templates</DocumentTitle>
-            <div className="col-6">
-                <TemplatesFilter/>
-                <TemplatesList/>
-            </div>
-            <div className="col-6">
-                <Outlet/>
+        <div className="container-fluid">
+            <div className="row g-5">
+                <DocumentTitle>W/T Templates</DocumentTitle>
+                <div className="col-6">
+                    <TemplatesFilter/>
+                    <TemplatesList/>
+                </div>
+                <div className="col-6">
+                    <Outlet/>
+                </div>
             </div>
         </div>
     )
