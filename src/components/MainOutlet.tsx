@@ -4,6 +4,7 @@ import {Outlet} from "react-router";
 import VersionInfo from "../ducks/version/VersionInfo";
 import styled from "@emotion/styled";
 import {Col, Row} from "react-bootstrap";
+import Breadcrumbs from "@/components/Breadcrumbs.tsx";
 
 const MainOutletContainer = styled.div`
     @media (prefers-color-scheme: dark) {
@@ -27,6 +28,7 @@ const MainOutlet = () => {
 
     return (
         <MainOutletContainer>
+            <Breadcrumbs/>
             <Row className="g-3">
                 <Col xs="auto">
                     <MainNav/>
