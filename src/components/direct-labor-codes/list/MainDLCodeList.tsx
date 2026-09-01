@@ -53,7 +53,7 @@ const MainDLCodeList = () => {
     return (
         <AppErrorBoundary>
             <AnimatedLoadingBar loading={status === 'loading'}/>
-            <SortableTable fields={mainDLCodesFields} keyField="id"
+            <SortableTable fields={mainDLCodesFields} keyField="id" size="sm"
                                      data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
                                      rowClassName={(row) => classNames({'table-warning': !row.active})}
                                      currentSort={sort} onChangeSort={sort => dispatch(setSort(sort))}

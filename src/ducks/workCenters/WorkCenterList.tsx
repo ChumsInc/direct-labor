@@ -110,7 +110,9 @@ const WorkCenterList: React.FC = () => {
                            selected={selected?.workCenter}
                            onSelectRow={onSelectWorkCenter}/>
             <TablePagination page={page} onChangePage={onChangePage} rowsPerPage={rowsPerPage}
-                             rowsPerPageProps={{onChange: onChangeRowsPerPage}} showFirst showLast
+                             rowsPerPageProps={{onChange: onChangeRowsPerPage}}
+                             size="sm"
+                             showFirst showLast
                              count={list.length}/>
         </div>
     )

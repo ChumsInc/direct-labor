@@ -80,7 +80,7 @@ const TemplatesList = () => {
         <div>
             <AnimatedLoadingBar loading={status !== 'idle'}/>
             <SortableTable currentSort={sort} onChangeSort={sortChangeHandler} fields={fields}
-                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)} size="xs"
+                           data={list.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)} size="sm"
                            rowClassName={rowClassName} onSelectRow={rowClickHandler}
                            keyField={templateKey}/>
             <TablePagination page={page} onChangePage={setPage}
